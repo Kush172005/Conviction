@@ -1,0 +1,202 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Conviction dark-first palette */
+    --background: 240 6% 5%;
+    --foreground: 240 5% 92%;
+
+    --card: 240 5% 8%;
+    --card-foreground: 240 5% 90%;
+
+    --popover: 240 5% 9%;
+    --popover-foreground: 240 5% 90%;
+
+    --primary: 248 92% 68%;
+    --primary-foreground: 240 6% 5%;
+
+    --secondary: 240 5% 14%;
+    --secondary-foreground: 240 5% 70%;
+
+    --muted: 240 5% 11%;
+    --muted-foreground: 240 5% 48%;
+
+    --accent: 248 78% 62%;
+    --accent-foreground: 240 6% 5%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 240 5% 92%;
+
+    --border: 240 5% 16%;
+    --input: 240 5% 14%;
+    --ring: 248 92% 68%;
+
+    --surface-0: 240 6% 5%;
+    --surface-1: 240 5% 8%;
+    --surface-2: 240 5% 11%;
+    --surface-3: 240 5% 14%;
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  ::selection {
+    background: hsl(248 92% 68% / 0.25);
+    color: hsl(248 92% 85%);
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--surface-0));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .glass {
+    background: hsl(var(--card) / 0.6);
+    backdrop-filter: blur(16px) saturate(1.2);
+    -webkit-backdrop-filter: blur(16px) saturate(1.2);
+    border: 1px solid hsl(var(--border) / 0.8);
+  }
+
+  .glass-strong {
+    background: hsl(var(--card) / 0.85);
+    backdrop-filter: blur(24px) saturate(1.4);
+    -webkit-backdrop-filter: blur(24px) saturate(1.4);
+    border: 1px solid hsl(var(--border));
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, hsl(248 92% 78%) 0%, hsl(280 80% 72%) 50%, hsl(220 80% 80%) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .conviction-glow {
+    box-shadow: 0 0 0 1px hsl(248 92% 68% / 0.15),
+                0 0 30px hsl(248 92% 68% / 0.08);
+  }
+
+  .surface-elevated {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 1px 3px hsl(0 0% 0% / 0.4), 0 1px 2px hsl(0 0% 0% / 0.3);
+  }
+
+  .surface-hover {
+    transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .surface-hover:hover {
+    background: hsl(var(--secondary));
+    border-color: hsl(var(--border) / 0.8);
+    box-shadow: 0 4px 16px hsl(0 0% 0% / 0.5);
+  }
+
+  .dot-grid {
+    background-image: radial-gradient(circle, hsl(var(--border)) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .line-grid {
+    background-image:
+      linear-gradient(hsl(var(--border) / 0.3) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.3) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .shimmer-bg {
+    background: linear-gradient(
+      90deg,
+      hsl(var(--muted)) 0%,
+      hsl(var(--secondary)) 50%,
+      hsl(var(--muted)) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.8s ease-in-out infinite;
+  }
+
+  .will-animate {
+    will-change: transform, opacity;
+  }
+}
+
+/* Premium scrollbar for app panels */
+.thin-scrollbar::-webkit-scrollbar {
+  width: 3px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 2px;
+}
+
+/* Audio recording pulse animation */
+@keyframes recording-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 hsl(0 72% 51% / 0.4);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 12px hsl(0 72% 51% / 0);
+  }
+}
+
+.recording-active {
+  animation: recording-pulse 1.5s ease-in-out infinite;
+}
+
+/* Conviction brand glow */
+@keyframes brand-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px hsl(248 92% 68% / 0.12), 0 0 60px hsl(248 92% 68% / 0.06);
+  }
+  50% {
+    box-shadow: 0 0 40px hsl(248 92% 68% / 0.22), 0 0 80px hsl(248 92% 68% / 0.1);
+  }
+}
+
+.brand-glow-anim {
+  animation: brand-glow 4s ease-in-out infinite;
+}
