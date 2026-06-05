@@ -98,8 +98,6 @@ export default function LoginPage() {
     }
   }
 
-  const clientIdSuffix = GOOGLE_CLIENT_ID?.split('.')[0]?.slice(-8)
-
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-6 relative overflow-hidden">
       <div className="absolute inset-0 dot-grid opacity-30 pointer-events-none" />
@@ -138,28 +136,25 @@ export default function LoginPage() {
 
           {/* Google sign-in — new user flow */}
           {GOOGLE_CLIENT_ID ? (
-            <div className="space-y-2">
-              <div className="relative">
+            <div className="relative">
+              <div className={`transition-opacity duration-200 ${isGoogleLoading ? 'opacity-40 pointer-events-none' : ''}`}>
                 <GoogleSignInButton
                   clientId={GOOGLE_CLIENT_ID}
                   disabled={isGoogleLoading || isDemoLoading}
                   onSuccess={handleGoogleSuccess}
                   onError={() =>
                     setError(
-                      'Google sign-in failed. In Google Cloud Console, add http://localhost:5173 to Authorized JavaScript origins for client ending in …' +
-                        (clientIdSuffix ?? '????')
+                      'Google sign-in failed. Make sure http://localhost:5173 is added to Authorized JavaScript origins in Google Cloud Console.'
                     )
                   }
                 />
-                {isGoogleLoading && (
-                  <div className="absolute inset-0 flex items-center justify-center rounded-md bg-card/80">
-                    <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/30 border-t-foreground animate-spin" />
-                  </div>
-                )}
               </div>
-              <p className="text-2xs text-center text-muted-foreground font-mono opacity-50">
-                OAuth client: …{clientIdSuffix}
-              </p>
+              {isGoogleLoading && (
+                <div className="absolute inset-0 flex items-center justify-center gap-2 rounded-md">
+                  <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/30 border-t-foreground animate-spin" />
+                  <span className="text-xs text-muted-foreground">Signing in…</span>
+                </div>
+              )}
             </div>
           ) : (
             <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 px-3 py-2.5 text-xs text-amber-400">

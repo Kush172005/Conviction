@@ -41,7 +41,7 @@ export default function Sidebar() {
       <motion.aside
         animate={{ width: sidebarCollapsed ? 64 : 220 }}
         transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-        className="relative flex h-full flex-col border-r border-border bg-surface-1 overflow-hidden flex-shrink-0"
+        className="relative flex h-full flex-col border-r border-border bg-surface-1 flex-shrink-0"
       >
         {/* Logo */}
         <div className="flex h-14 items-center px-4 border-b border-border flex-shrink-0">
@@ -107,7 +107,7 @@ export default function Sidebar() {
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 overflow-y-auto thin-scrollbar px-2 py-2 space-y-0.5">
+        <nav className="flex-1 overflow-y-auto overflow-x-hidden thin-scrollbar px-2 py-2 space-y-0.5">
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon
             if (sidebarCollapsed) {
@@ -198,7 +198,7 @@ export default function Sidebar() {
         {/* Collapse toggle */}
         <button
           onClick={toggleSidebar}
-          className="absolute top-[52px] -right-3 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-sm hover:text-foreground transition-colors"
+          className="absolute top-[52px] -right-3 z-20 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-sm hover:text-foreground transition-colors"
           aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {sidebarCollapsed ? (
