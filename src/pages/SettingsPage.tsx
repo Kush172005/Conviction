@@ -135,7 +135,7 @@ export default function SettingsPage() {
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <Label>Full name</Label>
                   <Input defaultValue={user?.name} readOnly className="bg-secondary/50" />
@@ -179,7 +179,7 @@ export default function SettingsPage() {
 
             {profile && (
               <div className="p-5 space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <Label>Fund name</Label>
                     <Input
@@ -231,7 +231,7 @@ export default function SettingsPage() {
                     })}
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div className="space-y-1.5">
                     <Label>Check size</Label>
                     <Input defaultValue={profile.typical_check_size} readOnly className="bg-secondary/50" />
@@ -264,7 +264,7 @@ export default function SettingsPage() {
               <h2 className="text-sm font-semibold text-foreground">Account</h2>
             </div>
             <div className="p-5">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:justify-between">
                 <div>
                   <p className="text-sm font-medium text-foreground">
                     {isDemo ? 'Exit demo' : 'Sign out'}
@@ -279,7 +279,7 @@ export default function SettingsPage() {
                   variant="outline"
                   size="sm"
                   onClick={handleLogout}
-                  className="text-muted-foreground hover:text-foreground"
+                  className="text-muted-foreground hover:text-foreground w-full sm:w-auto"
                 >
                   <LogOut className="h-3.5 w-3.5" />
                   {isDemo ? 'Exit demo' : 'Sign out'}

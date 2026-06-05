@@ -274,6 +274,7 @@ export default function StartupIntelligencePage() {
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const activeTab = useRef<TabId>('thesis')
   const [tab, setTab] = useState<TabId>('thesis')
+  const [mobileView, setMobileView] = useState<'list' | 'detail'>('list')
 
   // Form state
   const [companyName, setCompanyName] = useState('')
@@ -346,6 +347,7 @@ export default function StartupIntelligencePage() {
   async function openReport(id: string) {
     setSelectedReportId(id)
     setTab('thesis')
+    setMobileView('detail')
     try {
       const report = await startupIntelligenceApi.getReport(id)
       setSelectedReport(report)
@@ -448,9 +450,12 @@ export default function StartupIntelligencePage() {
   }
 
   return (
-    <div className="flex h-full overflow-hidden">
-      {/* ── Left sidebar: history + form ── */}
-      <div className="w-80 flex-shrink-0 border-r border-border flex flex-col h-full">
+    <div className="flex flex-col md:flex-row h-full overflow-hidden">
+      {/* ── Left panel: form + history ── */}
+      <div className={cn(
+        'md:w-80 w-full flex-shrink-0 border-b md:border-b-0 md:border-r border-border flex flex-col md:h-full',
+        mobileView === 'detail' ? 'hidden md:flex' : 'flex',
+      )}>
         {/* Form */}
         <div className="p-4 border-b border-border">
           <div className="flex items-center gap-2 mb-4">
@@ -587,13 +592,22 @@ export default function StartupIntelligencePage() {
       </div>
 
       {/* ── Main content area ── */}
-      <div className="flex-1 overflow-y-auto">
+      <div className={cn(
+        'flex-1 overflow-y-auto',
+        mobileView === 'list' ? 'hidden md:block' : 'block',
+      )}>
         {!selectedReportId && (
-          <EmptyState />
+          <EmptyState onNewReport={() => setMobileView('list')} />
         )}
         {selectedReportId && !selectedReport && (
-          <div className="flex items-center justify-center h-64">
+          <div className="flex flex-col items-center justify-center h-64 gap-4">
             <RefreshCw className="w-5 h-5 animate-spin text-muted-foreground" />
+            <button
+              onClick={() => setMobileView('list')}
+              className="md:hidden flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+            >
+              <ArrowLeft className="w-4 h-4" /> Back to list
+            </button>
           </div>
         )}
         {selectedReport && (
@@ -605,6 +619,7 @@ export default function StartupIntelligencePage() {
             onRetry={() => handleRetry(selectedReport.id)}
             onRefresh={() => handleRefresh(selectedReport.id)}
             onDownload={downloadJson}
+            onBack={() => setMobileView('list')}
           />
         )}
       </div>
@@ -614,7 +629,7 @@ export default function StartupIntelligencePage() {
 
 // ─── Empty state ──────────────────────────────────────────────────────────────
 
-function EmptyState() {
+function EmptyState({ onNewReport }: { onNewReport: () => void }) {
   const examples = ['stripe.com', 'notion.so', 'linear.app', 'vercel.com']
   return (
     <div className="flex flex-col items-center justify-center h-full p-8 text-center">
@@ -625,13 +640,19 @@ function EmptyState() {
       <p className="text-muted-foreground text-sm max-w-sm mb-6">
         Generate a VC-grade investment report for any startup. We'll analyze the company against your fund thesis and surface key signals.
       </p>
-      <div className="flex flex-wrap gap-2 justify-center">
+      <div className="flex flex-wrap gap-2 justify-center mb-6">
         {examples.map(ex => (
           <span key={ex} className="text-xs px-3 py-1.5 rounded-full border border-border text-muted-foreground">
             {ex}
           </span>
         ))}
       </div>
+      <button
+        onClick={onNewReport}
+        className="md:hidden flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+      >
+        <Search className="w-4 h-4" /> New Report
+      </button>
     </div>
   )
 }
@@ -639,7 +660,7 @@ function EmptyState() {
 // ─── Report view ──────────────────────────────────────────────────────────────
 
 function ReportView({
-  report, tab, setTab, isPolling, onRetry, onRefresh, onDownload,
+  report, tab, setTab, isPolling, onRetry, onRefresh, onDownload, onBack,
 }: {
   report: SIReportDetail
   tab: TabId
@@ -648,6 +669,7 @@ function ReportView({
   onRetry: () => void
   onRefresh: () => void
   onDownload: () => void
+  onBack?: () => void
 }) {
   const recMeta = report.icMemo ? RECOMMENDATION_META[report.icMemo.recommendation] : null
   const isComplete = report.status === 'completed'
@@ -655,12 +677,21 @@ function ReportView({
   const isRunning = !isComplete && !isFailed
 
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-6">
+    <div className="max-w-5xl mx-auto p-4 sm:p-6 space-y-4 sm:space-y-6">
+      {/* Mobile back button */}
+      {onBack && (
+        <button
+          onClick={onBack}
+          className="md:hidden flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground -mb-1"
+        >
+          <ArrowLeft className="w-4 h-4" /> All Reports
+        </button>
+      )}
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <h1 className="text-2xl font-bold truncate">{report.companyName}</h1>
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
+            <h1 className="text-xl sm:text-2xl font-bold truncate">{report.companyName}</h1>
             {report.cacheUsed && (
               <span className="flex items-center gap-1 text-xs text-zinc-500 px-2 py-0.5 rounded-full bg-zinc-800 border border-zinc-700">
                 <Database className="w-3 h-3" /> cache
@@ -675,7 +706,7 @@ function ReportView({
             {report.websiteUrl} <ExternalLink className="w-3 h-3" />
           </a>
         </div>
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="flex items-center gap-2 flex-shrink-0 flex-wrap justify-end">
           {isFailed && (
             <button onClick={onRetry} className="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg border border-border hover:bg-card transition-colors">
               <RotateCcw className="w-3.5 h-3.5" /> Retry
@@ -686,7 +717,7 @@ function ReportView({
               <button onClick={onRefresh} className="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg border border-border hover:bg-card transition-colors text-muted-foreground">
                 <RefreshCw className="w-3.5 h-3.5" /> Refresh
               </button>
-              <button onClick={onDownload} className="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg border border-border hover:bg-card transition-colors text-muted-foreground">
+              <button onClick={onDownload} className="hidden sm:flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg border border-border hover:bg-card transition-colors text-muted-foreground">
                 <Download className="w-3.5 h-3.5" /> JSON
               </button>
             </>

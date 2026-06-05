@@ -304,7 +304,7 @@ export default function CallIntelligencePage() {
 
       {/* Header */}
       <FadeIn delay={0.05}>
-        <div className="flex items-start justify-between gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:justify-between gap-3 mb-6">
           <div className="min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <Sparkles className="h-4 w-4 text-conviction-400 shrink-0" />
@@ -490,7 +490,7 @@ export default function CallIntelligencePage() {
         {intel.draftEmail && (
           <FadeIn delay={0.26}>
             <div className="rounded-lg border border-border bg-card p-5">
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center justify-between gap-2 mb-3 flex-wrap">
                 <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
                   <Mail className="h-4 w-4 text-muted-foreground" />
                   Draft Follow-Up Email
@@ -641,15 +641,15 @@ export default function CallIntelligencePage() {
 
       {/* Action bar */}
       <FadeIn delay={0.3}>
-        <div className="mt-8 flex items-center justify-between p-4 rounded-lg border border-border bg-card">
-          <p className="text-sm text-muted-foreground">
+        <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-lg border border-border bg-card">
+          <p className="text-sm text-muted-foreground flex-1 min-w-0">
             Intelligence saved to {intel.companyName} memory timeline.
           </p>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={() => navigate(backPath)}>
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <Button variant="outline" size="sm" className="flex-1 sm:flex-none" onClick={() => navigate(backPath)}>
               View company
             </Button>
-            <Button variant="conviction" size="sm" onClick={() => navigate('/memory')}>
+            <Button variant="conviction" size="sm" className="flex-1 sm:flex-none" onClick={() => navigate('/memory')}>
               View memory
               <CheckCircle2 className="h-3.5 w-3.5" />
             </Button>

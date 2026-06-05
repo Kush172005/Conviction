@@ -183,9 +183,9 @@ export default function CompanyDetailPage() {
 
       {/* Header */}
       <FadeIn delay={0.05}>
-        <div className="flex items-start justify-between gap-4 mb-6">
-          <div>
-            <div className="flex items-center gap-3 mb-1">
+        <div className="flex flex-col sm:flex-row items-start sm:justify-between gap-4 mb-6">
+          <div className="min-w-0">
+            <div className="flex items-center gap-3 mb-1 flex-wrap">
               <h1 className="text-2xl font-semibold text-foreground">{company.name}</h1>
               <Badge className={cn('text-xs', STATUS_COLORS[company.status])}>
                 {company.status}
@@ -207,7 +207,7 @@ export default function CompanyDetailPage() {
               )}
             </div>
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-2 flex-shrink-0 w-full sm:w-auto">
             {company.website && (
               <Button variant="outline" size="sm" asChild>
                 <a href={company.website} target="_blank" rel="noopener noreferrer">
@@ -219,6 +219,7 @@ export default function CompanyDetailPage() {
             <Button
               variant="conviction"
               size="sm"
+              className="flex-1 sm:flex-none"
               onClick={() => navigate('/calls/new')}
             >
               <PhoneCall className="h-3.5 w-3.5" />
@@ -249,7 +250,7 @@ export default function CompanyDetailPage() {
                 <ChevronRight className="h-3 w-3" />
               </Button>
             </div>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               <div>
                 <p className="text-2xs text-muted-foreground mb-1">Recommendation</p>
                 <p className={cn('text-sm font-semibold capitalize', recColor)}>
@@ -281,7 +282,8 @@ export default function CompanyDetailPage() {
 
       <Tabs defaultValue="overview">
         <FadeIn delay={0.12}>
-          <TabsList className="mb-6">
+          <div className="overflow-x-auto mb-6">
+          <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="calls">
               Calls {calls.length > 0 && `(${calls.length})`}
@@ -293,6 +295,7 @@ export default function CompanyDetailPage() {
               Follow-Ups {followUps.length > 0 && `(${followUps.length})`}
             </TabsTrigger>
           </TabsList>
+          </div>
         </FadeIn>
 
         {/* ── Overview ──────────────────────────────────────────────────── */}

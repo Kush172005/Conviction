@@ -426,19 +426,19 @@ function LiveDashboard({
 
       {/* Log Call CTA */}
       <FadeIn delay={0.3}>
-        <div className="mt-6 rounded-lg border border-conviction-500/20 bg-conviction-500/5 p-5 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-conviction-500/15">
+        <div className="mt-6 rounded-lg border border-conviction-500/20 bg-conviction-500/5 p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-conviction-500/15 flex-shrink-0">
               <TrendingUp className="h-4 w-4 text-conviction-400" />
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-sm font-medium text-foreground">Capture your next conversation</p>
               <p className="text-xs text-muted-foreground mt-0.5">
                 Log a voice note, brain dump, or transcript from your next founder call.
               </p>
             </div>
           </div>
-          <Button variant="conviction" size="sm" onClick={() => navigate('/calls/new')}>
+          <Button variant="conviction" size="sm" className="w-full sm:w-auto" onClick={() => navigate('/calls/new')}>
             Log call
             <ArrowRight className="h-3.5 w-3.5" />
           </Button>
@@ -628,19 +628,19 @@ export default function DashboardPage() {
       </div>
 
       <FadeIn delay={0.35}>
-        <div className="mt-6 rounded-lg border border-conviction-500/20 bg-conviction-500/5 p-5 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-conviction-500/15">
+        <div className="mt-6 rounded-lg border border-conviction-500/20 bg-conviction-500/5 p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-conviction-500/15 flex-shrink-0">
               <TrendingUp className="h-4 w-4 text-conviction-400" />
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-sm font-medium text-foreground">Capture your next conversation</p>
               <p className="text-xs text-muted-foreground mt-0.5">
                 Log a voice note, brain dump, or transcript from your next founder call.
               </p>
             </div>
           </div>
-          <Button variant="conviction" size="sm" onClick={() => navigate('/calls/new')}>
+          <Button variant="conviction" size="sm" className="w-full sm:w-auto" onClick={() => navigate('/calls/new')}>
             Log call
             <ArrowRight className="h-3.5 w-3.5" />
           </Button>

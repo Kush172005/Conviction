@@ -636,9 +636,9 @@ export default function LandingPage() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-                    className="bg-background p-5 grid grid-cols-12 gap-4 min-h-[300px]"
+                    className="bg-background p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-12 gap-4 min-h-[300px]"
                   >
-                    <div className="col-span-3 space-y-1">
+                    <div className="hidden sm:block sm:col-span-3 space-y-1">
                       {['Dashboard', 'Companies', 'Log Call', 'Memory', 'Startup Intel'].map((item, i) => (
                         <div
                           key={item}
@@ -651,7 +651,7 @@ export default function LandingPage() {
                         </div>
                       ))}
                     </div>
-                    <div className="col-span-9 space-y-3">
+                    <div className="sm:col-span-9 space-y-3">
                       <p className="text-xs font-semibold text-foreground">Post-Call Brain Dump</p>
                       <div className="rounded-md border border-red-500/20 bg-red-500/5 p-3 flex items-center gap-3">
                         <div className="h-8 w-8 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0 recording-active">

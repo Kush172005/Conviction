@@ -27,9 +27,12 @@ interface OnboardingState {
 
 interface UIState {
   sidebarCollapsed: boolean
+  mobileSidebarOpen: boolean
   commandPaletteOpen: boolean
   setSidebarCollapsed: (collapsed: boolean) => void
   toggleSidebar: () => void
+  setMobileSidebarOpen: (open: boolean) => void
+  toggleMobileSidebar: () => void
   setCommandPaletteOpen: (open: boolean) => void
 }
 
@@ -81,9 +84,13 @@ export const useOnboardingStore = create<OnboardingState>()(
 
 export const useUIStore = create<UIState>()((set) => ({
   sidebarCollapsed: false,
+  mobileSidebarOpen: false,
   commandPaletteOpen: false,
   setSidebarCollapsed: (collapsed) => set({ sidebarCollapsed: collapsed }),
   toggleSidebar: () =>
     set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed })),
+  setMobileSidebarOpen: (open) => set({ mobileSidebarOpen: open }),
+  toggleMobileSidebar: () =>
+    set((state) => ({ mobileSidebarOpen: !state.mobileSidebarOpen })),
   setCommandPaletteOpen: (open) => set({ commandPaletteOpen: open }),
 }))

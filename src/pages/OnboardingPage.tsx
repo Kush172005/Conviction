@@ -352,7 +352,7 @@ export default function OnboardingPage() {
                       </p>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
                         <Label>Fund name</Label>
                         <Input
@@ -372,7 +372,7 @@ export default function OnboardingPage() {
                     </div>
 
                     <div className="space-y-1.5">
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between flex-wrap gap-1">
                         <Label>Investment thesis</Label>
                         <span className="text-2xs text-muted-foreground">Pre-filled from template — edit freely</span>
                       </div>

@@ -684,12 +684,12 @@ Supports Fireflies, Otter.ai, Zoom, Gong, and any plain text format."
 
           {/* Process CTA */}
           <FadeIn delay={0.2}>
-            <div className="flex items-center justify-between p-4 rounded-lg border border-border bg-card">
-              <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-conviction-500/15">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-lg border border-border bg-card">
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-conviction-500/15 flex-shrink-0">
                   <Sparkles className="h-4 w-4 text-conviction-400" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <p className="text-sm font-medium text-foreground">Generate deal intelligence</p>
                   <p className="text-xs text-muted-foreground">
                     AI will extract strengths, concerns, thesis fit, follow-ups, and a draft email.
@@ -700,7 +700,7 @@ Supports Fireflies, Otter.ai, Zoom, Gong, and any plain text format."
                 variant="conviction"
                 onClick={handleProcess}
                 disabled={!canSubmit}
-                className="min-w-[140px]"
+                className="w-full sm:w-auto sm:min-w-[140px]"
               >
                 {isProcessing ? (
                   <div className="flex items-center gap-2">

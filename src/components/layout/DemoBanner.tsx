@@ -15,17 +15,18 @@ export default function DemoBanner() {
   }
 
   return (
-    <div className="flex items-center gap-3 px-4 py-2 bg-amber-500/10 border-b border-amber-500/20 text-xs text-amber-300">
+    <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 bg-amber-500/10 border-b border-amber-500/20 text-xs text-amber-300">
       <Beaker className="h-3.5 w-3.5 flex-shrink-0 text-amber-400" />
-      <span className="flex-1 min-w-0">
+      <span className="flex-1 min-w-0 truncate">
         <span className="font-semibold text-amber-300">Demo workspace</span>
-        <span className="text-amber-300/70"> — you're exploring RTP Global's sample pipeline. Data is read-only.</span>
+        <span className="text-amber-300/70 hidden sm:inline"> — exploring RTP Global's sample pipeline. Read-only.</span>
       </span>
       <button
         onClick={() => { logout(); navigate('/login', { replace: true }) }}
-        className="flex items-center gap-1 rounded px-2 py-1 bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 font-medium transition-colors whitespace-nowrap"
+        className="flex items-center gap-1 rounded px-2 py-1 bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 font-medium transition-colors whitespace-nowrap flex-shrink-0"
       >
-        Sign in to create workspace
+        <span className="hidden sm:inline">Sign in to create workspace</span>
+        <span className="sm:hidden">Sign in</span>
         <ArrowRight className="h-3 w-3" />
       </button>
       <button
