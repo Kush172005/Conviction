@@ -1,16 +1,19 @@
+import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
   ArrowLeft,
   ExternalLink,
   PhoneCall,
-  Brain,
   ChevronRight,
   CheckCircle2,
   AlertTriangle,
   Clock,
   Sparkles,
-  User,
+  Loader2,
+  AlertCircle,
+  RefreshCw,
+  Plus,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -25,16 +28,146 @@ import {
   MOCK_FOLLOW_UPS,
 } from '@/mocks/data'
 import { cn, formatDate, formatRelativeTime, STATUS_COLORS } from '@/lib/utils'
+import { useAuthStore } from '@/store'
+import { companiesApi } from '@/services/api/companies'
+import { callsApi } from '@/services/api/calls'
+import { memoryApi } from '@/services/api/memory'
+import { followUpsApi } from '@/services/api/followUps'
+import type { Company, Call, MemoryEntry, FollowUp } from '@/types'
+import type { LatestDecision } from '@/services/api/companies'
+
+const RECOMMENDATION_COLORS: Record<string, string> = {
+  strong_invest: 'text-emerald-400',
+  invest: 'text-emerald-400',
+  monitor: 'text-amber-400',
+  pass: 'text-red-400',
+  need_more_info: 'text-blue-400',
+}
+
+const RECOMMENDATION_LABELS: Record<string, string> = {
+  strong_invest: 'Strong Invest',
+  invest: 'Invest',
+  monitor: 'Monitor',
+  pass: 'Pass',
+  need_more_info: 'Need More Info',
+}
 
 export default function CompanyDetailPage() {
   const { companyId } = useParams<{ companyId: string }>()
   const navigate = useNavigate()
+  const { isDemo } = useAuthStore()
 
-  const company = MOCK_COMPANIES.find((c) => c.id === companyId) || MOCK_COMPANIES[0]
-  const calls = MOCK_CALLS.filter((c) => c.companyId === company.id)
-  const memories = MOCK_MEMORY_ENTRIES.filter((m) => m.companyId === company.id)
-  const decision = MOCK_DECISIONS.find((d) => d.companyId === company.id)
-  const followUps = MOCK_FOLLOW_UPS.filter((f) => f.companyId === company.id)
+  // State
+  const [company, setCompany] = useState<Company | null>(null)
+  const [calls, setCalls] = useState<Call[]>([])
+  const [memories, setMemories] = useState<MemoryEntry[]>([])
+  const [followUps, setFollowUps] = useState<FollowUp[]>([])
+  const [latestDecision, setLatestDecision] = useState<LatestDecision | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  const loadData = useCallback(async () => {
+    if (!companyId) return
+    setLoading(true)
+    setError(null)
+
+    try {
+      if (isDemo) {
+        // Demo: use mock data, fall back to first company for unknown IDs
+        const mockCompany = MOCK_COMPANIES.find((c) => c.id === companyId) ?? MOCK_COMPANIES[0]
+        const mockDecision = MOCK_DECISIONS.find((d) => d.companyId === mockCompany.id)
+        setCompany(mockCompany)
+        setCalls(MOCK_CALLS.filter((c) => c.companyId === mockCompany.id))
+        setMemories(MOCK_MEMORY_ENTRIES.filter((m) => m.companyId === mockCompany.id))
+        setFollowUps(MOCK_FOLLOW_UPS.filter((f) => f.companyId === mockCompany.id))
+        if (mockDecision) {
+          setLatestDecision({
+            decisionId: mockDecision.id,
+            callId: mockDecision.callId,
+            recommendation: mockDecision.recommendation,
+            confidence: mockDecision.confidence,
+            thesisFit: mockDecision.thesisFit,
+            rationale: mockDecision.rationale,
+            createdAt: mockDecision.createdAt,
+          })
+        }
+        return
+      }
+
+      // Real user: parallel API calls
+      const [companyData, callsData, memoriesData, followUpsData, decisionData] =
+        await Promise.allSettled([
+          companiesApi.get(companyId),
+          callsApi.listByCompany(companyId),
+          memoryApi.list(companyId),
+          followUpsApi.list(companyId),
+          companiesApi.latestDecision(companyId),
+        ])
+
+      if (companyData.status === 'rejected') {
+        throw new Error('Company not found')
+      }
+      setCompany((companyData as PromiseFulfilledResult<Company>).value)
+      setCalls(callsData.status === 'fulfilled' ? callsData.value : [])
+      setMemories(memoriesData.status === 'fulfilled' ? memoriesData.value : [])
+      setFollowUps(followUpsData.status === 'fulfilled' ? followUpsData.value : [])
+      setLatestDecision(
+        decisionData.status === 'fulfilled' ? decisionData.value : null
+      )
+    } catch (err: unknown) {
+      const e = err as Error
+      setError(e.message || 'Failed to load company data.')
+    } finally {
+      setLoading(false)
+    }
+  }, [companyId, isDemo])
+
+  useEffect(() => {
+    loadData()
+  }, [loadData])
+
+  if (loading) {
+    return (
+      <div className="p-6 max-w-5xl mx-auto">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground py-20 justify-center">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Loading company…
+        </div>
+      </div>
+    )
+  }
+
+  if (error || !company) {
+    return (
+      <div className="p-6 max-w-5xl mx-auto">
+        <button
+          onClick={() => navigate('/companies')}
+          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" />
+          Back to companies
+        </button>
+        <div className="flex flex-col items-center gap-3 py-16 text-center">
+          <AlertCircle className="h-8 w-8 text-red-400/60" />
+          <p className="text-sm text-muted-foreground">{error || 'Company not found.'}</p>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={loadData}>
+              <RefreshCw className="h-3.5 w-3.5" />
+              Retry
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => navigate('/companies')}>
+              <ArrowLeft className="h-3.5 w-3.5" />
+              All companies
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  const recColor = latestDecision
+    ? (RECOMMENDATION_COLORS[latestDecision.recommendation] || 'text-muted-foreground')
+    : ''
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
@@ -48,6 +181,7 @@ export default function CompanyDetailPage() {
         </button>
       </FadeIn>
 
+      {/* Header */}
       <FadeIn delay={0.05}>
         <div className="flex items-start justify-between gap-4 mb-6">
           <div>
@@ -59,10 +193,18 @@ export default function CompanyDetailPage() {
             </div>
             <div className="flex items-center gap-3 text-sm text-muted-foreground flex-wrap">
               {company.industry && <span>{company.industry}</span>}
-              {company.stage && <><span>·</span><span className="capitalize">{company.stage}</span></>}
-              {company.totalFunding && <><span>·</span><span>{company.totalFunding} raised</span></>}
-              {company.location && <><span>·</span><span>{company.location}</span></>}
-              {company.employeeCount && <><span>·</span><span>{company.employeeCount} employees</span></>}
+              {company.stage && (
+                <><span>·</span><span className="capitalize">{company.stage}</span></>
+              )}
+              {company.totalFunding && (
+                <><span>·</span><span>{company.totalFunding} raised</span></>
+              )}
+              {company.location && (
+                <><span>·</span><span>{company.location}</span></>
+              )}
+              {company.employeeCount && (
+                <><span>·</span><span>{company.employeeCount} employees</span></>
+              )}
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
@@ -74,7 +216,11 @@ export default function CompanyDetailPage() {
                 </a>
               </Button>
             )}
-            <Button variant="conviction" size="sm" onClick={() => navigate('/calls/new')}>
+            <Button
+              variant="conviction"
+              size="sm"
+              onClick={() => navigate('/calls/new')}
+            >
               <PhoneCall className="h-3.5 w-3.5" />
               Log call
             </Button>
@@ -82,8 +228,8 @@ export default function CompanyDetailPage() {
         </div>
       </FadeIn>
 
-      {/* Decision summary if exists */}
-      {decision && (
+      {/* Latest Decision summary */}
+      {latestDecision && (
         <FadeIn delay={0.1}>
           <div className="mb-6 rounded-lg border border-conviction-500/20 bg-conviction-500/5 p-4">
             <div className="flex items-center justify-between mb-3">
@@ -95,7 +241,9 @@ export default function CompanyDetailPage() {
                 variant="ghost-muted"
                 size="sm"
                 className="text-xs h-7"
-                onClick={() => navigate(`/calls/call_04/intelligence`)}
+                onClick={() =>
+                  navigate(`/calls/${latestDecision.callId}/intelligence`)
+                }
               >
                 Full analysis
                 <ChevronRight className="h-3 w-3" />
@@ -104,19 +252,29 @@ export default function CompanyDetailPage() {
             <div className="grid grid-cols-3 gap-3">
               <div>
                 <p className="text-2xs text-muted-foreground mb-1">Recommendation</p>
-                <p className="text-sm font-semibold text-emerald-400 capitalize">
-                  {decision.recommendation.replace('_', ' ')}
+                <p className={cn('text-sm font-semibold capitalize', recColor)}>
+                  {RECOMMENDATION_LABELS[latestDecision.recommendation] ||
+                    latestDecision.recommendation.replace(/_/g, ' ')}
                 </p>
               </div>
               <div>
                 <p className="text-2xs text-muted-foreground mb-1">Confidence</p>
-                <p className="text-sm font-semibold text-conviction-300">{decision.confidence}%</p>
+                <p className="text-sm font-semibold text-conviction-300">
+                  {latestDecision.confidence}%
+                </p>
               </div>
               <div>
-                <p className="text-2xs text-muted-foreground mb-1">Thesis Fit</p>
-                <p className="text-sm font-medium text-foreground line-clamp-1">High</p>
+                <p className="text-2xs text-muted-foreground mb-1">Date</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  {formatDate(latestDecision.createdAt)}
+                </p>
               </div>
             </div>
+            {latestDecision.rationale && (
+              <p className="mt-3 text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                {latestDecision.rationale}
+              </p>
+            )}
           </div>
         </FadeIn>
       )}
@@ -125,86 +283,113 @@ export default function CompanyDetailPage() {
         <FadeIn delay={0.12}>
           <TabsList className="mb-6">
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="calls">Calls ({calls.length})</TabsTrigger>
-            <TabsTrigger value="memory">Memory ({memories.length})</TabsTrigger>
-            <TabsTrigger value="followups">Follow-Ups ({followUps.length})</TabsTrigger>
+            <TabsTrigger value="calls">
+              Calls {calls.length > 0 && `(${calls.length})`}
+            </TabsTrigger>
+            <TabsTrigger value="memory">
+              Memory {memories.length > 0 && `(${memories.length})`}
+            </TabsTrigger>
+            <TabsTrigger value="followups">
+              Follow-Ups {followUps.length > 0 && `(${followUps.length})`}
+            </TabsTrigger>
           </TabsList>
         </FadeIn>
 
+        {/* ── Overview ──────────────────────────────────────────────────── */}
         <TabsContent value="overview">
           <FadeInStagger staggerDelay={0.06}>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-              {/* Description */}
               <FadeInItem>
                 <div className="rounded-lg border border-border bg-card p-5">
                   <h3 className="text-sm font-semibold text-foreground mb-3">Business Overview</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    {company.description || 'No description yet.'}
+                    {company.description || 'No description yet. Log a call to generate AI insights.'}
                   </p>
                 </div>
               </FadeInItem>
 
-              {/* Founders */}
               <FadeInItem>
                 <div className="rounded-lg border border-border bg-card p-5">
                   <h3 className="text-sm font-semibold text-foreground mb-3">Founder Team</h3>
-                  <div className="space-y-3">
-                    {company.founders.map((founder) => (
-                      <div key={founder.name} className="flex items-start gap-3">
-                        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-conviction-500/15 text-conviction-300 text-xs font-semibold">
-                          {founder.name[0]}
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm font-medium text-foreground">{founder.name}</span>
-                            <span className="text-xs text-muted-foreground">{founder.role}</span>
+                  {company.founders.length > 0 ? (
+                    <div className="space-y-3">
+                      {company.founders.map((founder) => (
+                        <div key={founder.name} className="flex items-start gap-3">
+                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-conviction-500/15 text-conviction-300 text-xs font-semibold">
+                            {founder.name[0]}
                           </div>
-                          {founder.background && (
-                            <p className="text-xs text-muted-foreground mt-0.5">{founder.background}</p>
-                          )}
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium text-foreground">
+                                {founder.name}
+                              </span>
+                              <span className="text-xs text-muted-foreground">{founder.role}</span>
+                            </div>
+                            {founder.background && (
+                              <p className="text-xs text-muted-foreground mt-0.5">
+                                {founder.background}
+                              </p>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">
+                      No founder info yet. Add founders or generate intelligence from a call.
+                    </p>
+                  )}
                 </div>
               </FadeInItem>
 
-              {/* Strengths */}
-              {decision && (
-                <FadeInItem>
-                  <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-5">
-                    <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                      Strengths
-                    </h3>
-                    <ul className="space-y-2">
-                      {decision.strengths.map((s) => (
-                        <li key={s} className="flex items-start gap-2 text-sm text-foreground">
-                          <div className="mt-1.5 h-1.5 w-1.5 rounded-full bg-emerald-400 flex-shrink-0" />
-                          {s}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </FadeInItem>
+              {/* Strengths from decision */}
+              {latestDecision && (
+                <>
+                  {/* No strengths/concerns here since we only have the summary */}
+                  <FadeInItem className="lg:col-span-2">
+                    <div className="rounded-lg border border-conviction-500/20 bg-conviction-500/5 p-5">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                          <Sparkles className="h-4 w-4 text-conviction-400" />
+                          Investment Thesis Fit
+                        </h3>
+                        <Button
+                          variant="ghost-muted"
+                          size="sm"
+                          className="text-xs h-7"
+                          onClick={() =>
+                            navigate(`/calls/${latestDecision.callId}/intelligence`)
+                          }
+                        >
+                          View full analysis
+                          <ChevronRight className="h-3 w-3" />
+                        </Button>
+                      </div>
+                      <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
+                        {latestDecision.thesisFit || 'Thesis analysis available in the full intelligence report.'}
+                      </p>
+                    </div>
+                  </FadeInItem>
+                </>
               )}
 
-              {/* Concerns */}
-              {decision && (
-                <FadeInItem>
-                  <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-5">
-                    <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-                      <AlertTriangle className="h-4 w-4 text-amber-400" />
-                      Concerns
-                    </h3>
-                    <ul className="space-y-2">
-                      {decision.concerns.map((c) => (
-                        <li key={c} className="flex items-start gap-2 text-sm text-foreground">
-                          <div className="mt-1.5 h-1.5 w-1.5 rounded-full bg-amber-400 flex-shrink-0" />
-                          {c}
-                        </li>
-                      ))}
-                    </ul>
+              {/* Empty state when no calls */}
+              {!latestDecision && calls.length === 0 && (
+                <FadeInItem className="lg:col-span-2">
+                  <div className="rounded-lg border border-dashed border-border p-8 flex flex-col items-center gap-4 text-center">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-conviction-500/10">
+                      <Sparkles className="h-5 w-5 text-conviction-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-foreground">No intelligence yet</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Log a call to generate AI-powered deal intelligence.
+                      </p>
+                    </div>
+                    <Button variant="conviction" size="sm" onClick={() => navigate('/calls/new')}>
+                      <Plus className="h-3.5 w-3.5" />
+                      Log first call
+                    </Button>
                   </div>
                 </FadeInItem>
               )}
@@ -212,13 +397,18 @@ export default function CompanyDetailPage() {
           </FadeInStagger>
         </TabsContent>
 
+        {/* ── Calls ─────────────────────────────────────────────────────── */}
         <TabsContent value="calls">
           <div className="space-y-3">
             {calls.length === 0 ? (
               <div className="text-center py-16 text-sm text-muted-foreground">
                 No calls logged yet.
                 <br />
-                <Button variant="link" className="mt-2 text-sm" onClick={() => navigate('/calls/new')}>
+                <Button
+                  variant="link"
+                  className="mt-2 text-sm"
+                  onClick={() => navigate('/calls/new')}
+                >
                   Log first call →
                 </Button>
               </div>
@@ -227,19 +417,36 @@ export default function CompanyDetailPage() {
                 <motion.div
                   key={call.id}
                   whileHover={{ y: -1 }}
-                  onClick={() => call.decision && navigate(`/calls/${call.id}/intelligence`)}
+                  onClick={() =>
+                    call.status === 'completed'
+                      ? navigate(`/calls/${call.id}/intelligence`)
+                      : undefined
+                  }
                   className={cn(
                     'rounded-lg border border-border bg-card p-4 transition-all duration-150',
-                    call.decision && 'cursor-pointer hover:shadow-card-hover hover:border-border/80'
+                    call.status === 'completed' &&
+                      'cursor-pointer hover:shadow-card-hover hover:border-border/80'
                   )}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-sm font-medium text-foreground truncate">{call.title}</span>
-                        {call.decision && (
+                        <span className="text-sm font-medium text-foreground truncate">
+                          {call.title}
+                        </span>
+                        {call.status === 'completed' && (
                           <Badge variant="success" className="text-2xs">
                             Analysed
+                          </Badge>
+                        )}
+                        {call.status === 'processing' && (
+                          <Badge className="text-2xs bg-blue-500/10 border-blue-500/20 text-blue-400">
+                            Processing
+                          </Badge>
+                        )}
+                        {call.status === 'failed' && (
+                          <Badge variant="destructive" className="text-2xs">
+                            Failed
                           </Badge>
                         )}
                       </div>
@@ -254,8 +461,8 @@ export default function CompanyDetailPage() {
                         </p>
                       )}
                     </div>
-                    {call.decision && (
-                      <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />
+                    {call.status === 'completed' && (
+                      <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
                     )}
                   </div>
                 </motion.div>
@@ -264,18 +471,23 @@ export default function CompanyDetailPage() {
           </div>
         </TabsContent>
 
+        {/* ── Memory ────────────────────────────────────────────────────── */}
         <TabsContent value="memory">
           <div className="space-y-3">
             {memories.length === 0 ? (
-              <div className="text-center py-16 text-sm text-muted-foreground">No memory entries yet.</div>
+              <div className="text-center py-16 text-sm text-muted-foreground">
+                No memory entries yet. Process a call to generate insights.
+              </div>
             ) : (
               memories.map((mem) => (
                 <div key={mem.id} className="rounded-lg border border-border bg-card p-4">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                      {mem.type.replace('_', ' ')}
+                      {mem.type.replace(/_/g, ' ')}
                     </span>
-                    <span className="text-xs text-muted-foreground">{formatDate(mem.occurredAt)}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {formatDate(mem.occurredAt)}
+                    </span>
                   </div>
                   <p className="text-sm font-medium text-foreground mb-1">{mem.title}</p>
                   <p className="text-xs text-muted-foreground leading-relaxed">{mem.summary}</p>
@@ -285,24 +497,30 @@ export default function CompanyDetailPage() {
           </div>
         </TabsContent>
 
+        {/* ── Follow-Ups ────────────────────────────────────────────────── */}
         <TabsContent value="followups">
           <div className="space-y-3">
             {followUps.length === 0 ? (
-              <div className="text-center py-16 text-sm text-muted-foreground">No follow-ups.</div>
+              <div className="text-center py-16 text-sm text-muted-foreground">
+                No follow-ups yet. Process a call to generate action items.
+              </div>
             ) : (
               followUps.map((fu) => (
                 <div key={fu.id} className="rounded-lg border border-border bg-card p-4">
                   <div className="flex items-start gap-3">
                     <div
                       className={cn(
-                        'mt-1 h-2 w-2 rounded-full flex-shrink-0',
-                        fu.status === 'overdue' ? 'bg-red-400' :
-                        fu.status === 'completed' ? 'bg-emerald-400' : 'bg-amber-400'
+                        'mt-1 h-2 w-2 rounded-full shrink-0',
+                        fu.status === 'overdue'
+                          ? 'bg-red-400'
+                          : fu.status === 'completed'
+                          ? 'bg-emerald-400'
+                          : 'bg-amber-400'
                       )}
                     />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-foreground">{fu.action}</p>
-                      <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground flex-wrap">
                         <span className="capitalize font-medium">{fu.priority} priority</span>
                         {fu.dueDate && (
                           <>
@@ -314,7 +532,13 @@ export default function CompanyDetailPage() {
                           </>
                         )}
                         <Badge
-                          variant={fu.status === 'overdue' ? 'destructive' : fu.status === 'completed' ? 'success' : 'warning'}
+                          variant={
+                            fu.status === 'overdue'
+                              ? 'destructive'
+                              : fu.status === 'completed'
+                              ? 'success'
+                              : 'warning'
+                          }
                           className="text-2xs capitalize"
                         >
                           {fu.status}

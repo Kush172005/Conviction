@@ -3,7 +3,7 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from app.dependencies import get_db, get_current_user
-from app.repositories import CompanyRepository, InvestorProfileRepository
+from app.repositories import CompanyRepository, InvestorProfileRepository, DecisionRepository
 from app.schemas.company import CompanyCreate, CompanyUpdate, CompanyResponse
 from app.services.intelligence_service import generate_placeholder_intelligence
 
@@ -71,6 +71,34 @@ async def update_company(
         await repo.update_one(company_id, updates)
         company = await repo.find_by_id_for_user(company_id, current_user["id"])
     return CompanyResponse(**company)
+
+
+@router.get("/{company_id}/latest-decision")
+async def get_company_latest_decision(
+    company_id: str,
+    current_user: dict = Depends(get_current_user),
+    db: AsyncIOMotorDatabase = Depends(get_db),
+):
+    """Return the latest decision for this company (for the company detail page summary)."""
+    company_repo = CompanyRepository(db)
+    company = await company_repo.find_by_id_for_user(company_id, current_user["id"])
+    if not company:
+        raise HTTPException(status_code=404, detail="Company not found")
+
+    decision_repo = DecisionRepository(db)
+    decision = await decision_repo.find_latest_by_company(company_id)
+    if not decision or decision.get("user_id") != current_user["id"]:
+        return None
+
+    return {
+        "decision_id": decision["id"],
+        "call_id": decision.get("call_id"),
+        "recommendation": decision.get("recommendation"),
+        "confidence": decision.get("confidence"),
+        "thesis_fit": decision.get("thesis_fit"),
+        "rationale": decision.get("rationale"),
+        "created_at": decision.get("created_at"),
+    }
 
 
 @router.post("/{company_id}/intelligence")

@@ -1,5 +1,7 @@
 export { api, ApiError } from './client'
 export { authApi, mapBackendUser } from './auth'
-export { companiesApi } from './companies'
+export { companiesApi, mapCompany } from './companies'
 export { callsApi } from './calls'
 export { dashboardApi } from './dashboard'
+export { memoryApi } from './memory'
+export { followUpsApi } from './followUps'

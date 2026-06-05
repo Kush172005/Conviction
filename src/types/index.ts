@@ -148,6 +148,53 @@ export interface RecentActivity {
   timestamp: string
 }
 
+// ─── Call Intelligence (Post-Call Brain Dump) ────────────────────────────────
+
+export interface CallIntelligenceData {
+  // Call metadata
+  callId: string
+  companyId: string
+  companyName: string
+  callTitle: string
+  inputMode: CallInputMode
+  occurredAt: string
+  transcriptText?: string
+
+  // AI decision output
+  decisionId: string
+  recommendation: Recommendation
+  confidence: number
+  rationale: string
+  dealSummary?: string
+  founderAssessment?: string
+  businessOverview?: string
+  marketAssessment?: string
+  thesisFit: string
+  strengths: string[]
+  concerns: string[]
+  opportunities: string[]
+  risks: string[]
+  openQuestions: string[]
+  keyMetrics?: Record<string, string>
+  suggestedFollowUpDate?: string
+  draftEmail?: string
+  decisionCreatedAt: string
+
+  // Related records
+  followUps: FollowUp[]
+  followUpActions: string[]  // convenience: action strings from followUps
+
+  // Provider activity
+  providerLog: Array<{
+    provider: string
+    action: string
+    status: string
+    detail: string
+    responsePreview?: string
+    at?: string
+  }>
+}
+
 // ─── Startup Intelligence ─────────────────────────────────────────────────────
 
 export type SIReportStatus = 'queued' | 'researching' | 'analyzing' | 'completed' | 'failed'

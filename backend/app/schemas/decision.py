@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 from pydantic import BaseModel
 from app.models.decision import Recommendation
 
@@ -19,6 +19,10 @@ class DecisionResponse(BaseModel):
     founder_assessment: Optional[str] = None
     business_overview: Optional[str] = None
     market_assessment: Optional[str] = None
+    opportunities: List[str] = []
+    risks: List[str] = []
+    open_questions: List[str] = []
+    key_metrics: Optional[Dict[str, Any]] = None
     suggested_follow_up_date: Optional[datetime] = None
     draft_email: Optional[str] = None
     created_at: datetime

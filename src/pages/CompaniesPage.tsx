@@ -1,14 +1,16 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Plus,
   Search,
   Building2,
-  Globe,
   ArrowRight,
   PhoneCall,
-  ExternalLink,
+  X,
+  AlertCircle,
+  Loader2,
+  RefreshCw,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -18,6 +20,8 @@ import PageHeader from '@/components/layout/PageHeader'
 import FadeIn, { FadeInStagger, FadeInItem } from '@/components/motion/FadeIn'
 import { MOCK_COMPANIES } from '@/mocks/data'
 import { cn, formatRelativeTime, STATUS_COLORS } from '@/lib/utils'
+import { useAuthStore } from '@/store'
+import { companiesApi } from '@/services/api/companies'
 import type { Company, CompanyStatus } from '@/types'
 
 const STATUS_LABELS: Record<CompanyStatus, string> = {
@@ -29,6 +33,8 @@ const STATUS_LABELS: Record<CompanyStatus, string> = {
 }
 
 const ALL_STATUSES: CompanyStatus[] = ['active', 'tracking', 'passed', 'portfolio', 'archived']
+
+// ─── Company Card ─────────────────────────────────────────────────────────────
 
 function CompanyCard({ company }: { company: Company }) {
   const navigate = useNavigate()
@@ -48,7 +54,7 @@ function CompanyCard({ company }: { company: Company }) {
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="min-w-0">
             <h3 className="font-semibold text-foreground truncate">{company.name}</h3>
-            <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+            <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground flex-wrap">
               {company.industry && <span>{company.industry}</span>}
               {company.stage && (
                 <>
@@ -78,7 +84,7 @@ function CompanyCard({ company }: { company: Company }) {
         )}
 
         {company.founders.length > 0 && (
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center gap-2 mb-3 flex-wrap">
             {company.founders.map((founder) => (
               <div
                 key={founder.name}
@@ -113,18 +119,47 @@ function CompanyCard({ company }: { company: Company }) {
   )
 }
 
-function NewCompanyModal({ onClose }: { onClose: () => void }) {
+// ─── New Company Modal ────────────────────────────────────────────────────────
+
+function NewCompanyModal({
+  onClose,
+  onCreated,
+}: {
+  onClose: () => void
+  onCreated: (company: Company) => void
+}) {
   const navigate = useNavigate()
   const [name, setName] = useState('')
   const [website, setWebsite] = useState('')
+  const [industry, setIndustry] = useState('')
   const [isCreating, setIsCreating] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const { isDemo } = useAuthStore()
 
   async function handleCreate() {
     if (!name.trim()) return
     setIsCreating(true)
-    await new Promise((r) => setTimeout(r, 600))
-    onClose()
-    navigate(`/companies/co_new`)
+    setError(null)
+    try {
+      if (isDemo) {
+        // Demo: fake delay then navigate to first mock company
+        await new Promise((r) => setTimeout(r, 500))
+        onClose()
+        navigate(`/companies/${MOCK_COMPANIES[0].id}`)
+        return
+      }
+      const company = await companiesApi.create({
+        name: name.trim(),
+        website: website.trim() || undefined,
+        industry: industry.trim() || undefined,
+      })
+      onCreated(company)
+      navigate(`/companies/${company.id}`)
+    } catch {
+      setError('Failed to create company. Please try again.')
+    } finally {
+      setIsCreating(false)
+    }
   }
 
   return (
@@ -143,21 +178,25 @@ function NewCompanyModal({ onClose }: { onClose: () => void }) {
         onClick={(e) => e.stopPropagation()}
         className="w-full max-w-sm rounded-xl border border-border bg-card shadow-2xl p-6 space-y-5"
       >
-        <div>
-          <h2 className="font-semibold text-foreground">Add a company</h2>
-          <p className="text-sm text-muted-foreground mt-1">
-            Start tracking a new deal.
-          </p>
+        <div className="flex items-start justify-between">
+          <div>
+            <h2 className="font-semibold text-foreground">Add a company</h2>
+            <p className="text-sm text-muted-foreground mt-1">Start tracking a new deal.</p>
+          </div>
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
+            <X className="h-4 w-4" />
+          </button>
         </div>
 
         <div className="space-y-3">
           <div className="space-y-1.5">
-            <Label>Company name</Label>
+            <Label>Company name *</Label>
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Veridian AI"
               autoFocus
+              onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
             />
           </div>
           <div className="space-y-1.5">
@@ -168,17 +207,35 @@ function NewCompanyModal({ onClose }: { onClose: () => void }) {
               placeholder="https://veridian.ai"
             />
           </div>
+          <div className="space-y-1.5">
+            <Label>Industry <span className="text-muted-foreground">(optional)</span></Label>
+            <Input
+              value={industry}
+              onChange={(e) => setIndustry(e.target.value)}
+              placeholder="AI Infrastructure, B2B SaaS…"
+            />
+          </div>
         </div>
 
+        {error && (
+          <p className="text-xs text-red-400 flex items-center gap-1.5">
+            <AlertCircle className="h-3.5 w-3.5" />
+            {error}
+          </p>
+        )}
+
         <div className="flex gap-2">
-          <Button variant="outline" className="flex-1" onClick={onClose}>Cancel</Button>
+          <Button variant="outline" className="flex-1" onClick={onClose}>
+            Cancel
+          </Button>
           <Button
+            variant="conviction"
             className="flex-1"
             onClick={handleCreate}
             disabled={!name.trim() || isCreating}
           >
             {isCreating ? (
-              <div className="h-4 w-4 rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               <>
                 Create
@@ -192,12 +249,44 @@ function NewCompanyModal({ onClose }: { onClose: () => void }) {
   )
 }
 
+// ─── Main Page ────────────────────────────────────────────────────────────────
+
 export default function CompaniesPage() {
+  const { isDemo } = useAuthStore()
+  const [companies, setCompanies] = useState<Company[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const [filterStatus, setFilterStatus] = useState<CompanyStatus | 'all'>('all')
   const [showNewModal, setShowNewModal] = useState(false)
 
-  const filtered = MOCK_COMPANIES.filter((c) => {
+  useEffect(() => {
+    if (isDemo) {
+      setCompanies(MOCK_COMPANIES)
+      setLoading(false)
+      return
+    }
+    loadCompanies()
+  }, [isDemo])
+
+  async function loadCompanies() {
+    setLoading(true)
+    setError(null)
+    try {
+      const list = await companiesApi.list()
+      setCompanies(list)
+    } catch {
+      setError('Failed to load companies.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  function handleCompanyCreated(company: Company) {
+    setCompanies((prev) => [company, ...prev])
+  }
+
+  const filtered = companies.filter((c) => {
     const matchSearch =
       !search ||
       c.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -211,7 +300,11 @@ export default function CompaniesPage() {
       <FadeIn>
         <PageHeader
           title="Companies"
-          description={`${MOCK_COMPANIES.length} companies in your pipeline.`}
+          description={
+            loading
+              ? 'Loading your pipeline…'
+              : `${companies.length} ${companies.length === 1 ? 'company' : 'companies'} in your pipeline.`
+          }
           actions={
             <Button variant="conviction" size="sm" onClick={() => setShowNewModal(true)}>
               <Plus className="h-3.5 w-3.5" />
@@ -263,32 +356,74 @@ export default function CompaniesPage() {
         </div>
       </FadeIn>
 
+      {/* Loading state */}
+      {loading && (
+        <div className="flex items-center gap-2 text-sm text-muted-foreground py-12 justify-center">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Loading companies…
+        </div>
+      )}
+
+      {/* Error state */}
+      {error && !loading && (
+        <div className="flex flex-col items-center gap-3 py-12">
+          <AlertCircle className="h-8 w-8 text-red-400/60" />
+          <p className="text-sm text-muted-foreground">{error}</p>
+          <Button variant="outline" size="sm" onClick={loadCompanies}>
+            <RefreshCw className="h-3.5 w-3.5" />
+            Retry
+          </Button>
+        </div>
+      )}
+
       {/* Grid */}
-      <motion.div layout className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        <AnimatePresence mode="popLayout">
-          {filtered.map((company) => (
-            <CompanyCard key={company.id} company={company} />
-          ))}
-          {filtered.length === 0 && (
-            <motion.div
-              key="empty"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="col-span-full flex flex-col items-center justify-center py-20 text-center"
-            >
-              <Building2 className="h-10 w-10 text-muted-foreground/40 mb-4" />
-              <p className="text-sm font-medium text-foreground">No companies found</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                {search ? 'Try a different search.' : 'Add your first company to get started.'}
-              </p>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
+      {!loading && !error && (
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          <AnimatePresence mode="popLayout">
+            {filtered.map((company) => (
+              <CompanyCard key={company.id} company={company} />
+            ))}
+            {filtered.length === 0 && (
+              <motion.div
+                key="empty"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="col-span-full flex flex-col items-center justify-center py-20 text-center"
+              >
+                <Building2 className="h-10 w-10 text-muted-foreground/40 mb-4" />
+                <p className="text-sm font-medium text-foreground">
+                  {companies.length === 0 ? 'No companies yet' : 'No companies found'}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {companies.length === 0
+                    ? 'Add your first company to start tracking deals.'
+                    : search
+                    ? 'Try a different search or filter.'
+                    : 'Adjust your filter to see more companies.'}
+                </p>
+                {companies.length === 0 && (
+                  <Button
+                    variant="conviction"
+                    size="sm"
+                    className="mt-4"
+                    onClick={() => setShowNewModal(true)}
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                    Add first company
+                  </Button>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      )}
 
       <AnimatePresence>
         {showNewModal && (
-          <NewCompanyModal onClose={() => setShowNewModal(false)} />
+          <NewCompanyModal
+            onClose={() => setShowNewModal(false)}
+            onCreated={handleCompanyCreated}
+          />
         )}
       </AnimatePresence>
     </div>
