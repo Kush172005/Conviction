@@ -23,14 +23,14 @@ export default function AuthBootstrap({ children }: AuthBootstrapProps) {
         })
       }
 
-      const { token, login, logout } = useAuthStore.getState()
+      const { token, isDemo, login, logout } = useAuthStore.getState()
 
       if (token) {
         try {
           useAuthStore.setState({ token })
           const user = await authApi.getMe()
           if (!cancelled) {
-            login(mapBackendUser(user), token)
+            login(mapBackendUser(user), token, isDemo)
           }
         } catch {
           if (!cancelled) logout()

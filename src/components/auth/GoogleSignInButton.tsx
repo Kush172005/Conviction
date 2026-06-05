@@ -118,9 +118,9 @@ export default function GoogleSignInButton({
           containerRef.current.innerHTML = ''
           window.google.accounts.id.renderButton(containerRef.current, {
             type: 'standard',
-            theme: 'outline',
+            theme: 'filled_black',
             size: 'large',
-            width: 384,
+            width: 336,
             text: 'continue_with',
             shape: 'rectangular',
           })

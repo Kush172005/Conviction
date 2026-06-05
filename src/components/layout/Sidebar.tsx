@@ -30,6 +30,44 @@ const NAV_ITEMS = [
   { href: '/settings', icon: Settings, label: 'Settings' },
 ]
 
+/** Shared 40×40 hit target for collapsed rail — icon centered via inline-flex */
+const COLLAPSED_BTN =
+  'inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl [&>svg]:block [&>svg]:shrink-0'
+
+function CollapsedNavItem({
+  href,
+  label,
+  icon: Icon,
+}: {
+  href: string
+  label: string
+  icon: React.ComponentType<{ className?: string }>
+}) {
+  return (
+    <li className="flex w-full justify-center">
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <NavLink
+            to={href}
+            className={({ isActive }) =>
+              cn(
+                COLLAPSED_BTN,
+                'transition-all duration-150',
+                isActive
+                  ? 'bg-secondary text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:bg-secondary/60 hover:text-foreground'
+              )
+            }
+          >
+            <Icon className="h-[18px] w-[18px]" />
+          </NavLink>
+        </TooltipTrigger>
+        <TooltipContent side="right">{label}</TooltipContent>
+      </Tooltip>
+    </li>
+  )
+}
+
 export default function Sidebar() {
   const user = useAuthStore((s) => s.user)
   const isDemo = useAuthStore((s) => s.isDemo)
@@ -39,12 +77,20 @@ export default function Sidebar() {
   return (
     <TooltipProvider delayDuration={0}>
       <motion.aside
-        animate={{ width: sidebarCollapsed ? 64 : 220 }}
+        animate={{ width: sidebarCollapsed ? 88 : 220 }}
         transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-        className="relative flex h-full flex-col border-r border-border bg-surface-1 flex-shrink-0"
+        className={cn(
+          'relative flex h-full flex-col border-r border-border bg-surface-1 flex-shrink-0',
+          sidebarCollapsed && 'items-center'
+        )}
       >
         {/* Logo */}
-        <div className="flex h-14 items-center px-4 border-b border-border flex-shrink-0">
+        <div
+          className={cn(
+            'flex h-16 shrink-0 items-center border-b border-border',
+            sidebarCollapsed ? 'w-full justify-center px-0' : 'w-full px-4'
+          )}
+        >
           <AnimatePresence mode="wait">
             {!sidebarCollapsed ? (
               <motion.div
@@ -53,12 +99,12 @@ export default function Sidebar() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.15 }}
-                className="flex items-center gap-2.5 min-w-0"
+                className="flex min-w-0 items-center gap-2.5"
               >
-                <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-conviction flex-shrink-0">
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-gradient-conviction">
                   <TrendingUp className="h-4 w-4 text-white" />
                 </div>
-                <span className="font-semibold text-foreground tracking-tight truncate">
+                <span className="truncate font-semibold tracking-tight text-foreground">
                   Conviction
                 </span>
               </motion.div>
@@ -69,16 +115,21 @@ export default function Sidebar() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.15 }}
-                className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-conviction mx-auto"
+                className={cn(COLLAPSED_BTN, 'bg-gradient-conviction shadow-lg shadow-primary/15')}
               >
-                <TrendingUp className="h-4 w-4 text-white" />
+                <TrendingUp className="h-[18px] w-[18px] text-white" />
               </motion.div>
             )}
           </AnimatePresence>
         </div>
 
         {/* New Call CTA */}
-        <div className={cn('px-3 pt-3 pb-1 flex-shrink-0')}>
+        <div
+          className={cn(
+            'w-full shrink-0',
+            sidebarCollapsed ? 'flex justify-center px-0 pt-4 pb-2' : 'px-3 pt-3 pb-1'
+          )}
+        >
           {!sidebarCollapsed ? (
             <Button
               variant="conviction"
@@ -94,11 +145,11 @@ export default function Sidebar() {
               <TooltipTrigger asChild>
                 <Button
                   variant="conviction"
-                  size="icon-sm"
-                  className="w-full"
+                  size="icon"
+                  className={cn(COLLAPSED_BTN, 'shadow-lg shadow-primary/10 [&_svg]:!size-4')}
                   onClick={() => navigate('/calls/new')}
                 >
-                  <Plus className="h-3.5 w-3.5" />
+                  <Plus className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right">Log Call</TooltipContent>
@@ -107,62 +158,61 @@ export default function Sidebar() {
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 overflow-y-auto overflow-x-hidden thin-scrollbar px-2 py-2 space-y-0.5">
-          {NAV_ITEMS.map((item) => {
-            const Icon = item.icon
-            if (sidebarCollapsed) {
-              return (
-                <Tooltip key={item.href}>
-                  <TooltipTrigger asChild>
+        <nav
+          className={cn(
+            'thin-scrollbar flex-1 overflow-x-hidden overflow-y-auto',
+            sidebarCollapsed ? 'w-full px-0 py-1' : 'px-2 py-2'
+          )}
+        >
+          {sidebarCollapsed ? (
+            <ul className="flex w-full flex-col items-center gap-1.5">
+              {NAV_ITEMS.map((item) => (
+                <CollapsedNavItem key={item.href} {...item} />
+              ))}
+            </ul>
+          ) : (
+            <ul className="space-y-0.5">
+              {NAV_ITEMS.map((item) => {
+                const Icon = item.icon
+                return (
+                  <li key={item.href}>
                     <NavLink
                       to={item.href}
                       className={({ isActive }) =>
                         cn(
-                          'flex h-9 w-full items-center justify-center rounded-md text-sm transition-all duration-100',
+                          'flex h-9 w-full items-center gap-2.5 rounded-md px-3 text-sm transition-all duration-100',
                           isActive
-                            ? 'bg-secondary text-foreground'
+                            ? 'bg-secondary font-medium text-foreground'
                             : 'text-muted-foreground hover:bg-secondary/60 hover:text-foreground'
                         )
                       }
                     >
-                      <Icon className="h-4 w-4" />
+                      <Icon className="h-4 w-4 shrink-0" />
+                      <motion.span
+                        initial={false}
+                        animate={{ opacity: 1 }}
+                        className="truncate"
+                      >
+                        {item.label}
+                      </motion.span>
                     </NavLink>
-                  </TooltipTrigger>
-                  <TooltipContent side="right">{item.label}</TooltipContent>
-                </Tooltip>
-              )
-            }
-            return (
-              <NavLink
-                key={item.href}
-                to={item.href}
-                className={({ isActive }) =>
-                  cn(
-                    'flex h-9 w-full items-center gap-2.5 rounded-md px-3 text-sm transition-all duration-100',
-                    isActive
-                      ? 'bg-secondary text-foreground font-medium'
-                      : 'text-muted-foreground hover:bg-secondary/60 hover:text-foreground'
-                  )
-                }
-              >
-                <Icon className="h-4 w-4 flex-shrink-0" />
-                <motion.span
-                  initial={false}
-                  animate={{ opacity: 1 }}
-                  className="truncate"
-                >
-                  {item.label}
-                </motion.span>
-              </NavLink>
-            )
-          })}
+                  </li>
+                )
+              })}
+            </ul>
+          )}
         </nav>
 
         {/* User */}
-        <div className={cn('border-t border-border p-3 flex-shrink-0 space-y-1')}>
+        <div
+          className={cn(
+            'w-full shrink-0 space-y-1 border-t border-border',
+            sidebarCollapsed ? 'flex justify-center p-4' : 'p-3'
+          )}
+        >
           {isDemo && !sidebarCollapsed && (
             <div className="px-2 pb-1">
-              <Badge className="text-2xs bg-amber-500/15 text-amber-400 border-amber-500/30 w-full justify-center">
+              <Badge className="text-2xs w-full justify-center border-amber-500/30 bg-amber-500/15 text-amber-400">
                 Demo workspace
               </Badge>
             </div>
@@ -170,14 +220,16 @@ export default function Sidebar() {
           {user && (
             <div
               className={cn(
-                'flex items-center gap-2.5 rounded-md px-2 py-1.5 cursor-pointer hover:bg-secondary/60 transition-colors',
-                sidebarCollapsed && 'justify-center px-0'
+                'cursor-pointer rounded-md transition-colors hover:bg-secondary/60',
+                sidebarCollapsed
+                  ? 'flex h-10 w-10 items-center justify-center rounded-xl p-0'
+                  : 'flex items-center gap-2.5 px-2 py-1.5'
               )}
               onClick={() => navigate('/settings')}
             >
-              <Avatar className="h-7 w-7 flex-shrink-0">
+              <Avatar className={cn('shrink-0', sidebarCollapsed ? 'h-8 w-8' : 'h-7 w-7')}>
                 <AvatarImage src={user.avatar} />
-                <AvatarFallback className="text-xs bg-primary/20 text-primary">
+                <AvatarFallback className="bg-primary/20 text-xs text-primary">
                   {getInitials(user.name)}
                 </AvatarFallback>
               </Avatar>
@@ -187,8 +239,8 @@ export default function Sidebar() {
                   animate={{ opacity: 1 }}
                   className="min-w-0"
                 >
-                  <p className="text-xs font-medium truncate text-foreground">{user.name}</p>
-                  <p className="text-2xs text-muted-foreground truncate">{user.email}</p>
+                  <p className="truncate text-xs font-medium text-foreground">{user.name}</p>
+                  <p className="truncate text-2xs text-muted-foreground">{user.email}</p>
                 </motion.div>
               )}
             </div>
@@ -197,8 +249,12 @@ export default function Sidebar() {
 
         {/* Collapse toggle */}
         <button
+          type="button"
           onClick={toggleSidebar}
-          className="absolute top-[52px] -right-3 z-20 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-sm hover:text-foreground transition-colors"
+          className={cn(
+            'absolute -right-3 z-20 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-sm ring-4 ring-background transition-colors hover:border-primary/40 hover:text-foreground',
+            sidebarCollapsed ? 'top-5' : 'top-[52px]'
+          )}
           aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {sidebarCollapsed ? (

@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, useInView } from 'framer-motion'
+import { gsap } from 'gsap'
+import { useGSAP } from '@gsap/react'
 import {
   Building2,
   PhoneCall,
@@ -70,6 +72,70 @@ const ACTIVITY_ICONS: Record<string, React.ElementType> = {
   decision: Lightbulb,
   follow_up: CheckCircle2,
   company: Building2,
+}
+
+// ─── Animated KPI card with GSAP counter ─────────────────────────────────────
+
+function AnimatedKPICard({
+  label,
+  value,
+  icon: Icon,
+  delta,
+  deltaPositive,
+  href,
+}: {
+  label: string
+  value: number
+  icon: React.ElementType
+  delta?: string
+  deltaPositive?: boolean
+  href: string
+}) {
+  const navigate = useNavigate()
+  const numRef = useRef<HTMLDivElement>(null)
+  const cardRef = useRef<HTMLDivElement>(null)
+  const isInView = useInView(cardRef, { once: true })
+
+  useGSAP(() => {
+    if (!isInView || !numRef.current) return
+    const mm = gsap.matchMedia()
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+      gsap.from(numRef.current, {
+        textContent: 0,
+        duration: 1.4,
+        ease: 'power2.out',
+        snap: { textContent: 1 },
+        delay: 0.1,
+      })
+    })
+  }, { dependencies: [isInView], scope: cardRef })
+
+  return (
+    <motion.div
+      ref={cardRef}
+      whileHover={{ y: -3 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+      onClick={() => navigate(href)}
+      className="group relative rounded-lg border border-border bg-card p-5 cursor-pointer overflow-hidden transition-all duration-200 hover:border-border/80 hover:shadow-card-hover"
+    >
+      <div className="absolute inset-0 bg-gradient-to-br from-conviction-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="relative z-10">
+        <div className="flex items-center justify-between mb-3">
+          <Icon className="h-4 w-4 text-muted-foreground" />
+          <ArrowRight className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+        </div>
+        <div ref={numRef} className="text-3xl font-semibold text-foreground tabular-nums">
+          {value}
+        </div>
+        <div className="text-xs text-muted-foreground mt-1">{label}</div>
+        {delta && (
+          <div className={`text-2xs mt-2 font-medium ${deltaPositive ? 'text-emerald-400' : 'text-amber-400'}`}>
+            {delta}
+          </div>
+        )}
+      </div>
+    </motion.div>
+  )
 }
 
 // ─── Empty state for new real users ─────────────────────────────────────────
@@ -240,32 +306,17 @@ function LiveDashboard({
       </FadeIn>
 
       {/* KPI Cards */}
-      <FadeInStagger staggerDelay={0.06} className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {kpiCards.map((card) => {
-          const Icon = card.icon
-          return (
-            <FadeInItem key={card.label}>
-              <motion.div
-                whileHover={{ y: -2 }}
-                transition={{ duration: 0.15 }}
-                onClick={() => navigate(card.href)}
-                className="group relative rounded-lg border border-border bg-card p-5 cursor-pointer overflow-hidden transition-all duration-200 hover:border-border/80 hover:shadow-card-hover"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-conviction-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-3">
-                    <Icon className="h-4 w-4 text-muted-foreground" />
-                    <ArrowRight className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                  <div className="text-3xl font-semibold text-foreground tabular-nums">
-                    {card.value}
-                  </div>
-                  <div className="text-xs text-muted-foreground mt-1">{card.label}</div>
-                </div>
-              </motion.div>
-            </FadeInItem>
-          )
-        })}
+      <FadeInStagger staggerDelay={0.07} className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {kpiCards.map((card) => (
+          <FadeInItem key={card.label}>
+            <AnimatedKPICard
+              label={card.label}
+              value={card.value}
+              icon={card.icon}
+              href={card.href}
+            />
+          </FadeInItem>
+        ))}
       </FadeInStagger>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -444,37 +495,19 @@ export default function DashboardPage() {
       </FadeIn>
 
       {/* KPI Cards */}
-      <FadeInStagger staggerDelay={0.06} className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {DEMO_KPI_CARDS.map((card) => {
-          const Icon = card.icon
-          return (
-            <FadeInItem key={card.label}>
-              <motion.div
-                whileHover={{ y: -2 }}
-                transition={{ duration: 0.15 }}
-                onClick={() => navigate(card.href)}
-                className="group relative rounded-lg border border-border bg-card p-5 cursor-pointer overflow-hidden transition-all duration-200 hover:border-border/80 hover:shadow-card-hover"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-conviction-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-3">
-                    <Icon className="h-4 w-4 text-muted-foreground" />
-                    <ArrowRight className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                  <div className="text-3xl font-semibold text-foreground tabular-nums">{card.value}</div>
-                  <div className="text-xs text-muted-foreground mt-1">{card.label}</div>
-                  <div
-                    className={`text-2xs mt-2 font-medium ${
-                      card.deltaPositive ? 'text-emerald-400' : 'text-amber-400'
-                    }`}
-                  >
-                    {card.delta}
-                  </div>
-                </div>
-              </motion.div>
-            </FadeInItem>
-          )
-        })}
+      <FadeInStagger staggerDelay={0.07} className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {DEMO_KPI_CARDS.map((card) => (
+          <FadeInItem key={card.label}>
+            <AnimatedKPICard
+              label={card.label}
+              value={card.value}
+              icon={card.icon}
+              delta={card.delta}
+              deltaPositive={card.deltaPositive}
+              href={card.href}
+            />
+          </FadeInItem>
+        ))}
       </FadeInStagger>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
