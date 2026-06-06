@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus,
   Search,
@@ -11,34 +11,40 @@ import {
   AlertCircle,
   Loader2,
   RefreshCw,
-} from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { Label } from '@/components/ui/label'
-import PageHeader from '@/components/layout/PageHeader'
-import FadeIn, { FadeInStagger, FadeInItem } from '@/components/motion/FadeIn'
-import { MOCK_COMPANIES } from '@/mocks/data'
-import { cn, formatRelativeTime, STATUS_COLORS } from '@/lib/utils'
-import { useAuthStore } from '@/store'
-import { companiesApi } from '@/services/api/companies'
-import { getFriendlyApiError } from '@/lib/apiErrors'
-import type { Company, CompanyStatus } from '@/types'
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
+import PageHeader from "@/components/layout/PageHeader";
+import FadeIn, { FadeInStagger, FadeInItem } from "@/components/motion/FadeIn";
+import { MOCK_COMPANIES } from "@/mocks/data";
+import { cn, formatRelativeTime, STATUS_COLORS } from "@/lib/utils";
+import { useAuthStore } from "@/store";
+import { companiesApi } from "@/services/api/companies";
+import { getFriendlyApiError } from "@/lib/apiErrors";
+import type { Company, CompanyStatus } from "@/types";
 
 const STATUS_LABELS: Record<CompanyStatus, string> = {
-  active: 'Active',
-  tracking: 'Tracking',
-  passed: 'Passed',
-  portfolio: 'Portfolio',
-  archived: 'Archived',
-}
+  active: "Active",
+  tracking: "Tracking",
+  passed: "Passed",
+  portfolio: "Portfolio",
+  archived: "Archived",
+};
 
-const ALL_STATUSES: CompanyStatus[] = ['active', 'tracking', 'passed', 'portfolio', 'archived']
+const ALL_STATUSES: CompanyStatus[] = [
+  "active",
+  "tracking",
+  "passed",
+  "portfolio",
+  "archived",
+];
 
 // ─── Company Card ─────────────────────────────────────────────────────────────
 
 function CompanyCard({ company }: { company: Company }) {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
     <motion.div
       layout
@@ -54,7 +60,9 @@ function CompanyCard({ company }: { company: Company }) {
       <div className="relative z-10">
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="min-w-0">
-            <h3 className="font-semibold text-foreground truncate">{company.name}</h3>
+            <h3 className="font-semibold text-foreground truncate">
+              {company.name}
+            </h3>
             <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground flex-wrap">
               {company.industry && <span>{company.industry}</span>}
               {company.stage && (
@@ -72,7 +80,7 @@ function CompanyCard({ company }: { company: Company }) {
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
-            <Badge className={cn('text-2xs', STATUS_COLORS[company.status])}>
+            <Badge className={cn("text-2xs", STATUS_COLORS[company.status])}>
               {STATUS_LABELS[company.status]}
             </Badge>
           </div>
@@ -94,8 +102,12 @@ function CompanyCard({ company }: { company: Company }) {
                 <div className="h-4 w-4 rounded-full bg-conviction-500/20 flex items-center justify-center text-2xs font-semibold text-conviction-300">
                   {founder.name[0]}
                 </div>
-                <span className="text-xs font-medium text-foreground">{founder.name}</span>
-                <span className="text-2xs text-muted-foreground">{founder.role}</span>
+                <span className="text-xs font-medium text-foreground">
+                  {founder.name}
+                </span>
+                <span className="text-2xs text-muted-foreground">
+                  {founder.role}
+                </span>
               </div>
             ))}
           </div>
@@ -105,7 +117,7 @@ function CompanyCard({ company }: { company: Company }) {
           <div className="flex items-center gap-4 text-2xs text-muted-foreground">
             <span className="flex items-center gap-1">
               <PhoneCall className="h-3 w-3" />
-              {company.callCount} call{company.callCount !== 1 ? 's' : ''}
+              {company.callCount} call{company.callCount !== 1 ? "s" : ""}
             </span>
             {company.lastInteractionAt && (
               <span>{formatRelativeTime(company.lastInteractionAt)}</span>
@@ -117,7 +129,7 @@ function CompanyCard({ company }: { company: Company }) {
         </div>
       </div>
     </motion.div>
-  )
+  );
 }
 
 // ─── New Company Modal ────────────────────────────────────────────────────────
@@ -126,40 +138,40 @@ function NewCompanyModal({
   onClose,
   onCreated,
 }: {
-  onClose: () => void
-  onCreated: (company: Company) => void
+  onClose: () => void;
+  onCreated: (company: Company) => void;
 }) {
-  const navigate = useNavigate()
-  const [name, setName] = useState('')
-  const [website, setWebsite] = useState('')
-  const [industry, setIndustry] = useState('')
-  const [isCreating, setIsCreating] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const { isDemo } = useAuthStore()
+  const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [website, setWebsite] = useState("");
+  const [industry, setIndustry] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { isDemo } = useAuthStore();
 
   async function handleCreate() {
-    if (!name.trim()) return
-    setIsCreating(true)
-    setError(null)
+    if (!name.trim()) return;
+    setIsCreating(true);
+    setError(null);
     try {
       if (isDemo) {
         // Demo: fake delay then navigate to first mock company
-        await new Promise((r) => setTimeout(r, 500))
-        onClose()
-        navigate(`/companies/${MOCK_COMPANIES[0].id}`)
-        return
+        await new Promise((r) => setTimeout(r, 500));
+        onClose();
+        navigate(`/companies/${MOCK_COMPANIES[0].id}`);
+        return;
       }
       const company = await companiesApi.create({
         name: name.trim(),
         website: website.trim() || undefined,
         industry: industry.trim() || undefined,
-      })
-      onCreated(company)
-      navigate(`/companies/${company.id}`)
+      });
+      onCreated(company);
+      navigate(`/companies/${company.id}`);
     } catch {
-      setError('Failed to create company. Please try again.')
+      setError("Failed to create company. Please try again.");
     } finally {
-      setIsCreating(false)
+      setIsCreating(false);
     }
   }
 
@@ -182,9 +194,14 @@ function NewCompanyModal({
         <div className="flex items-start justify-between">
           <div>
             <h2 className="font-semibold text-foreground">Add a company</h2>
-            <p className="text-sm text-muted-foreground mt-1">Start tracking a new deal.</p>
+            <p className="text-sm text-muted-foreground mt-1">
+              Start tracking a new deal.
+            </p>
           </div>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
+          <button
+            onClick={onClose}
+            className="text-muted-foreground hover:text-foreground transition-colors"
+          >
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -197,11 +214,13 @@ function NewCompanyModal({
               onChange={(e) => setName(e.target.value)}
               placeholder="Veridian AI"
               autoFocus
-              onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
+              onKeyDown={(e) => e.key === "Enter" && handleCreate()}
             />
           </div>
           <div className="space-y-1.5">
-            <Label>Website <span className="text-muted-foreground">(optional)</span></Label>
+            <Label>
+              Website <span className="text-muted-foreground">(optional)</span>
+            </Label>
             <Input
               value={website}
               onChange={(e) => setWebsite(e.target.value)}
@@ -209,7 +228,9 @@ function NewCompanyModal({
             />
           </div>
           <div className="space-y-1.5">
-            <Label>Industry <span className="text-muted-foreground">(optional)</span></Label>
+            <Label>
+              Industry <span className="text-muted-foreground">(optional)</span>
+            </Label>
             <Input
               value={industry}
               onChange={(e) => setIndustry(e.target.value)}
@@ -247,54 +268,62 @@ function NewCompanyModal({
         </div>
       </motion.div>
     </motion.div>
-  )
+  );
 }
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function CompaniesPage() {
-  const { isDemo } = useAuthStore()
-  const [companies, setCompanies] = useState<Company[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [search, setSearch] = useState('')
-  const [filterStatus, setFilterStatus] = useState<CompanyStatus | 'all'>('all')
-  const [showNewModal, setShowNewModal] = useState(false)
+  const { isDemo } = useAuthStore();
+  const [companies, setCompanies] = useState<Company[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+  const [filterStatus, setFilterStatus] = useState<CompanyStatus | "all">(
+    "all"
+  );
+  const [showNewModal, setShowNewModal] = useState(false);
 
   useEffect(() => {
     if (isDemo) {
-      setCompanies(MOCK_COMPANIES)
-      setLoading(false)
-      return
+      setCompanies(MOCK_COMPANIES);
+      setLoading(false);
+      return;
     }
-    loadCompanies()
-  }, [isDemo])
+    loadCompanies();
+  }, [isDemo]);
 
   async function loadCompanies() {
-    setLoading(true)
-    setError(null)
+    setLoading(true);
+    setError(null);
     try {
-      const list = await companiesApi.list()
-      setCompanies(list)
+      const list = await companiesApi.list();
+      setCompanies(list);
     } catch (err) {
-      setError(getFriendlyApiError(err, 'default', "Couldn't load your pipeline. Please try again."))
+      setError(
+        getFriendlyApiError(
+          err,
+          "default",
+          "Couldn't load your pipeline. Please try again."
+        )
+      );
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   function handleCompanyCreated(company: Company) {
-    setCompanies((prev) => [company, ...prev])
+    setCompanies((prev) => [company, ...prev]);
   }
 
   const filtered = companies.filter((c) => {
     const matchSearch =
       !search ||
       c.name.toLowerCase().includes(search.toLowerCase()) ||
-      c.industry?.toLowerCase().includes(search.toLowerCase())
-    const matchStatus = filterStatus === 'all' || c.status === filterStatus
-    return matchSearch && matchStatus
-  })
+      c.industry?.toLowerCase().includes(search.toLowerCase());
+    const matchStatus = filterStatus === "all" || c.status === filterStatus;
+    return matchSearch && matchStatus;
+  });
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
@@ -303,11 +332,18 @@ export default function CompaniesPage() {
           title="Companies"
           description={
             loading
-              ? 'Loading your pipeline…'
-              : `${companies.length} ${companies.length === 1 ? 'company' : 'companies'} in your pipeline.`
+              ? "Loading your pipeline…"
+              : `${companies.length} ${
+                  companies.length === 1 ? "company" : "companies"
+                } in your pipeline.`
           }
           actions={
-            <Button variant="conviction" size="sm" data-tour="tour-pipeline-add" onClick={() => setShowNewModal(true)}>
+            <Button
+              variant="conviction"
+              size="sm"
+              data-tour="tour-pipeline-add"
+              onClick={() => setShowNewModal(true)}
+            >
               <Plus className="h-3.5 w-3.5" />
               Add company
             </Button>
@@ -329,12 +365,12 @@ export default function CompaniesPage() {
           </div>
           <div className="flex items-center gap-1.5 flex-wrap">
             <button
-              onClick={() => setFilterStatus('all')}
+              onClick={() => setFilterStatus("all")}
               className={cn(
-                'rounded-full border px-3 py-1.5 text-xs font-medium transition-colors',
-                filterStatus === 'all'
-                  ? 'border-primary bg-primary/10 text-primary'
-                  : 'border-border text-muted-foreground hover:text-foreground'
+                "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+                filterStatus === "all"
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border text-muted-foreground hover:text-foreground"
               )}
             >
               All
@@ -344,10 +380,10 @@ export default function CompaniesPage() {
                 key={s}
                 onClick={() => setFilterStatus(s)}
                 className={cn(
-                  'rounded-full border px-3 py-1.5 text-xs font-medium transition-colors capitalize',
+                  "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors capitalize",
                   filterStatus === s
-                    ? 'border-primary bg-primary/10 text-primary'
-                    : 'border-border text-muted-foreground hover:text-foreground'
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border text-muted-foreground hover:text-foreground"
                 )}
               >
                 {STATUS_LABELS[s]}
@@ -379,13 +415,17 @@ export default function CompaniesPage() {
 
       {/* Grid */}
       {!loading && !error && (
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4" data-tour="tour-pipeline-list">
+        <motion.div
+          layout
+          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
+          data-tour="tour-pipeline-list"
+        >
           <AnimatePresence mode="popLayout">
             {filtered.map((company, index) => (
               <div
                 key={company.id}
                 data-company-id={company.id}
-                data-tour={index === 0 ? 'tour-pipeline-card' : undefined}
+                data-tour={index === 0 ? "tour-pipeline-card" : undefined}
               >
                 <CompanyCard company={company} />
               </div>
@@ -399,14 +439,16 @@ export default function CompaniesPage() {
               >
                 <Building2 className="h-10 w-10 text-muted-foreground/40 mb-4" />
                 <p className="text-sm font-medium text-foreground">
-                  {companies.length === 0 ? 'No companies yet' : 'No companies found'}
+                  {companies.length === 0
+                    ? "No companies yet"
+                    : "No companies found"}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
                   {companies.length === 0
-                    ? 'Add your first company to start tracking deals.'
+                    ? "Add your first company to start tracking deals."
                     : search
-                    ? 'Try a different search or filter.'
-                    : 'Adjust your filter to see more companies.'}
+                    ? "Try a different search or filter."
+                    : "Adjust your filter to see more companies."}
                 </p>
                 {companies.length === 0 && (
                   <Button
@@ -434,5 +476,5 @@ export default function CompaniesPage() {
         )}
       </AnimatePresence>
     </div>
-  )
+  );
 }

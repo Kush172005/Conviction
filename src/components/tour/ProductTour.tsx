@@ -1,93 +1,101 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, ArrowRight, X, Check } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import LogoMark from '@/components/LogoMark'
-import { useAuthStore, useUIStore } from '@/store'
-import { useTourStore } from '@/store/tourStore'
-import { TOUR_STEPS } from './tourSteps'
-import { cn } from '@/lib/utils'
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, ArrowRight, X, Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import LogoMark from "@/components/LogoMark";
+import { useAuthStore, useUIStore } from "@/store";
+import { useTourStore } from "@/store/tourStore";
+import { TOUR_STEPS } from "./tourSteps";
+import { cn } from "@/lib/utils";
 
 interface SpotlightRect {
-  top: number
-  left: number
-  width: number
-  height: number
+  top: number;
+  left: number;
+  width: number;
+  height: number;
 }
 
-const PADDING = 12
-const DIM_COLOR = 'rgba(0, 0, 0, 0.42)'
-const CENTER_DIM = 'rgba(0, 0, 0, 0.22)'
-const BLUR = 'blur(3px)'
+const PADDING = 12;
+const DIM_COLOR = "rgba(0, 0, 0, 0.42)";
+const CENTER_DIM = "rgba(0, 0, 0, 0.22)";
+const BLUR = "blur(3px)";
 
-const CARD_Z = 300
-const RING_Z = 210
-const DIM_Z = 200
+const CARD_Z = 300;
+const RING_Z = 210;
+const DIM_Z = 200;
 
 function isMobileViewport() {
-  return typeof window !== 'undefined' && window.innerWidth < 768
+  return typeof window !== "undefined" && window.innerWidth < 768;
 }
 
-function getVisibleTarget(target: string | string[] | undefined): HTMLElement | null {
-  if (!target) return null
-  const ids = Array.isArray(target) ? target : [target]
+function getVisibleTarget(
+  target: string | string[] | undefined
+): HTMLElement | null {
+  if (!target) return null;
+  const ids = Array.isArray(target) ? target : [target];
   for (const id of ids) {
-    const nodes = document.querySelectorAll<HTMLElement>(`[data-tour="${id}"]`)
+    const nodes = document.querySelectorAll<HTMLElement>(`[data-tour="${id}"]`);
     for (const node of nodes) {
-      const rect = node.getBoundingClientRect()
+      const rect = node.getBoundingClientRect();
       if (rect.width > 0 && rect.height > 0) {
-        return node
+        return node;
       }
     }
   }
-  return null
+  return null;
 }
 
 function getScrollParent(el: HTMLElement): HTMLElement | null {
-  let parent = el.parentElement
+  let parent = el.parentElement;
   while (parent) {
-    const { overflowY } = getComputedStyle(parent)
-    if (overflowY === 'auto' || overflowY === 'scroll') return parent
-    parent = parent.parentElement
+    const { overflowY } = getComputedStyle(parent);
+    if (overflowY === "auto" || overflowY === "scroll") return parent;
+    parent = parent.parentElement;
   }
-  return null
+  return null;
 }
 
 function readSpotlight(el: HTMLElement): SpotlightRect {
-  const rect = el.getBoundingClientRect()
+  const rect = el.getBoundingClientRect();
   return {
     top: Math.max(8, rect.top - PADDING),
     left: Math.max(8, rect.left - PADDING),
     width: Math.min(rect.width + PADDING * 2, window.innerWidth - 16),
     height: rect.height + PADDING * 2,
-  }
+  };
 }
 
 /** One-shot instant scroll — no smooth, no follow-up adjustments */
 function scrollTargetOnce(el: HTMLElement) {
-  const mobile = isMobileViewport()
-  const topPad = mobile ? 100 : 88
-  const bottomPad = mobile ? 280 : 120
+  const mobile = isMobileViewport();
+  const topPad = mobile ? 100 : 88;
+  const bottomPad = mobile ? 280 : 120;
 
-  const scrollParent = getScrollParent(el)
-  const rect = el.getBoundingClientRect()
-  const viewportH = window.innerHeight
-  const safeZoneBottom = viewportH - bottomPad
+  const scrollParent = getScrollParent(el);
+  const rect = el.getBoundingClientRect();
+  const viewportH = window.innerHeight;
+  const safeZoneBottom = viewportH - bottomPad;
 
-  let scrollDelta = 0
+  let scrollDelta = 0;
   if (rect.top < topPad) {
-    scrollDelta = rect.top - topPad
+    scrollDelta = rect.top - topPad;
   } else if (rect.bottom > safeZoneBottom) {
-    scrollDelta = rect.bottom - safeZoneBottom
+    scrollDelta = rect.bottom - safeZoneBottom;
   }
 
-  if (scrollDelta === 0) return
+  if (scrollDelta === 0) return;
 
   if (scrollParent) {
-    scrollParent.scrollTop += scrollDelta
+    scrollParent.scrollTop += scrollDelta;
   } else {
-    window.scrollBy(0, scrollDelta)
+    window.scrollBy(0, scrollDelta);
   }
 }
 
@@ -96,17 +104,25 @@ function SpotlightPanels({ rect }: { rect: SpotlightRect }) {
     background: DIM_COLOR,
     backdropFilter: BLUR,
     WebkitBackdropFilter: BLUR,
-  } as React.CSSProperties
+  } as React.CSSProperties;
 
   return (
-    <div className="fixed inset-0 pointer-events-none" style={{ zIndex: DIM_Z }}>
+    <div
+      className="fixed inset-0 pointer-events-none"
+      style={{ zIndex: DIM_Z }}
+    >
       <div
         className="fixed left-0 right-0 top-0 pointer-events-auto"
         style={{ ...panelStyle, height: rect.top }}
       />
       <div
         className="fixed left-0 pointer-events-auto"
-        style={{ ...panelStyle, top: rect.top, width: rect.left, height: rect.height }}
+        style={{
+          ...panelStyle,
+          top: rect.top,
+          width: rect.left,
+          height: rect.height,
+        }}
       />
       <div
         className="fixed right-0 pointer-events-auto"
@@ -122,132 +138,145 @@ function SpotlightPanels({ rect }: { rect: SpotlightRect }) {
         style={{ ...panelStyle, top: rect.top + rect.height }}
       />
     </div>
-  )
+  );
 }
 
 export default function ProductTour() {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const user = useAuthStore((s) => s.user)
-  const { active, stepIndex, nextStep, prevStep, skipTour, completeTour } = useTourStore()
-  const setSidebarCollapsed = useUIStore((s) => s.setSidebarCollapsed)
+  const navigate = useNavigate();
+  const location = useLocation();
+  const user = useAuthStore((s) => s.user);
+  const { active, stepIndex, nextStep, prevStep, skipTour, completeTour } =
+    useTourStore();
+  const setSidebarCollapsed = useUIStore((s) => s.setSidebarCollapsed);
 
-  const step = TOUR_STEPS[stepIndex]
-  const isLast = stepIndex === TOUR_STEPS.length - 1
-  const isFirst = stepIndex === 0
-  const isMobile = isMobileViewport()
+  const step = TOUR_STEPS[stepIndex];
+  const isLast = stepIndex === TOUR_STEPS.length - 1;
+  const isFirst = stepIndex === 0;
+  const isMobile = isMobileViewport();
 
-  const [spotlight, setSpotlight] = useState<SpotlightRect | null>(null)
-  const [ready, setReady] = useState(false)
-  const firstCompanyIdRef = useRef<string | null>(null)
+  const [spotlight, setSpotlight] = useState<SpotlightRect | null>(null);
+  const [ready, setReady] = useState(false);
+  const firstCompanyIdRef = useRef<string | null>(null);
 
-  const handleSkipRef = useRef(() => {})
+  const handleSkipRef = useRef(() => {});
   handleSkipRef.current = () => {
-    if (user) skipTour(user.id)
-  }
+    if (user) skipTour(user.id);
+  };
 
   /** Update spotlight position only — never scrolls (prevents jitter loop) */
   const measureOnly = useCallback(() => {
     if (!step?.target) {
-      setSpotlight(null)
-      return
+      setSpotlight(null);
+      return;
     }
-    const el = getVisibleTarget(step.target)
+    const el = getVisibleTarget(step.target);
     if (!el) {
-      setSpotlight(null)
-      return
+      setSpotlight(null);
+      return;
     }
-    setSpotlight(readSpotlight(el))
-  }, [step])
+    setSpotlight(readSpotlight(el));
+  }, [step]);
 
   /** Run once per step: scroll then measure */
   const setupStep = useCallback(() => {
     if (!step?.target) {
-      setSpotlight(null)
-      setReady(true)
-      return
+      setSpotlight(null);
+      setReady(true);
+      return;
     }
 
-    const el = getVisibleTarget(step.target)
+    const el = getVisibleTarget(step.target);
     if (!el) {
-      setSpotlight(null)
-      setReady(true)
-      return
+      setSpotlight(null);
+      setReady(true);
+      return;
     }
 
-    scrollTargetOnce(el)
-    setSpotlight(readSpotlight(el))
-    setReady(true)
-  }, [step])
+    scrollTargetOnce(el);
+    setSpotlight(readSpotlight(el));
+    setReady(true);
+  }, [step]);
 
   useLayoutEffect(() => {
-    if (!active) return
-    const card = document.querySelector('[data-tour="tour-pipeline-card"]')
-    const id = card?.closest('[data-company-id]')?.getAttribute('data-company-id')
-    if (id) firstCompanyIdRef.current = id
-  }, [active, stepIndex])
+    if (!active) return;
+    const card = document.querySelector('[data-tour="tour-pipeline-card"]');
+    const id = card
+      ?.closest("[data-company-id]")
+      ?.getAttribute("data-company-id");
+    if (id) firstCompanyIdRef.current = id;
+  }, [active, stepIndex]);
 
   useLayoutEffect(() => {
-    if (!active) return
-    setReady(false)
-    const delay = step?.route?.includes('__first__') ? 500 : step?.route ? 400 : 100
-    const t = window.setTimeout(setupStep, delay)
-    return () => window.clearTimeout(t)
-  }, [active, stepIndex, step, setupStep, location.pathname])
+    if (!active) return;
+    setReady(false);
+    const delay = step?.route?.includes("__first__")
+      ? 500
+      : step?.route
+      ? 400
+      : 100;
+    const t = window.setTimeout(setupStep, delay);
+    return () => window.clearTimeout(t);
+  }, [active, stepIndex, step, setupStep, location.pathname]);
 
   useEffect(() => {
-    if (!active || !step?.route) return
+    if (!active || !step?.route) return;
     const route =
-      step.route === '/companies/__first__'
+      step.route === "/companies/__first__"
         ? firstCompanyIdRef.current
           ? `/companies/${firstCompanyIdRef.current}`
-          : '/companies/co_01'
-        : step.route
-    navigate(route)
-  }, [active, stepIndex, step?.route, navigate])
+          : "/companies/co_01"
+        : step.route;
+    navigate(route);
+  }, [active, stepIndex, step?.route, navigate]);
 
   useEffect(() => {
-    if (!active) return
-    setSidebarCollapsed(false)
+    if (!active) return;
+    setSidebarCollapsed(false);
 
-    let resizeTimer: ReturnType<typeof setTimeout>
+    let resizeTimer: ReturnType<typeof setTimeout>;
     const onResize = () => {
-      clearTimeout(resizeTimer)
-      resizeTimer = setTimeout(measureOnly, 150)
-    }
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(measureOnly, 150);
+    };
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') handleSkipRef.current()
-    }
+      if (e.key === "Escape") handleSkipRef.current();
+    };
 
-    window.addEventListener('resize', onResize)
-    window.addEventListener('keydown', onKeyDown)
+    window.addEventListener("resize", onResize);
+    window.addEventListener("keydown", onKeyDown);
     return () => {
-      clearTimeout(resizeTimer)
-      window.removeEventListener('resize', onResize)
-      window.removeEventListener('keydown', onKeyDown)
-    }
-  }, [active, measureOnly, setSidebarCollapsed, user, skipTour])
+      clearTimeout(resizeTimer);
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [active, measureOnly, setSidebarCollapsed, user, skipTour]);
 
-  if (!active || !user || !step) return null
+  if (!active || !user || !step) return null;
 
   function handleNext() {
     if (isLast) {
-      completeTour(user!.id)
+      completeTour(user!.id);
     } else {
-      nextStep(TOUR_STEPS.length - 1)
+      nextStep(TOUR_STEPS.length - 1);
     }
   }
 
   function handleSkip() {
-    skipTour(user!.id)
+    skipTour(user!.id);
   }
 
-  const isCenter = step.placement === 'center'
-  const showSpotlight = !isCenter && spotlight
-  const progress = ((stepIndex + 1) / TOUR_STEPS.length) * 100
+  const isCenter = step.placement === "center";
+  const showSpotlight = !isCenter && spotlight;
+  const progress = ((stepIndex + 1) / TOUR_STEPS.length) * 100;
 
   return (
-    <div className="fixed inset-0" style={{ zIndex: DIM_Z }} role="dialog" aria-modal="true" aria-label="Product tour">
+    <div
+      className="fixed inset-0"
+      style={{ zIndex: DIM_Z }}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Product tour"
+    >
       {isCenter && (
         <div
           className="fixed inset-0 pointer-events-auto"
@@ -260,7 +289,9 @@ export default function ProductTour() {
         />
       )}
 
-      {showSpotlight && ready && spotlight && <SpotlightPanels rect={spotlight} />}
+      {showSpotlight && ready && spotlight && (
+        <SpotlightPanels rect={spotlight} />
+      )}
 
       <AnimatePresence mode="wait">
         {showSpotlight && ready && spotlight && (
@@ -278,7 +309,7 @@ export default function ProductTour() {
               width: spotlight.width,
               height: spotlight.height,
               boxShadow:
-                '0 0 0 2px rgba(99, 102, 241, 0.95), 0 0 0 5px rgba(99, 102, 241, 0.2), 0 0 28px rgba(99, 102, 241, 0.4)',
+                "0 0 0 2px rgba(99, 102, 241, 0.95), 0 0 0 5px rgba(99, 102, 241, 0.2), 0 0 28px rgba(99, 102, 241, 0.4)",
             }}
           />
         )}
@@ -293,14 +324,14 @@ export default function ProductTour() {
             exit={{ opacity: 0, scale: 0.97 }}
             transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
             className={cn(
-              'fixed border border-border bg-card shadow-2xl pointer-events-auto overflow-y-auto',
+              "fixed border border-border bg-card shadow-2xl pointer-events-auto overflow-y-auto",
               isCenter && isMobile
-                ? 'left-4 right-4 top-4 max-h-[calc(100dvh-2rem)] rounded-xl p-4'
+                ? "left-4 right-4 top-4 max-h-[calc(100dvh-2rem)] rounded-xl p-4"
                 : isCenter
-                ? 'left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-md max-h-[calc(100vh-2rem)] rounded-xl p-5'
+                ? "left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-md max-h-[calc(100vh-2rem)] rounded-xl p-5"
                 : isMobile
-                ? 'left-4 right-4 bottom-[calc(4.75rem+env(safe-area-inset-bottom,0px))] max-h-[40dvh] rounded-xl p-4'
-                : 'right-6 top-1/2 -translate-y-1/2 w-[21rem] max-w-[calc(100vw-3rem)] rounded-xl p-5'
+                ? "left-4 right-4 bottom-[calc(4.75rem+env(safe-area-inset-bottom,0px))] max-h-[40dvh] rounded-xl p-4"
+                : "right-6 top-1/2 -translate-y-1/2 w-[21rem] max-w-[calc(100vw-3rem)] rounded-xl p-5"
             )}
             style={{ zIndex: CARD_Z }}
           >
@@ -328,12 +359,17 @@ export default function ProductTour() {
               </button>
             </div>
 
-            <p className="text-sm text-muted-foreground leading-relaxed">{step.body}</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {step.body}
+            </p>
 
             {step.tips && step.tips.length > 0 && (
               <ul className="mt-2.5 space-y-1">
                 {step.tips.map((tip) => (
-                  <li key={tip} className="flex items-start gap-2 text-xs text-foreground/80">
+                  <li
+                    key={tip}
+                    className="flex items-start gap-2 text-xs text-foreground/80"
+                  >
                     <Check className="h-3.5 w-3.5 text-conviction-400 shrink-0 mt-0.5" />
                     {tip}
                   </li>
@@ -347,7 +383,7 @@ export default function ProductTour() {
                   className="h-full bg-conviction-500 rounded-full"
                   initial={false}
                   animate={{ width: `${progress}%` }}
-                  transition={{ duration: 0.35, ease: 'easeOut' }}
+                  transition={{ duration: 0.35, ease: "easeOut" }}
                 />
               </div>
             </div>
@@ -368,7 +404,7 @@ export default function ProductTour() {
                   </Button>
                 )}
                 <Button variant="conviction" size="sm" onClick={handleNext}>
-                  {isLast ? 'Get started' : 'Next'}
+                  {isLast ? "Get started" : "Next"}
                   {!isLast && <ArrowRight className="h-3.5 w-3.5" />}
                 </Button>
               </div>
@@ -377,5 +413,5 @@ export default function ProductTour() {
         )}
       </AnimatePresence>
     </div>
-  )
+  );
 }

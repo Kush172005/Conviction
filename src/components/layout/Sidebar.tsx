@@ -12,7 +12,7 @@ import {
   Zap,
   X,
 } from "lucide-react";
-import LogoMark from '@/components/LogoMark'
+import LogoMark from "@/components/LogoMark";
 import { cn, getInitials } from "@/lib/utils";
 import { useAuthStore, useUIStore } from "@/store";
 import { Badge } from "@/components/ui/badge";
@@ -142,13 +142,19 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             const tourId =
-              item.href === '/dashboard' ? 'tour-nav-dashboard'
-              : item.href === '/companies' ? 'tour-nav-pipeline'
-              : item.href === '/calls/new' ? 'tour-nav-log-call'
-              : item.href === '/memory' ? 'tour-nav-memory'
-              : item.href === '/startup-intelligence' ? 'tour-nav-research'
-              : item.href === '/settings' ? 'tour-nav-settings'
-              : undefined
+              item.href === "/dashboard"
+                ? "tour-nav-dashboard"
+                : item.href === "/companies"
+                ? "tour-nav-pipeline"
+                : item.href === "/calls/new"
+                ? "tour-nav-log-call"
+                : item.href === "/memory"
+                ? "tour-nav-memory"
+                : item.href === "/startup-intelligence"
+                ? "tour-nav-research"
+                : item.href === "/settings"
+                ? "tour-nav-settings"
+                : undefined;
             if (collapsed) {
               return (
                 <Tooltip key={item.href}>
