@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search, Zap, Globe, Linkedin, ChevronRight, X, RefreshCw, Trash2,
@@ -10,6 +11,8 @@ import {
 import { RadarChart, PolarGrid, PolarAngleAxis, Radar, ResponsiveContainer,
          BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from 'recharts'
 import { startupIntelligenceApi } from '@/services/api/startupIntelligence'
+import { useAuthStore } from '@/store'
+import { DemoGateOverlay } from '@/components/demo/DemoGate'
 import type {
   SIReportDetail, SIReportListItem, SIRecommendation,
   MoatStrength, RedFlagSeverity, SIProgressStage,
@@ -266,6 +269,8 @@ type TabId = typeof TABS[number]['id']
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function StartupIntelligencePage() {
+  const navigate = useNavigate()
+  const { isDemo, logout } = useAuthStore()
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null)
   const [selectedReport, setSelectedReport] = useState<SIReportDetail | null>(null)
   const [history, setHistory] = useState<SIReportListItem[]>([])
@@ -374,6 +379,13 @@ export default function StartupIntelligencePage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+
+    if (isDemo) {
+      logout()
+      navigate('/login', { replace: true })
+      return
+    }
+
     setFormError('')
 
     if (!companyName.trim() || !websiteUrl.trim()) {
@@ -422,6 +434,7 @@ export default function StartupIntelligencePage() {
   }
 
   async function handleDelete(id: string) {
+    if (isDemo) return
     try {
       await startupIntelligenceApi.deleteReport(id)
       setHistory(prev => prev.filter(r => r.id !== id))
@@ -467,7 +480,13 @@ export default function StartupIntelligencePage() {
         mobileView === 'detail' ? 'hidden md:flex' : 'flex',
       )}>
         {/* Form */}
-        <div className="p-4 border-b border-border">
+        <div className="relative p-4 border-b border-border">
+          {isDemo && (
+            <DemoGateOverlay
+              title="Sign in to research any startup"
+              description="Browse the sample reports below, then sign in to run your own deep-dive on any company."
+            />
+          )}
           <div className="flex items-center gap-2 mb-4">
             <Zap className="w-4 h-4 text-blue-400" />
             <h2 className="font-semibold text-sm">Startup Intelligence</h2>
@@ -563,12 +582,14 @@ export default function StartupIntelligencePage() {
                     <p className="text-sm font-medium truncate">{item.companyName}</p>
                     <p className="text-xs text-muted-foreground truncate">{item.websiteUrl}</p>
                   </div>
-                  <button
-                    onClick={e => { e.stopPropagation(); handleDelete(item.id) }}
-                    className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-red-400 transition-all p-0.5"
-                  >
-                    <Trash2 className="w-3 h-3" />
-                  </button>
+                  {!isDemo && (
+                    <button
+                      onClick={e => { e.stopPropagation(); handleDelete(item.id) }}
+                      className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-red-400 transition-all p-0.5"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  )}
                 </div>
                 <div className="mt-2 flex items-center gap-2">
                   {item.status === 'completed' && item.thesisFitScore !== undefined && (
@@ -696,7 +717,7 @@ function ReportView({
   const isRunning = !isComplete && !isFailed
 
   return (
-    <div className="max-w-5xl mx-auto p-4 sm:p-6 space-y-4 sm:space-y-6">
+    <div className="max-w-5xl mx-auto min-w-0 w-full overflow-x-hidden p-4 sm:p-6 space-y-4 sm:space-y-6">
       {/* Mobile back button */}
       {onBack && (
         <button
@@ -828,6 +849,7 @@ function ReportView({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.15 }}
+              className="min-w-0 overflow-x-hidden"
             >
               {tab === 'thesis' && <ThesisTab report={report} />}
               {tab === 'memo' && <MemoTab report={report} />}
@@ -1177,15 +1199,8 @@ function DiligenceTab({ report }: { report: SIReportDetail }) {
 
 // ─── Tab: Sources ─────────────────────────────────────────────────────────────
 
-function providerStatusColor(status: string) {
-  if (status === 'ok') return 'text-emerald-400 bg-emerald-500/10'
-  if (status === 'skipped') return 'text-zinc-400 bg-zinc-800'
-  if (status === 'calling') return 'text-blue-400 bg-blue-500/10'
-  return 'text-amber-400 bg-amber-500/10'
-}
-
 function SourcesTab({ report }: { report: SIReportDetail }) {
-  const { sources, providerLog } = report
+  const { sources } = report
   const typeOrder: Record<string, number> = { website: 0, crunchbase: 1, news: 2, linkedin_public: 3, search_result: 4 }
   const sorted = [...sources].sort((a, b) => {
     const ao = typeOrder[a.sourceType] ?? 99
@@ -1195,44 +1210,25 @@ function SourcesTab({ report }: { report: SIReportDetail }) {
   })
 
   return (
-    <div className="space-y-4">
-      {providerLog.length > 0 && (
-        <SectionCard title="Provider Activity Log" icon={Database}>
-          <p className="text-xs text-muted-foreground mb-3">
-            Every API/tool called during this report — check backend terminal for full logs.
-          </p>
-          <div className="space-y-1.5 max-h-64 overflow-y-auto">
-            {providerLog.map((entry, i) => (
-              <div key={i} className="flex items-start gap-2 text-xs font-mono">
-                <span className={cn('px-1.5 py-0.5 rounded uppercase flex-shrink-0', providerStatusColor(entry.status))}>
-                  {entry.status}
-                </span>
-                <span className="text-blue-400 flex-shrink-0">{entry.provider}</span>
-                <span className="text-muted-foreground flex-shrink-0">{entry.action}</span>
-                <span className="text-muted-foreground/80 truncate">{entry.detail}</span>
-              </div>
-            ))}
-          </div>
-        </SectionCard>
-      )}
+    <div className="min-w-0 space-y-4">
       <p className="text-sm text-muted-foreground">{sources.length} sources collected</p>
       {sorted.map((source, i) => (
-        <div key={i} className="rounded-lg border border-border bg-card p-4">
-          <div className="flex items-start gap-3">
+        <div key={i} className="min-w-0 rounded-lg border border-border bg-card p-4 overflow-hidden">
+          <div className="flex items-start gap-3 min-w-0">
             <div className="w-7 h-7 rounded-md bg-zinc-800 flex items-center justify-center flex-shrink-0">
               <Globe className="w-3.5 h-3.5 text-zinc-400" />
             </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-start justify-between gap-2 mb-1">
+            <div className="min-w-0 flex-1 overflow-hidden">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3 mb-1">
                 <a
                   href={source.url}
                   target="_blank" rel="noopener noreferrer"
-                  className="text-sm font-medium hover:text-blue-400 transition-colors truncate flex items-center gap-1"
+                  className="text-sm font-medium hover:text-blue-400 transition-colors break-all sm:break-words line-clamp-2 flex items-start gap-1 min-w-0"
                 >
-                  {source.title || source.domain}
-                  <ExternalLink className="w-3 h-3 flex-shrink-0" />
+                  <span className="min-w-0">{source.title || source.domain}</span>
+                  <ExternalLink className="w-3 h-3 flex-shrink-0 mt-0.5" />
                 </a>
-                <div className="flex items-center gap-1.5 flex-shrink-0">
+                <div className="flex items-center gap-1.5 flex-shrink-0 flex-wrap">
                   <span className="text-xs text-muted-foreground capitalize">{source.sourceType.replace(/_/g, ' ')}</span>
                   <div className="flex items-center gap-1">
                     <div className="w-12 h-1 bg-white/5 rounded-full overflow-hidden">
@@ -1245,8 +1241,8 @@ function SourcesTab({ report }: { report: SIReportDetail }) {
                   </div>
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground/70">{source.domain}</p>
-              <p className="text-xs text-muted-foreground mt-1 line-clamp-2 leading-relaxed">{source.snippet}</p>
+              <p className="text-xs text-muted-foreground/70 break-all">{source.domain}</p>
+              <p className="text-xs text-muted-foreground mt-1 line-clamp-3 leading-relaxed break-words">{source.snippet}</p>
             </div>
           </div>
         </div>

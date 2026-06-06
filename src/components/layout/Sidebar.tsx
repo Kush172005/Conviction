@@ -22,10 +22,10 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 
 const NAV_ITEMS = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { href: '/companies', icon: Building2, label: 'Companies' },
-  { href: '/calls/new', icon: PhoneCall, label: 'Log Call' },
-  { href: '/memory', icon: Brain, label: 'Memory' },
-  { href: '/startup-intelligence', icon: Zap, label: 'Startup Intel' },
+  { href: '/companies', icon: Building2, label: 'Pipeline' },
+  { href: '/calls/new', icon: PhoneCall, label: 'Log a Call' },
+  { href: '/memory', icon: Brain, label: 'Deal Memory' },
+  { href: '/startup-intelligence', icon: Zap, label: 'Research' },
   { href: '/settings', icon: Settings, label: 'Settings' },
 ]
 

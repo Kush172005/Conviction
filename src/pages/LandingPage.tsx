@@ -27,6 +27,7 @@ import {
   Shield,
   Target,
   BarChart3,
+  // BarChart3 kept for potential usage
   ChevronDown,
   Loader2,
 } from 'lucide-react'
@@ -47,8 +48,8 @@ const FEATURES = [
     icon: Mic,
     title: 'Post-Call Brain Dump',
     description:
-      'Record a voice note or dump raw text right after a founder call. Whisper STT transcribes it, Gemini structures it into IC-ready deal intelligence in under 60 seconds.',
-    tag: 'Voice + AI',
+      'Hit record right after a founder call and speak freely. In under 60 seconds, your raw thoughts become a fully structured investment brief — with every signal that matters, none that doesn\'t.',
+    tag: 'Voice + Notes',
     accent: 'from-red-500/15 to-red-500/3 border-red-500/20',
     iconBg: 'bg-red-500/10 text-red-400',
     tagColor: 'bg-red-500/10 text-red-400 border-red-500/20',
@@ -58,7 +59,7 @@ const FEATURES = [
     icon: Search,
     title: 'Startup Intelligence',
     description:
-      'Enter any company URL. Our AI pipeline hits Tavily search, Google-grounded Gemini, and HF models to surface founders, funding, market position, and thesis fit — automatically.',
+      'Enter any company URL. Conviction digs deep across the web and curates what matters for your thesis — founders, funding history, market position, and fit — surfaced in minutes, not hours.',
     tag: 'Deep Research',
     accent: 'from-blue-500/15 to-blue-500/3 border-blue-500/20',
     iconBg: 'bg-blue-500/10 text-blue-400',
@@ -69,7 +70,7 @@ const FEATURES = [
     icon: Target,
     title: 'Fund Thesis Match Engine',
     description:
-      'Every company gets scored 0–100 against your fund\'s thesis. Sector, stage, geography, and business model alignment — with specific reasons for fit and misfit.',
+      'Every company gets scored 0–100 against your fund\'s thesis — sector, stage, geography, and business model alignment — with specific, written reasons behind every point.',
     tag: 'Thesis Scoring',
     accent: 'from-conviction-500/15 to-conviction-500/3 border-conviction-500/20',
     iconBg: 'bg-conviction-500/10 text-conviction-400',
@@ -80,7 +81,7 @@ const FEATURES = [
     icon: Brain,
     title: 'Persistent Deal Memory',
     description:
-      'A living intelligence timeline per company. See how your conviction evolved from first call to term sheet. Every insight, concern, and milestone — permanently retrievable.',
+      'A living intelligence timeline per company. See exactly how your conviction evolved from first call to term sheet. Every insight, concern, and milestone — permanently on record.',
     tag: 'Memory Layer',
     accent: 'from-emerald-500/15 to-emerald-500/3 border-emerald-500/20',
     iconBg: 'bg-emerald-500/10 text-emerald-400',
@@ -91,7 +92,7 @@ const FEATURES = [
     icon: FileText,
     title: 'IC Memo Generation',
     description:
-      'From raw notes to a complete IC memo. Strengths, concerns, moat analysis, red flags, open diligence questions, market assessment, and a clear recommendation — all structured.',
+      'From raw notes to a complete IC memo. Strengths, concerns, moat analysis, red flags, diligence questions, market sizing, and a clear recommendation — ready to share in minutes.',
     tag: 'Auto Memos',
     accent: 'from-amber-500/15 to-amber-500/3 border-amber-500/20',
     iconBg: 'bg-amber-500/10 text-amber-400',
@@ -102,7 +103,7 @@ const FEATURES = [
     icon: Zap,
     title: 'Automated Follow-Up Engine',
     description:
-      'AI extracts every promised action, drafts founder follow-up emails, and surfaces overdue items before they fall through the cracks. Nothing leaves your pipeline accidentally.',
+      'Every commitment you made on the call is captured and tracked. Draft follow-up emails are written for you, and overdue items surface before they become dropped balls.',
     tag: 'Action Engine',
     accent: 'from-purple-500/15 to-purple-500/3 border-purple-500/20',
     iconBg: 'bg-purple-500/10 text-purple-400',
@@ -112,8 +113,8 @@ const FEATURES = [
 ]
 
 const STATS = [
-  { value: 60, suffix: 's', label: 'Call → structured intelligence' },
-  { value: 100, suffix: '+', label: 'Data points extracted per company' },
+  { value: 60, suffix: 's', label: 'Brain dump → structured investment brief' },
+  { value: 100, suffix: '+', label: 'Signals surfaced per company' },
   { value: 0, suffix: ' notes lost', label: 'With Conviction in your workflow' },
 ]
 
@@ -123,23 +124,23 @@ const HOW_IT_WORKS = [
     icon: Mic,
     title: 'Capture in any format',
     description:
-      'Hit record right after a founder call and brain-dump your thoughts. Or paste a transcript, type quick notes — Conviction accepts everything.',
+      'Hit record right after a founder call and speak your thoughts. Or type quick notes, paste a transcript — Conviction accepts everything, exactly as it comes out of your head.',
     detail: 'Voice · Text · Transcript',
   },
   {
     step: '02',
     icon: Sparkles,
-    title: 'AI structures it instantly',
+    title: 'Your notes become a deal brief',
     description:
-      'Our multi-model pipeline (Whisper → Gemini → HF) extracts deal summary, founder assessment, thesis fit, red flags, strengths, concerns, and follow-up actions.',
-    detail: 'Whisper · Gemini · Research',
+      'In seconds, your raw input is shaped into a complete investment brief — deal summary, founder assessment, thesis fit score, red flags, strengths, concerns, and a draft IC recommendation.',
+    detail: 'Instant · Structured · IC-Ready',
   },
   {
     step: '03',
     icon: Brain,
-    title: 'Build permanent deal memory',
+    title: 'Build a permanent deal record',
     description:
-      'Every call becomes a timestamped entry in your investment memory. Three months later, you\'ll know exactly where you stood and precisely why.',
+      'Every call becomes a timestamped entry in your investment memory. Three months later, you\'ll know exactly where you stood, precisely why, and what you promised to follow up on.',
     detail: 'Timeline · IC Memos · Memory',
   },
 ]
@@ -397,18 +398,6 @@ export default function LandingPage() {
           duration: 0.7,
           ease: 'power2.out',
           scrollTrigger: { trigger: '.cta-content', start: 'top 85%', once: true },
-        })
-
-        // AI models
-        ScrollTrigger.batch('.model-card', {
-          onEnter: (els) =>
-            gsap.fromTo(
-              els,
-              { autoAlpha: 0, scale: 0.92 },
-              { autoAlpha: 1, scale: 1, stagger: 0.07, duration: 0.45, ease: 'back.out(1.4)' }
-            ),
-          start: 'top 89%',
-          once: true,
         })
       })
     },
@@ -941,45 +930,6 @@ export default function LandingPage() {
                 isLast={i === HOW_IT_WORKS.length - 1}
               />
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── AI Models section ─────────────────────────────────────── */}
-      <section className="py-20 px-6 bg-surface-1/30 border-y border-border/50">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-10 problem-fragment">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">
-              Powered by
-            </p>
-            <h3 className="text-xl font-semibold text-foreground">
-              Best-in-class AI models, optimised for venture capital
-            </h3>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { name: 'Whisper v3 Turbo', role: 'Voice transcription', provider: 'Hugging Face', icon: Mic },
-              { name: 'Gemini 2.5 Flash', role: 'Deal intelligence', provider: 'Google', icon: Sparkles },
-              { name: 'Gemini 2.5 Flash', role: 'Startup research', provider: 'Google + Grounding', icon: Search },
-              { name: 'Qwen 2.5 7B', role: 'Structured extraction', provider: 'Open Source', icon: BarChart3 },
-            ].map((model) => {
-              const Icon = model.icon
-              return (
-                <motion.div
-                  key={model.name + model.role}
-                  className="model-card rounded-xl border border-border bg-card p-4 text-center"
-                  whileHover={{ y: -3, borderColor: 'hsl(248 92% 68% / 0.3)', boxShadow: '0 8px 24px hsl(248 92% 68% / 0.08)' }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 22 }}
-                >
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary mx-auto mb-3">
-                    <Icon className="h-4 w-4 text-muted-foreground" />
-                  </div>
-                  <p className="text-xs font-semibold text-foreground">{model.name}</p>
-                  <p className="text-2xs text-muted-foreground mt-1">{model.role}</p>
-                  <p className="text-2xs text-conviction-300/70 mt-1">{model.provider}</p>
-                </motion.div>
-              )
-            })}
           </div>
         </div>
       </section>

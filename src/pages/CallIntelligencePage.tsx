@@ -179,7 +179,6 @@ export default function CallIntelligencePage() {
   const [emailCopied, setEmailCopied] = useState(false)
   const [showEmail, setShowEmail] = useState(false)
   const [showTranscript, setShowTranscript] = useState(false)
-  const [showProviderLog, setShowProviderLog] = useState(false)
 
   const loadIntelligence = useCallback(async () => {
     setLoading(true)
@@ -581,62 +580,6 @@ export default function CallIntelligencePage() {
           </FadeIn>
         )}
 
-        {/* Provider Activity Log */}
-        {intel.providerLog.length > 0 && (
-          <FadeIn delay={0.28}>
-            <div className="rounded-lg border border-border bg-card p-5">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-muted-foreground">AI Provider Activity</h3>
-                <Button
-                  variant="ghost-muted"
-                  size="sm"
-                  className="h-7 text-xs"
-                  onClick={() => setShowProviderLog((v) => !v)}
-                >
-                  {showProviderLog ? 'Hide' : `Show (${intel.providerLog.length})`}
-                  <ChevronDown
-                    className={`h-3 w-3 transition-transform ${showProviderLog ? 'rotate-180' : ''}`}
-                  />
-                </Button>
-              </div>
-              <AnimatePresence>
-                {showProviderLog && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="space-y-1.5 max-h-64 overflow-y-auto"
-                  >
-                    {intel.providerLog.map((entry, i) => (
-                      <div
-                        key={i}
-                        className="flex items-start gap-2 rounded-md bg-secondary/30 px-3 py-2 text-xs font-mono"
-                      >
-                        <span
-                          className={cn(
-                            'shrink-0 font-semibold',
-                            entry.status === 'ok' ? 'text-emerald-400' :
-                            entry.status === 'error' ? 'text-red-400' :
-                            entry.status === 'skipped' ? 'text-muted-foreground' :
-                            'text-amber-400'
-                          )}
-                        >
-                          [{entry.status.toUpperCase()}]
-                        </span>
-                        <span className="text-conviction-400 shrink-0">{entry.provider}</span>
-                        <span className="text-muted-foreground shrink-0">·</span>
-                        <span className="text-foreground">{entry.action}</span>
-                        {entry.detail && (
-                          <span className="text-muted-foreground truncate">{entry.detail}</span>
-                        )}
-                      </div>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </FadeIn>
-        )}
       </div>
 
       {/* Action bar */}

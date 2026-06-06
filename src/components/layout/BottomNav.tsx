@@ -4,9 +4,9 @@ import { cn } from '@/lib/utils'
 
 const ITEMS = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Home' },
-  { href: '/companies', icon: Building2, label: 'Companies' },
+  { href: '/companies', icon: Building2, label: 'Pipeline' },
   { href: '/calls/new', icon: PhoneCall, label: 'Log Call', primary: true },
-  { href: '/startup-intelligence', icon: Zap, label: 'Intel' },
+  { href: '/startup-intelligence', icon: Zap, label: 'Research' },
   { href: '/settings', icon: Settings, label: 'Settings' },
 ]
 

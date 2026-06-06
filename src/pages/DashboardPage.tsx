@@ -147,7 +147,7 @@ function NewUserDashboard({ name }: { name: string }) {
       <FadeIn>
         <PageHeader
           title={`Welcome to Conviction, ${name.split(' ')[0]}.`}
-          description="Your AI-powered deal intelligence workspace is ready."
+          description="Your deal intelligence workspace is ready. Start logging calls and we'll take care of the rest."
         />
       </FadeIn>
 
@@ -188,21 +188,21 @@ function NewUserDashboard({ name }: { name: string }) {
               {
                 step: '1',
                 title: 'Add a company',
-                desc: "Track any founder or company you're in diligence with.",
+                desc: "Track any founder or company you're in conversation with.",
                 cta: 'Add company',
                 href: '/companies',
               },
               {
                 step: '2',
                 title: 'Log a call',
-                desc: 'Paste a transcript, type notes, or describe the conversation.',
+                desc: 'Speak, type, or paste — capture your thoughts any way they come out.',
                 cta: 'Log call',
                 href: '/calls/new',
               },
               {
                 step: '3',
-                title: 'Get AI intelligence',
-                desc: 'Conviction extracts decisions, follow-ups, and thesis alignment.',
+                title: 'Get your deal brief',
+                desc: 'Conviction surfaces decisions, follow-ups, and thesis alignment — structured and ready.',
                 cta: 'Log a call',
                 href: '/calls/new',
               },
@@ -484,7 +484,7 @@ export default function DashboardPage() {
       <FadeIn>
         <PageHeader
           title={`${greeting}, ${user?.name?.split(' ')[0] || 'there'}.`}
-          description="Your deal flow at a glance."
+          description="Explore RTP Global's live pipeline — click anything to see how it works."
           actions={
             <Button variant="conviction" size="sm" onClick={() => navigate('/calls/new')}>
               <PhoneCall className="h-3.5 w-3.5" />

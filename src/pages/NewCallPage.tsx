@@ -28,6 +28,7 @@ import { useAuthStore } from '@/store'
 import { companiesApi } from '@/services/api/companies'
 import { callsApi } from '@/services/api/calls'
 import { cn } from '@/lib/utils'
+import { DemoGateOverlay } from '@/components/demo/DemoGate'
 import type { Company, CallIntelligenceData } from '@/types'
 
 type InputMode = 'voice' | 'text' | 'transcript'
@@ -173,7 +174,7 @@ function VoiceRecorder({ onRecordingComplete, onRecordingStart }: VoiceRecorderP
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               {blob
-                ? `${mm}:${ss} captured — Conviction will transcribe and analyse it.`
+                ? `${mm}:${ss} captured — we'll turn this into your deal brief.`
                 : 'Tap the mic and speak your post-call thoughts freely.'}
             </p>
           </div>
@@ -286,10 +287,10 @@ function AddCompanyModal({
 
 const PROCESSING_STEPS = [
   { label: 'Reading your notes…', delay: 0 },
-  { label: 'Extracting key signals…', delay: 2500 },
-  { label: 'Assessing thesis fit…', delay: 6000 },
+  { label: 'Finding the key signals…', delay: 2500 },
+  { label: 'Matching against your thesis…', delay: 6000 },
   { label: 'Drafting follow-up actions…', delay: 10000 },
-  { label: 'Finalising intelligence report…', delay: 15000 },
+  { label: 'Putting together your deal brief…', delay: 15000 },
 ]
 
 function ProcessingOverlay({ isVoice }: { isVoice: boolean }) {
@@ -321,7 +322,7 @@ function ProcessingOverlay({ isVoice }: { isVoice: boolean }) {
 
         <div className="space-y-2">
           <h3 className="text-base font-semibold text-foreground">
-            {isVoice ? 'Transcribing & analysing…' : 'Generating deal intelligence…'}
+            {isVoice ? 'Turning your recording into a deal brief…' : 'Building your deal brief…'}
           </h3>
           <AnimatePresence mode="wait">
             <motion.p
@@ -350,8 +351,8 @@ function ProcessingOverlay({ isVoice }: { isVoice: boolean }) {
 
         <p className="text-xs text-muted-foreground">
           {isVoice
-            ? 'Transcribing audio, then running VC-grade analysis. This takes 30–90 seconds.'
-            : 'Running VC-grade analysis. Usually done in 15–45 seconds.'}
+            ? 'Your audio is being converted and your brief is being prepared. Usually ready in 30–90 seconds.'
+            : 'Preparing your deal brief. Usually ready in 15–45 seconds.'}
         </p>
       </div>
     </motion.div>
@@ -362,7 +363,7 @@ function ProcessingOverlay({ isVoice }: { isVoice: boolean }) {
 
 export default function NewCallPage() {
   const navigate = useNavigate()
-  const { isDemo } = useAuthStore()
+  const { isDemo, logout } = useAuthStore()
 
   const [selectedMode, setSelectedMode] = useState<InputMode>('text')
   const [selectedCompanyId, setSelectedCompanyId] = useState<string>('')
@@ -418,10 +419,10 @@ export default function NewCallPage() {
     setProcessingError(null)
     setIsProcessing(true)
 
-    // ── Demo mode: fast mock redirect ────────────────────────────────────────
+    // ── Demo mode: show sign-in gate instead ─────────────────────────────
     if (isDemo) {
-      await new Promise((r) => setTimeout(r, 1800))
-      navigate('/calls/call_04/intelligence')
+      logout()
+      navigate('/login', { replace: true })
       return
     }
 
@@ -457,7 +458,7 @@ export default function NewCallPage() {
       const error = err as Error
       setProcessingError(
         error.message.includes('408')
-          ? 'Processing timed out. The AI is taking too long — please try again or shorten your input.'
+          ? 'This is taking longer than expected — please try again or shorten your notes.'
           : error.message || 'Something went wrong. Please try again.'
       )
     } finally {
@@ -476,11 +477,17 @@ export default function NewCallPage() {
         <FadeIn>
           <PageHeader
             title="Log a call"
-            description="Capture your post-call reasoning. Conviction will structure it into IC-ready deal intelligence."
+            description="Capture your post-call thoughts. Conviction turns them into a structured investment brief."
           />
         </FadeIn>
 
-        <div className="space-y-6">
+        <div className="relative space-y-6">
+          {isDemo && (
+            <DemoGateOverlay
+              title="Sign in to log your first call"
+              description="See how it works below — then sign in to start building your own deal memory from real founder conversations."
+            />
+          )}
           {/* Company selector */}
           <FadeIn delay={0.05}>
             <div className="space-y-2">
@@ -690,9 +697,9 @@ Supports Fireflies, Otter.ai, Zoom, Gong, and any plain text format."
                   <Sparkles className="h-4 w-4 text-conviction-400" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-foreground">Generate deal intelligence</p>
+                  <p className="text-sm font-medium text-foreground">Generate your deal brief</p>
                   <p className="text-xs text-muted-foreground">
-                    AI will extract strengths, concerns, thesis fit, follow-ups, and a draft email.
+                    Conviction surfaces strengths, concerns, thesis fit, follow-ups, and a draft email in under a minute.
                   </p>
                 </div>
               </div>
@@ -702,10 +709,10 @@ Supports Fireflies, Otter.ai, Zoom, Gong, and any plain text format."
                 disabled={!canSubmit}
                 className="w-full sm:w-auto sm:min-w-[140px]"
               >
-                {isProcessing ? (
+                  {isProcessing ? (
                   <div className="flex items-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    Analysing…
+                    Working on it…
                   </div>
                 ) : (
                   <>
