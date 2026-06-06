@@ -1,83 +1,108 @@
-import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import type { CredentialResponse } from '@react-oauth/google'
-import { ArrowRight, ArrowLeft, Shield, AlertCircle } from 'lucide-react'
-import LogoMark from '@/components/LogoMark'
-import { Button } from '@/components/ui/button'
-import GoogleSignInButton from '@/components/auth/GoogleSignInButton'
-import { useAuthStore, useOnboardingStore } from '@/store'
-import { authApi, mapBackendUser } from '@/services/api/auth'
-import { getFriendlyApiError } from '@/lib/apiErrors'
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import type { CredentialResponse } from "@react-oauth/google";
+import { ArrowRight, ArrowLeft, Shield, AlertCircle } from "lucide-react";
+import LogoMark from "@/components/LogoMark";
+import { Button } from "@/components/ui/button";
+import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
+import { useAuthStore, useOnboardingStore } from "@/store";
+import { authApi, mapBackendUser } from "@/services/api/auth";
+import { getFriendlyApiError } from "@/lib/apiErrors";
 
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as
+  | string
+  | undefined;
 
 export default function LoginPage() {
-  const navigate = useNavigate()
-  const login = useAuthStore((s) => s.login)
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
-  const user = useAuthStore((s) => s.user)
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false)
-  const [isDemoLoading, setIsDemoLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const navigate = useNavigate();
+  const login = useAuthStore((s) => s.login);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const user = useAuthStore((s) => s.user);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isDemoLoading, setIsDemoLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Already logged in — redirect appropriately
   useEffect(() => {
     if (isAuthenticated && user) {
-      const isDemo = useAuthStore.getState().isDemo
+      const isDemo = useAuthStore.getState().isDemo;
       if (isDemo || user.onboardingCompleted) {
-        navigate('/dashboard', { replace: true })
+        navigate("/dashboard", { replace: true });
       } else {
-        navigate('/onboarding', { replace: true })
+        navigate("/onboarding", { replace: true });
       }
     }
-  }, [isAuthenticated, user, navigate])
+  }, [isAuthenticated, user, navigate]);
 
-  async function completeRealLogin(token: string, onboardingCompleted: boolean) {
-    useAuthStore.setState({ token, isAuthenticated: true })
-    const backendUser = await authApi.getMe()
-    login(mapBackendUser(backendUser), token, false)
+  async function completeRealLogin(
+    token: string,
+    onboardingCompleted: boolean
+  ) {
+    useAuthStore.setState({ token, isAuthenticated: true });
+    const backendUser = await authApi.getMe();
+    login(mapBackendUser(backendUser), token, false);
 
     if (!onboardingCompleted) {
-      const { currentStep } = useOnboardingStore.getState()
-      if (currentStep >= 2) useOnboardingStore.getState().reset()
-      navigate('/onboarding', { replace: true })
+      const { currentStep } = useOnboardingStore.getState();
+      if (currentStep >= 2) useOnboardingStore.getState().reset();
+      navigate("/onboarding", { replace: true });
     } else {
-      navigate('/dashboard', { replace: true })
+      navigate("/dashboard", { replace: true });
     }
   }
 
   async function handleGoogleSuccess(credentialResponse: CredentialResponse) {
     if (!credentialResponse.credential) {
-      setError('Google did not return a valid credential. Please try again.')
-      return
+      setError("Google did not return a valid credential. Please try again.");
+      return;
     }
-    setIsGoogleLoading(true)
-    setError(null)
+    setIsGoogleLoading(true);
+    setError(null);
     try {
-      const tokenResponse = await authApi.googleLogin(credentialResponse.credential)
-      await completeRealLogin(tokenResponse.access_token, tokenResponse.onboarding_completed)
+      const tokenResponse = await authApi.googleLogin(
+        credentialResponse.credential
+      );
+      await completeRealLogin(
+        tokenResponse.access_token,
+        tokenResponse.onboarding_completed
+      );
     } catch (err) {
-      setError(getFriendlyApiError(err, 'auth', 'Google sign-in failed. Please try again.'))
+      setError(
+        getFriendlyApiError(
+          err,
+          "auth",
+          "Google sign-in failed. Please try again."
+        )
+      );
     } finally {
-      setIsGoogleLoading(false)
+      setIsGoogleLoading(false);
     }
   }
 
   async function handleDemoLogin() {
-    setIsDemoLoading(true)
-    setError(null)
+    setIsDemoLoading(true);
+    setError(null);
     try {
-      const tokenResponse = await authApi.mockLogin()
-      useAuthStore.setState({ token: tokenResponse.access_token, isAuthenticated: true })
-      const backendUser = await authApi.getMe()
+      const tokenResponse = await authApi.mockLogin();
+      useAuthStore.setState({
+        token: tokenResponse.access_token,
+        isAuthenticated: true,
+      });
+      const backendUser = await authApi.getMe();
       // isDemo = true — skip onboarding, go straight to dashboard
-      login(mapBackendUser(backendUser), tokenResponse.access_token, true)
-      navigate('/dashboard', { replace: true })
+      login(mapBackendUser(backendUser), tokenResponse.access_token, true);
+      navigate("/dashboard", { replace: true });
     } catch (err) {
-      setError(getFriendlyApiError(err, 'demo', "Couldn't load the demo workspace. Please try again."))
+      setError(
+        getFriendlyApiError(
+          err,
+          "demo",
+          "Couldn't load the demo workspace. Please try again."
+        )
+      );
     } finally {
-      setIsDemoLoading(false)
+      setIsDemoLoading(false);
     }
   }
 
@@ -131,14 +156,18 @@ export default function LoginPage() {
           {/* Google sign-in — new user flow */}
           {GOOGLE_CLIENT_ID ? (
             <div className="relative">
-              <div className={`transition-opacity duration-200 ${isGoogleLoading ? 'opacity-40 pointer-events-none' : ''}`}>
+              <div
+                className={`transition-opacity duration-200 ${
+                  isGoogleLoading ? "opacity-40 pointer-events-none" : ""
+                }`}
+              >
                 <GoogleSignInButton
                   clientId={GOOGLE_CLIENT_ID}
                   disabled={isGoogleLoading || isDemoLoading}
                   onSuccess={handleGoogleSuccess}
                   onError={() =>
                     setError(
-                      'Google sign-in failed. Make sure http://localhost:5173 is added to Authorized JavaScript origins in Google Cloud Console.'
+                      "Google sign-in failed. Make sure http://localhost:5173 is added to Authorized JavaScript origins in Google Cloud Console."
                     )
                   }
                 />
@@ -146,15 +175,18 @@ export default function LoginPage() {
               {isGoogleLoading && (
                 <div className="absolute inset-0 flex items-center justify-center gap-2 rounded-md">
                   <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/30 border-t-foreground animate-spin" />
-                  <span className="text-xs text-muted-foreground">Signing in…</span>
+                  <span className="text-xs text-muted-foreground">
+                    Signing in…
+                  </span>
                 </div>
               )}
             </div>
           ) : (
             <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 px-3 py-2.5 text-xs text-amber-400">
-              Google OAuth is not configured. Add{' '}
-              <code className="font-mono">VITE_GOOGLE_CLIENT_ID</code> to your frontend{' '}
-              <code className="font-mono">.env</code> and restart the dev server.
+              Google OAuth is not configured. Add{" "}
+              <code className="font-mono">VITE_GOOGLE_CLIENT_ID</code> to your
+              frontend <code className="font-mono">.env</code> and restart the
+              dev server.
             </div>
           )}
 
@@ -167,9 +199,12 @@ export default function LoginPage() {
           {/* Demo login */}
           <div className="rounded-lg border border-border bg-secondary/30 p-3 space-y-2.5">
             <div>
-              <p className="text-xs font-medium text-foreground">Explore the demo workspace</p>
+              <p className="text-xs font-medium text-foreground">
+                Explore the demo workspace
+              </p>
               <p className="text-2xs text-muted-foreground mt-0.5">
-                See the full product with RTP Global's sample deal pipeline — no account needed.
+                See the full product with RTP Global's sample deal pipeline — no
+                account needed.
               </p>
             </div>
             <Button
@@ -196,7 +231,7 @@ export default function LoginPage() {
             <span>Your data is encrypted and private.</span>
           </div>
           <p className="text-xs text-muted-foreground">
-            New here?{' '}
+            New here?{" "}
             <Link
               to="/"
               className="font-medium text-conviction-300 hover:text-conviction-200 transition-colors inline-flex items-center gap-1"
@@ -208,5 +243,5 @@ export default function LoginPage() {
         </div>
       </motion.div>
     </div>
-  )
+  );
 }
