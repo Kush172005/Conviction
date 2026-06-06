@@ -1,0 +1,392 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 896" width="1400" height="896" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <polygon points="0 0, 9 3.5, 0 7" fill="#94A3B8"/>
+    </marker>
+    <marker id="arr-purple" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <polygon points="0 0, 9 3.5, 0 7" fill="#C084FC"/>
+    </marker>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#0000001a"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1400" height="896" fill="#FFFFFF"/>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- TITLE                                              -->
+  <!-- ─────────────────────────────────────────────────── -->
+  <text x="700" y="34" text-anchor="middle" font-size="21" font-weight="700" fill="#0F172A" letter-spacing="-0.5">RTP Conviction — System Architecture</text>
+  <text x="700" y="55" text-anchor="middle" font-size="12" fill="#94A3B8">React + FastAPI + MongoDB · Multi-provider AI pipeline with full graceful degradation</text>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- LAYER 1: CLIENT                                     -->
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- Layer label -->
+  <text x="38" y="73" font-size="9.5" font-weight="700" fill="#60A5FA" letter-spacing="2.5">01  CLIENT</text>
+  <text x="200" y="73" font-size="9" fill="#94A3B8">React 18 · TypeScript · Vite 5 → Vercel</text>
+
+  <!-- Container -->
+  <rect x="22" y="79" width="1356" height="134" rx="10" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1.5" filter="url(#shadow)"/>
+
+  <!-- Box 1: Landing + Login -->
+  <rect x="38" y="93" width="155" height="58" rx="6" fill="white" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="115" y="114" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1D4ED8">Landing + Login</text>
+  <text x="115" y="129" text-anchor="middle" font-size="9" fill="#64748B">Google OAuth</text>
+  <text x="115" y="141" text-anchor="middle" font-size="9" fill="#64748B">GSAP · Demo mode</text>
+
+  <!-- Box 2: Dashboard -->
+  <rect x="205" y="93" width="148" height="58" rx="6" fill="white" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="279" y="114" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1D4ED8">Dashboard</text>
+  <text x="279" y="129" text-anchor="middle" font-size="9" fill="#64748B">KPI cards · Activity</text>
+  <text x="279" y="141" text-anchor="middle" font-size="9" fill="#64748B">GSAP counters</text>
+
+  <!-- Box 3: Log a Call -->
+  <rect x="365" y="93" width="148" height="58" rx="6" fill="white" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="439" y="114" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1D4ED8">Log a Call</text>
+  <text x="439" y="129" text-anchor="middle" font-size="9" fill="#64748B">Voice · Text · Transcript</text>
+  <text x="439" y="141" text-anchor="middle" font-size="9" fill="#64748B">MediaRecorder API</text>
+
+  <!-- Box 4: Pipeline -->
+  <rect x="525" y="93" width="148" height="58" rx="6" fill="white" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="599" y="114" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1D4ED8">Pipeline</text>
+  <text x="599" y="129" text-anchor="middle" font-size="9" fill="#64748B">Companies · Calls</text>
+  <text x="599" y="141" text-anchor="middle" font-size="9" fill="#64748B">Decision history</text>
+
+  <!-- Box 5: Research -->
+  <rect x="685" y="93" width="155" height="58" rx="6" fill="white" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="762" y="114" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1D4ED8">Research</text>
+  <text x="762" y="129" text-anchor="middle" font-size="9" fill="#64748B">Startup Intelligence</text>
+  <text x="762" y="141" text-anchor="middle" font-size="9" fill="#64748B">Poll every 1.5 s</text>
+
+  <!-- Box 6: Deal Memory -->
+  <rect x="852" y="93" width="148" height="58" rx="6" fill="white" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="926" y="114" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1D4ED8">Deal Memory</text>
+  <text x="926" y="129" text-anchor="middle" font-size="9" fill="#64748B">Investment timeline</text>
+  <text x="926" y="141" text-anchor="middle" font-size="9" fill="#64748B">Per company</text>
+
+  <!-- Box 7: Settings -->
+  <rect x="1012" y="93" width="130" height="58" rx="6" fill="white" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="1077" y="114" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1D4ED8">Settings</text>
+  <text x="1077" y="129" text-anchor="middle" font-size="9" fill="#64748B">Investor profile</text>
+  <text x="1077" y="141" text-anchor="middle" font-size="9" fill="#64748B">Fund thesis</text>
+
+  <!-- Box 8: Client Infra -->
+  <rect x="1154" y="93" width="208" height="58" rx="6" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="1258" y="112" text-anchor="middle" font-size="10" font-weight="700" fill="#1D4ED8">Client State + Infra</text>
+  <text x="1258" y="127" text-anchor="middle" font-size="9" fill="#64748B">Zustand (persisted) · React Query</text>
+  <text x="1258" y="140" text-anchor="middle" font-size="9" fill="#64748B">Framer Motion · Tailwind + shadcn</text>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- CONNECTOR 1: CLIENT → API                          -->
+  <!-- ─────────────────────────────────────────────────── -->
+  <line x1="440" y1="213" x2="440" y2="241" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="760" y1="213" x2="760" y2="241" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="540" y="221" width="320" height="18" rx="4" fill="#F1F5F9"/>
+  <text x="700" y="234" text-anchor="middle" font-size="9.5" fill="#64748B">HTTPS / REST  ·  Bearer JWT  ·  Vite proxy → localhost:8000 in dev</text>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- LAYER 2: API                                        -->
+  <!-- ─────────────────────────────────────────────────── -->
+  <text x="38" y="248" font-size="9.5" font-weight="700" fill="#4ADE80" letter-spacing="2.5">02  API</text>
+  <text x="155" y="248" font-size="9" fill="#94A3B8">FastAPI · Python 3.12 · Pydantic v2 · Motor (async) → Render</text>
+
+  <!-- Container -->
+  <rect x="22" y="253" width="1356" height="110" rx="10" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1.5" filter="url(#shadow)"/>
+
+  <!-- FastAPI Core -->
+  <rect x="38" y="268" width="170" height="60" rx="6" fill="white" stroke="#4ADE80" stroke-width="1.5"/>
+  <text x="123" y="288" text-anchor="middle" font-size="10.5" font-weight="700" fill="#15803D">FastAPI Core</text>
+  <text x="123" y="303" text-anchor="middle" font-size="9" fill="#64748B">JWT · CORS · Lifespan</text>
+  <text x="123" y="316" text-anchor="middle" font-size="9" fill="#64748B">10 routers · Dep injection</text>
+
+  <!-- Auth -->
+  <rect x="220" y="268" width="160" height="60" rx="6" fill="white" stroke="#4ADE80" stroke-width="1.5"/>
+  <text x="300" y="288" text-anchor="middle" font-size="10.5" font-weight="700" fill="#15803D">Auth Routes</text>
+  <text x="300" y="303" text-anchor="middle" font-size="9" fill="#64748B">POST /auth/google</text>
+  <text x="300" y="316" text-anchor="middle" font-size="9" fill="#64748B">GET /users/me</text>
+
+  <!-- Call Routes -->
+  <rect x="392" y="268" width="165" height="60" rx="6" fill="white" stroke="#4ADE80" stroke-width="1.5"/>
+  <text x="474" y="288" text-anchor="middle" font-size="10.5" font-weight="700" fill="#15803D">Call Routes</text>
+  <text x="474" y="303" text-anchor="middle" font-size="9" fill="#64748B">POST /calls · /voice</text>
+  <text x="474" y="316" text-anchor="middle" font-size="9" fill="#64748B">POST /calls/{id}/process</text>
+
+  <!-- Data Routes -->
+  <rect x="569" y="268" width="165" height="60" rx="6" fill="white" stroke="#4ADE80" stroke-width="1.5"/>
+  <text x="651" y="288" text-anchor="middle" font-size="10.5" font-weight="700" fill="#15803D">Data Routes</text>
+  <text x="651" y="303" text-anchor="middle" font-size="9" fill="#64748B">/companies · /memory</text>
+  <text x="651" y="316" text-anchor="middle" font-size="9" fill="#64748B">/follow-ups · /dashboard</text>
+
+  <!-- Research Routes -->
+  <rect x="746" y="268" width="175" height="60" rx="6" fill="white" stroke="#4ADE80" stroke-width="1.5"/>
+  <text x="833" y="288" text-anchor="middle" font-size="10.5" font-weight="700" fill="#15803D">Research Routes</text>
+  <text x="833" y="303" text-anchor="middle" font-size="9" fill="#64748B">POST /startup-intelligence</text>
+  <text x="833" y="316" text-anchor="middle" font-size="9" fill="#64748B">BackgroundTask · GET poll</text>
+
+  <!-- Investor Profile -->
+  <rect x="933" y="268" width="165" height="60" rx="6" fill="white" stroke="#4ADE80" stroke-width="1.5"/>
+  <text x="1015" y="288" text-anchor="middle" font-size="10.5" font-weight="700" fill="#15803D">Profile Routes</text>
+  <text x="1015" y="303" text-anchor="middle" font-size="9" fill="#64748B">/investor-profile</text>
+  <text x="1015" y="316" text-anchor="middle" font-size="9" fill="#64748B">Fund thesis CRUD</text>
+
+  <!-- Repo/Deploy info -->
+  <rect x="1110" y="268" width="252" height="60" rx="6" fill="#F0FDF4" stroke="#4ADE80" stroke-width="1.5"/>
+  <text x="1236" y="288" text-anchor="middle" font-size="10.5" font-weight="700" fill="#15803D">Repositories + Data Layer</text>
+  <text x="1236" y="303" text-anchor="middle" font-size="9" fill="#64748B">BaseRepo · Motor async · ObjectId ↔ str</text>
+  <text x="1236" y="316" text-anchor="middle" font-size="9" fill="#64748B">All queries scoped by user_id</text>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- CONNECTOR 2: API → SERVICES                        -->
+  <!-- ─────────────────────────────────────────────────── -->
+  <line x1="474" y1="363" x2="474" y2="395" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="833" y1="363" x2="833" y2="395" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arr)"/>
+  <!-- dashed line for async research -->
+  <line x1="833" y1="363" x2="833" y2="395" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+  <rect x="560" y="372" width="280" height="16" rx="4" fill="#F1F5F9"/>
+  <text x="700" y="384" text-anchor="middle" font-size="9" fill="#64748B">sync invocation (calls)    ·    async BackgroundTask (research)</text>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- LAYER 3: AI SERVICES                               -->
+  <!-- ─────────────────────────────────────────────────── -->
+  <text x="38" y="392" font-size="9.5" font-weight="700" fill="#C084FC" letter-spacing="2.5">03  AI PIPELINES</text>
+  <text x="218" y="392" font-size="9" fill="#94A3B8">Three independent pipelines · Every provider has a fallback · Product never returns an error</text>
+
+  <!-- Container -->
+  <rect x="22" y="398" width="1356" height="222" rx="10" fill="#FAF5FF" stroke="#DDD6FE" stroke-width="1.5" filter="url(#shadow)"/>
+
+  <!-- ══ STT Pipeline ══ -->
+  <rect x="38" y="414" width="308" height="188" rx="8" fill="white" stroke="#C084FC" stroke-width="1.5"/>
+  <!-- Header -->
+  <rect x="38" y="414" width="308" height="36" rx="8" fill="#FAF5FF" stroke="#C084FC" stroke-width="0"/>
+  <rect x="38" y="432" width="308" height="18" fill="#FAF5FF"/>
+  <text x="192" y="436" text-anchor="middle" font-size="11" font-weight="700" fill="#7E22CE">① STT Pipeline</text>
+  <text x="192" y="450" text-anchor="middle" font-size="9" fill="#9CA3AF">voice recording → transcript text</text>
+  <line x1="55" y1="454" x2="329" y2="454" stroke="#E9D5FF" stroke-width="1"/>
+
+  <rect x="55" y="462" width="275" height="28" rx="5" fill="#FAF5FF" stroke="#DDD6FE" stroke-width="1"/>
+  <text x="192" y="479" text-anchor="middle" font-size="10" font-weight="600" fill="#7C3AED">HF Whisper large-v3-turbo</text>
+  <text x="192" y="491" text-anchor="middle" font-size="8.5" fill="#94A3B8">router.huggingface.co — primary</text>
+
+  <text x="192" y="507" text-anchor="middle" font-size="9" fill="#94A3B8">↓  fallback</text>
+
+  <rect x="55" y="512" width="275" height="28" rx="5" fill="#FAF5FF" stroke="#DDD6FE" stroke-width="1"/>
+  <text x="192" y="529" text-anchor="middle" font-size="10" font-weight="600" fill="#7C3AED">Gemini 2.5 Flash (multimodal)</text>
+  <text x="192" y="541" text-anchor="middle" font-size="8.5" fill="#94A3B8">base64 inline audio — secondary</text>
+
+  <text x="192" y="557" text-anchor="middle" font-size="9" fill="#94A3B8">↓  fallback</text>
+
+  <rect x="55" y="562" width="275" height="25" rx="5" fill="#FEF2F2" stroke="#FECACA" stroke-width="1"/>
+  <text x="192" y="579" text-anchor="middle" font-size="9.5" fill="#DC2626">Placeholder — user pastes manually</text>
+
+  <!-- ══ Call Intelligence ══ -->
+  <rect x="360" y="414" width="358" height="188" rx="8" fill="white" stroke="#C084FC" stroke-width="1.5"/>
+  <rect x="360" y="414" width="358" height="36" rx="8" fill="#FAF5FF" stroke="#C084FC" stroke-width="0"/>
+  <rect x="360" y="432" width="358" height="18" fill="#FAF5FF"/>
+  <text x="539" y="436" text-anchor="middle" font-size="11" font-weight="700" fill="#7E22CE">② Call Intelligence</text>
+  <text x="539" y="450" text-anchor="middle" font-size="9" fill="#9CA3AF">notes + transcript → structured deal brief</text>
+  <line x1="377" y1="454" x2="701" y2="454" stroke="#E9D5FF" stroke-width="1"/>
+
+  <!-- Input types -->
+  <rect x="377" y="462" width="75" height="22" rx="11" fill="#EFF6FF" stroke="#BFDBFE"/>
+  <text x="414" y="477" text-anchor="middle" font-size="9" fill="#1D4ED8">Voice memo</text>
+  <rect x="462" y="462" width="56" height="22" rx="11" fill="#EFF6FF" stroke="#BFDBFE"/>
+  <text x="490" y="477" text-anchor="middle" font-size="9" fill="#1D4ED8">Text</text>
+  <rect x="528" y="462" width="76" height="22" rx="11" fill="#EFF6FF" stroke="#BFDBFE"/>
+  <text x="566" y="477" text-anchor="middle" font-size="9" fill="#1D4ED8">Transcript</text>
+
+  <text x="539" y="500" text-anchor="middle" font-size="8.5" fill="#94A3B8">investor thesis injected into prompt</text>
+
+  <rect x="377" y="508" width="323" height="28" rx="5" fill="#FAF5FF" stroke="#DDD6FE" stroke-width="1"/>
+  <text x="538" y="525" text-anchor="middle" font-size="10" font-weight="600" fill="#7C3AED">Gemini 2.5 Flash-Lite (JSON mode)</text>
+  <text x="538" y="537" text-anchor="middle" font-size="8.5" fill="#94A3B8">primary — ~2s p95</text>
+
+  <text x="539" y="553" text-anchor="middle" font-size="9" fill="#94A3B8">↓  fallback</text>
+
+  <rect x="377" y="558" width="323" height="28" rx="5" fill="#FAF5FF" stroke="#DDD6FE" stroke-width="1"/>
+  <text x="538" y="575" text-anchor="middle" font-size="10" font-weight="600" fill="#7C3AED">HF Qwen 2.5-7B-Instruct → heuristic templates</text>
+
+  <text x="377" y="610" font-size="8.5" fill="#64748B">→ recommendation · confidence · strengths · concerns · draft email · follow-up actions</text>
+
+  <!-- ══ Startup Intelligence ══ -->
+  <rect x="732" y="414" width="630" height="188" rx="8" fill="white" stroke="#C084FC" stroke-width="1.5"/>
+  <rect x="732" y="414" width="630" height="36" rx="8" fill="#FAF5FF" stroke="#C084FC" stroke-width="0"/>
+  <rect x="732" y="432" width="630" height="18" fill="#FAF5FF"/>
+  <text x="1047" y="436" text-anchor="middle" font-size="11" font-weight="700" fill="#7E22CE">③ Startup Intelligence Pipeline</text>
+  <text x="1047" y="450" text-anchor="middle" font-size="9" fill="#9CA3AF">company URL → 7-stage background task → full IC memo</text>
+  <line x1="749" y1="454" x2="1345" y2="454" stroke="#E9D5FF" stroke-width="1"/>
+
+  <!-- Stage boxes -->
+  <!-- Stage 0 -->
+  <rect x="749" y="462" width="80" height="56" rx="5" fill="#FAF5FF" stroke="#DDD6FE"/>
+  <text x="789" y="479" text-anchor="middle" font-size="8" font-weight="700" fill="#7C3AED">STAGE 0</text>
+  <text x="789" y="493" text-anchor="middle" font-size="9" fill="#1E293B">Cache</text>
+  <text x="789" y="507" text-anchor="middle" font-size="8" fill="#94A3B8">14-day TTL</text>
+
+  <text x="840" y="492" text-anchor="middle" font-size="13" fill="#94A3B8">→</text>
+
+  <!-- Stage 1 -->
+  <rect x="851" y="462" width="84" height="56" rx="5" fill="#FAF5FF" stroke="#DDD6FE"/>
+  <text x="893" y="479" text-anchor="middle" font-size="8" font-weight="700" fill="#7C3AED">STAGE 1</text>
+  <text x="893" y="493" text-anchor="middle" font-size="9" fill="#1E293B">Crawl</text>
+  <text x="893" y="507" text-anchor="middle" font-size="8" fill="#94A3B8">Jina + httpx</text>
+
+  <text x="946" y="492" text-anchor="middle" font-size="13" fill="#94A3B8">→</text>
+
+  <!-- Stage 2 -->
+  <rect x="958" y="462" width="84" height="56" rx="5" fill="#FAF5FF" stroke="#DDD6FE"/>
+  <text x="1000" y="479" text-anchor="middle" font-size="8" font-weight="700" fill="#7C3AED">STAGE 2</text>
+  <text x="1000" y="493" text-anchor="middle" font-size="9" fill="#1E293B">Search</text>
+  <text x="1000" y="507" text-anchor="middle" font-size="8" fill="#94A3B8">Tavily</text>
+
+  <text x="1053" y="492" text-anchor="middle" font-size="13" fill="#94A3B8">→</text>
+
+  <!-- Stage 3 -->
+  <rect x="1065" y="462" width="84" height="56" rx="5" fill="#FAF5FF" stroke="#DDD6FE"/>
+  <text x="1107" y="479" text-anchor="middle" font-size="8" font-weight="700" fill="#7C3AED">STAGE 3</text>
+  <text x="1107" y="493" text-anchor="middle" font-size="9" fill="#1E293B">Extract</text>
+  <text x="1107" y="507" text-anchor="middle" font-size="8" fill="#94A3B8">HF + Gemini</text>
+
+  <text x="1160" y="492" text-anchor="middle" font-size="13" fill="#94A3B8">→</text>
+
+  <!-- Stage 4 -->
+  <rect x="1172" y="462" width="84" height="56" rx="5" fill="#FAF5FF" stroke="#DDD6FE"/>
+  <text x="1214" y="479" text-anchor="middle" font-size="8" font-weight="700" fill="#7C3AED">STAGE 4</text>
+  <text x="1214" y="493" text-anchor="middle" font-size="9" fill="#1E293B">Score</text>
+  <text x="1214" y="507" text-anchor="middle" font-size="8" fill="#94A3B8">Thesis 0–100</text>
+
+  <text x="1267" y="492" text-anchor="middle" font-size="13" fill="#94A3B8">→</text>
+
+  <!-- Stage 5-6 -->
+  <rect x="1279" y="462" width="84" height="56" rx="5" fill="#FAF5FF" stroke="#DDD6FE"/>
+  <text x="1321" y="479" text-anchor="middle" font-size="8" font-weight="700" fill="#7C3AED">STAGE 5–6</text>
+  <text x="1321" y="493" text-anchor="middle" font-size="9" fill="#1E293B">IC Memo</text>
+  <text x="1321" y="507" text-anchor="middle" font-size="8" fill="#94A3B8">Gemini</text>
+
+  <!-- Progress label -->
+  <text x="1047" y="538" text-anchor="middle" font-size="9" fill="#64748B">Progress written to MongoDB at every stage — frontend polls GET /reports/{id} every 1.5 s</text>
+
+  <!-- Output label -->
+  <rect x="749" y="548" width="630" height="22" rx="4" fill="#FAF5FF" stroke="#E9D5FF"/>
+  <text x="1064" y="563" text-anchor="middle" font-size="8.5" fill="#7C3AED">Output: thesis fit score  ·  moat analysis (8 dimensions)  ·  red flags  ·  diligence questions  ·  IC memo  ·  sources</text>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- CONNECTOR 3: SERVICES → DATA                       -->
+  <!-- ─────────────────────────────────────────────────── -->
+  <line x1="470" y1="620" x2="470" y2="652" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="930" y1="620" x2="930" y2="652" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="545" y="630" width="310" height="16" rx="4" fill="#F1F5F9"/>
+  <text x="700" y="642" text-anchor="middle" font-size="9" fill="#64748B">async read / write  ·  Motor + ObjectId → string serialization  ·  every doc scoped by user_id</text>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- LAYER 4: DATA                                       -->
+  <!-- ─────────────────────────────────────────────────── -->
+  <text x="38" y="649" font-size="9.5" font-weight="700" fill="#F59E0B" letter-spacing="2.5">04  DATA</text>
+  <text x="128" y="649" font-size="9" fill="#94A3B8">MongoDB Atlas · database: conviction · 9 collections</text>
+
+  <!-- Container -->
+  <rect x="22" y="655" width="1356" height="96" rx="10" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1.5" filter="url(#shadow)"/>
+
+  <!-- MongoDB label -->
+  <text x="92" y="689" text-anchor="middle" font-size="12" font-weight="700" fill="#B45309">MongoDB</text>
+  <text x="92" y="704" text-anchor="middle" font-size="9" fill="#78350F">Atlas / Local</text>
+  <text x="92" y="718" text-anchor="middle" font-size="9" fill="#78350F">Motor async</text>
+  <line x1="158" y1="662" x2="158" y2="746" stroke="#FDE68A" stroke-width="1.5"/>
+
+  <!-- Collection chips -->
+  <rect x="172" y="671" width="63" height="22" rx="11" fill="#FEF3C7" stroke="#FCD34D"/>
+  <text x="203" y="686" text-anchor="middle" font-size="9" fill="#92400E">users</text>
+
+  <rect x="245" y="671" width="112" height="22" rx="11" fill="#FEF3C7" stroke="#FCD34D"/>
+  <text x="301" y="686" text-anchor="middle" font-size="9" fill="#92400E">investor_profiles</text>
+
+  <rect x="367" y="671" width="88" height="22" rx="11" fill="#FEF3C7" stroke="#FCD34D"/>
+  <text x="411" y="686" text-anchor="middle" font-size="9" fill="#92400E">companies</text>
+
+  <rect x="465" y="671" width="52" height="22" rx="11" fill="#FEF3C7" stroke="#FCD34D"/>
+  <text x="491" y="686" text-anchor="middle" font-size="9" fill="#92400E">calls</text>
+
+  <rect x="527" y="671" width="77" height="22" rx="11" fill="#FEF3C7" stroke="#FCD34D"/>
+  <text x="565" y="686" text-anchor="middle" font-size="9" fill="#92400E">decisions</text>
+
+  <rect x="614" y="671" width="77" height="22" rx="11" fill="#FEF3C7" stroke="#FCD34D"/>
+  <text x="652" y="686" text-anchor="middle" font-size="9" fill="#92400E">follow_ups</text>
+
+  <rect x="701" y="671" width="104" height="22" rx="11" fill="#FEF3C7" stroke="#FCD34D"/>
+  <text x="753" y="686" text-anchor="middle" font-size="9" fill="#92400E">memory_entries</text>
+
+  <rect x="815" y="671" width="183" height="22" rx="11" fill="#FDE68A" stroke="#FCD34D"/>
+  <text x="906" y="686" text-anchor="middle" font-size="9" font-weight="600" fill="#92400E">startup_intelligence_reports</text>
+
+  <rect x="1008" y="671" width="150" height="22" rx="11" fill="#FDE68A" stroke="#FCD34D"/>
+  <text x="1083" y="686" text-anchor="middle" font-size="9" font-weight="600" fill="#92400E">research_cache (shared)</text>
+
+  <!-- note row 2 -->
+  <text x="172" y="715" font-size="9" fill="#78350F">All domain collections scoped by user_id  ·  research_cache keyed by normalized domain, 14-day TTL, shared across all users to prevent redundant web crawls</text>
+  <text x="172" y="732" font-size="9" fill="#B45309">Repositories handle ObjectId ↔ string serialization  ·  Motor async driver  ·  JWT sessions valid 7 days</text>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- CONNECTOR 4: DATA → EXTERNAL                       -->
+  <!-- ─────────────────────────────────────────────────── -->
+  <line x1="700" y1="751" x2="700" y2="780" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="563" y="759" width="274" height="15" rx="4" fill="#F1F5F9"/>
+  <text x="700" y="771" text-anchor="middle" font-size="9" fill="#94A3B8">called from API and service layers at runtime</text>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- LAYER 5: EXTERNAL PROVIDERS                        -->
+  <!-- ─────────────────────────────────────────────────── -->
+  <text x="38" y="777" font-size="9.5" font-weight="700" fill="#94A3B8" letter-spacing="2.5">05  EXTERNAL PROVIDERS</text>
+  <text x="250" y="777" font-size="9" fill="#94A3B8">all providers have fallbacks — quality scales with available API keys</text>
+
+  <!-- Container -->
+  <rect x="22" y="783" width="1356" height="90" rx="10" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5" filter="url(#shadow)"/>
+
+  <!-- Google OAuth -->
+  <rect x="38" y="800" width="152" height="54" rx="6" fill="white" stroke="#CBD5E1"/>
+  <text x="114" y="820" text-anchor="middle" font-size="10" font-weight="700" fill="#1E293B">Google OAuth 2.0</text>
+  <text x="114" y="835" text-anchor="middle" font-size="9" fill="#64748B">ID token verify</text>
+  <text x="114" y="847" text-anchor="middle" font-size="9" fill="#64748B">accounts.google.com</text>
+
+  <!-- Gemini -->
+  <rect x="202" y="800" width="180" height="54" rx="6" fill="white" stroke="#CBD5E1"/>
+  <text x="292" y="820" text-anchor="middle" font-size="10" font-weight="700" fill="#1E293B">Gemini 2.5 Flash</text>
+  <text x="292" y="835" text-anchor="middle" font-size="9" fill="#64748B">Call intelligence · SI research</text>
+  <text x="292" y="847" text-anchor="middle" font-size="9" fill="#64748B">Flash-Lite (synthesis, JSON mode)</text>
+
+  <!-- HF -->
+  <rect x="394" y="800" width="210" height="54" rx="6" fill="white" stroke="#CBD5E1"/>
+  <text x="499" y="820" text-anchor="middle" font-size="10" font-weight="700" fill="#1E293B">HF Inference Router</text>
+  <text x="499" y="835" text-anchor="middle" font-size="9" fill="#64748B">Whisper large-v3-turbo (STT)</text>
+  <text x="499" y="847" text-anchor="middle" font-size="9" fill="#64748B">Qwen 2.5-7B-Instruct (fallback LLM)</text>
+
+  <!-- Tavily -->
+  <rect x="616" y="800" width="155" height="54" rx="6" fill="white" stroke="#CBD5E1"/>
+  <text x="693" y="820" text-anchor="middle" font-size="10" font-weight="700" fill="#1E293B">Tavily Search</text>
+  <text x="693" y="835" text-anchor="middle" font-size="9" fill="#64748B">3 targeted web queries</text>
+  <text x="693" y="847" text-anchor="middle" font-size="9" fill="#64748B">per SI report</text>
+
+  <!-- Jina -->
+  <rect x="783" y="800" width="150" height="54" rx="6" fill="white" stroke="#CBD5E1"/>
+  <text x="858" y="820" text-anchor="middle" font-size="10" font-weight="700" fill="#1E293B">Jina Reader</text>
+  <text x="858" y="835" text-anchor="middle" font-size="9" fill="#64748B">r.jina.ai — free crawl</text>
+  <text x="858" y="847" text-anchor="middle" font-size="9" fill="#64748B">website → markdown</text>
+
+  <!-- Firecrawl -->
+  <rect x="945" y="800" width="150" height="54" rx="6" fill="white" stroke="#CBD5E1"/>
+  <text x="1020" y="820" text-anchor="middle" font-size="10" font-weight="700" fill="#1E293B">Firecrawl</text>
+  <text x="1020" y="835" text-anchor="middle" font-size="9" fill="#64748B">JS-rendered scrape</text>
+  <text x="1020" y="847" text-anchor="middle" font-size="9" fill="#64748B">fallback to Jina</text>
+
+  <!-- Legend note -->
+  <rect x="1107" y="800" width="255" height="54" rx="6" fill="#F8FAFC" stroke="#CBD5E1"/>
+  <text x="1234" y="819" text-anchor="middle" font-size="9.5" font-weight="700" fill="#475569">Design principle</text>
+  <text x="1234" y="834" text-anchor="middle" font-size="9" fill="#64748B">Zero hard dependencies. Every path</text>
+  <text x="1234" y="847" text-anchor="middle" font-size="9" fill="#64748B">has a fallback — product always ships.</text>
+
+  <!-- ─────────────────────────────────────────────────── -->
+  <!-- FOOTER                                             -->
+  <!-- ─────────────────────────────────────────────────── -->
+  <text x="700" y="886" text-anchor="middle" font-size="9" fill="#CBD5E1">RTP Conviction · Built for RTP Global Case Study 2026 · React + FastAPI + MongoDB</text>
+
+</svg>
