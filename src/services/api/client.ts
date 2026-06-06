@@ -51,7 +51,7 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     return (text ? JSON.parse(text) : undefined) as T
   } catch (err) {
     if (err instanceof DOMException && err.name === 'AbortError') {
-      throw new ApiError(408, 'Request timed out. The AI is taking longer than expected.')
+      throw new ApiError(408, 'Request timed out waiting for the server.')
     }
     throw err
   } finally {
@@ -87,7 +87,7 @@ async function uploadFormData<T>(path: string, formData: FormData, timeoutMs = L
     return (text ? JSON.parse(text) : undefined) as T
   } catch (err) {
     if (err instanceof DOMException && err.name === 'AbortError') {
-      throw new ApiError(408, 'Voice processing timed out. Try shorter recordings or text input.')
+      throw new ApiError(408, 'Upload timed out waiting for the server.')
     }
     throw err
   } finally {

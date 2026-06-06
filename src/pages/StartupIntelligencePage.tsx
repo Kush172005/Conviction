@@ -18,6 +18,7 @@ import type {
   MoatStrength, RedFlagSeverity, SIProgressStage,
 } from '@/types'
 import { cn } from '@/lib/utils'
+import { getFriendlyApiError } from '@/lib/apiErrors'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -426,8 +427,8 @@ export default function StartupIntelligencePage() {
 
       // Start polling
       openReport(report_id)
-    } catch (err: any) {
-      setFormError(err?.message || 'Failed to start report. Is the backend running?')
+    } catch (err: unknown) {
+      setFormError(getFriendlyApiError(err, 'research', "Couldn't start research. Please try again."))
     } finally {
       setIsSubmitting(false)
     }

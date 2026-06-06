@@ -22,6 +22,7 @@ import { MOCK_COMPANIES } from '@/mocks/data'
 import { cn, formatRelativeTime, STATUS_COLORS } from '@/lib/utils'
 import { useAuthStore } from '@/store'
 import { companiesApi } from '@/services/api/companies'
+import { getFriendlyApiError } from '@/lib/apiErrors'
 import type { Company, CompanyStatus } from '@/types'
 
 const STATUS_LABELS: Record<CompanyStatus, string> = {
@@ -275,8 +276,8 @@ export default function CompaniesPage() {
     try {
       const list = await companiesApi.list()
       setCompanies(list)
-    } catch {
-      setError('Failed to load companies.')
+    } catch (err) {
+      setError(getFriendlyApiError(err, 'default', "Couldn't load your pipeline. Please try again."))
     } finally {
       setLoading(false)
     }

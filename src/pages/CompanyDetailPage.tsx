@@ -33,6 +33,7 @@ import { companiesApi } from '@/services/api/companies'
 import { callsApi } from '@/services/api/calls'
 import { memoryApi } from '@/services/api/memory'
 import { followUpsApi } from '@/services/api/followUps'
+import { getFriendlyApiError } from '@/lib/apiErrors'
 import type { Company, Call, MemoryEntry, FollowUp } from '@/types'
 import type { LatestDecision } from '@/services/api/companies'
 
@@ -116,7 +117,7 @@ export default function CompanyDetailPage() {
       )
     } catch (err: unknown) {
       const e = err as Error
-      setError(e.message || 'Failed to load company data.')
+      setError(getFriendlyApiError(err, 'default', "Couldn't load this company. Please try again."))
     } finally {
       setLoading(false)
     }
@@ -460,7 +461,7 @@ export default function CompanyDetailPage() {
                             : call.inputMode === 'recording'
                             ? 'Meeting recording'
                             : call.inputMode === 'transcript'
-                            ? 'Transcript'
+                            ? 'Transcript (legacy)'
                             : 'Brain dump'}
                         </span>
                         <span>·</span>

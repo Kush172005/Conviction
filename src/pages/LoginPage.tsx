@@ -2,25 +2,13 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import type { CredentialResponse } from '@react-oauth/google'
-import { TrendingUp, ArrowRight, ArrowLeft, Shield, AlertCircle } from 'lucide-react'
+import { ArrowRight, ArrowLeft, Shield, AlertCircle } from 'lucide-react'
+import LogoMark from '@/components/LogoMark'
 import { Button } from '@/components/ui/button'
 import GoogleSignInButton from '@/components/auth/GoogleSignInButton'
 import { useAuthStore, useOnboardingStore } from '@/store'
 import { authApi, mapBackendUser } from '@/services/api/auth'
-import { ApiError } from '@/services/api/client'
-
-function parseApiError(err: unknown, fallback: string): string {
-  if (err instanceof ApiError) {
-    try {
-      const parsed = JSON.parse(err.message) as { detail?: string }
-      return parsed.detail || err.message
-    } catch {
-      return err.message || fallback
-    }
-  }
-  if (err instanceof Error) return err.message
-  return fallback
-}
+import { getFriendlyApiError } from '@/lib/apiErrors'
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined
 
@@ -70,12 +58,7 @@ export default function LoginPage() {
       const tokenResponse = await authApi.googleLogin(credentialResponse.credential)
       await completeRealLogin(tokenResponse.access_token, tokenResponse.onboarding_completed)
     } catch (err) {
-      setError(
-        parseApiError(
-          err,
-          'Google sign-in failed. Check that the backend is running and your Google Client ID matches this app.'
-        )
-      )
+      setError(getFriendlyApiError(err, 'auth', 'Google sign-in failed. Please try again.'))
     } finally {
       setIsGoogleLoading(false)
     }
@@ -92,7 +75,7 @@ export default function LoginPage() {
       login(mapBackendUser(backendUser), tokenResponse.access_token, true)
       navigate('/dashboard', { replace: true })
     } catch (err) {
-      setError(parseApiError(err, 'Demo login failed. Make sure the backend is running.'))
+      setError(getFriendlyApiError(err, 'demo', "Couldn't load the demo workspace. Please try again."))
     } finally {
       setIsDemoLoading(false)
     }
@@ -122,7 +105,7 @@ export default function LoginPage() {
           className="block text-center mb-8 group rounded-xl p-2 -m-2 transition-colors hover:bg-card/40"
         >
           <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-conviction mb-4 brand-glow-anim transition-transform group-hover:scale-105">
-            <TrendingUp className="h-6 w-6 text-white" />
+            <LogoMark className="h-6 w-6" />
           </div>
           <h1 className="text-xl font-semibold text-foreground">Conviction</h1>
           <p className="mt-1 text-sm text-muted-foreground">

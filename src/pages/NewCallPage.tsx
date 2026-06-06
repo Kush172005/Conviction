@@ -28,6 +28,7 @@ import { companiesApi } from '@/services/api/companies'
 import { callsApi } from '@/services/api/calls'
 import { cn } from '@/lib/utils'
 import { DemoGateOverlay } from '@/components/demo/DemoGate'
+import { getFriendlyApiError } from '@/lib/apiErrors'
 import type { Company, CallIntelligenceData } from '@/types'
 
 type InputMode = 'voice' | 'text' | 'recording'
@@ -652,11 +653,10 @@ export default function NewCallPage() {
       // Navigate to intelligence page, passing data via state to avoid an extra fetch
       navigate(`/calls/${intel.callId}/intelligence`, { state: { intel } })
     } catch (err: unknown) {
-      const error = err as Error
+      const context =
+        selectedMode === 'voice' || selectedMode === 'recording' ? 'upload' : 'default'
       setProcessingError(
-        error.message.includes('408')
-          ? 'This is taking longer than expected — please try again or shorten your notes.'
-          : error.message || 'Something went wrong. Please try again.'
+        getFriendlyApiError(err, context, "Couldn't process this call. Please try again.")
       )
     } finally {
       setIsProcessing(false)

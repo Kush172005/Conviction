@@ -1,13 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
   <rect width="32" height="32" rx="8" fill="url(#bg)"/>
-  <!-- Upward trend line -->
-  <polyline points="6,23 12,16 18,19 26,9" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-  <!-- Dot at peak -->
-  <circle cx="26" cy="9" r="2.2" fill="white"/>
+  <!-- 330° precision ring, gap at bottom -->
+  <path d="M 13.54 25.18 A 9.5 9.5 0 1 1 18.46 25.18"
+        stroke="white" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+  <!-- Center diamond — the deal at the focus -->
+  <path d="M 16 12 L 20 16 L 16 20 L 12 16 Z" fill="white"/>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#6366f1"/>
-      <stop offset="1" stop-color="#8b5cf6"/>
+      <stop stop-color="#5b21b6"/>
+      <stop offset="1" stop-color="#3730a3"/>
     </linearGradient>
   </defs>
 </svg>

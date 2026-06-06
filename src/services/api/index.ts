@@ -1,4 +1,6 @@
 export { api, ApiError } from './client'
+export { getFriendlyApiError, getLoadingHint } from '@/lib/apiErrors'
+export type { ApiErrorContext } from '@/lib/apiErrors'
 export { authApi, mapBackendUser } from './auth'
 export { companiesApi, mapCompany } from './companies'
 export { callsApi } from './calls'

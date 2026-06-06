@@ -34,13 +34,13 @@ This is not a transcription problem. Recording the call doesn't help — nobody 
 
 ## What Conviction does
 
-Conviction sits between a founder call and a VC team's institutional memory. It accepts voice memos, text notes, or meeting transcripts and turns them into structured, permanently retrievable deal intelligence — scored against the fund's own thesis, with a draft IC memo and follow-up actions, ready in under 60 seconds.
+Conviction sits between a founder call and a VC team's institutional memory. It accepts brain dumps, voice memos, or uploaded meeting recordings and turns them into structured, permanently retrievable deal intelligence — scored against the fund's own thesis, with a draft IC memo and follow-up actions, ready in under 60 seconds.
 
 For companies you haven't met yet, it does the research: crawl the website, run targeted web searches, extract founders and funding history, score thesis alignment, and generate a full investment brief from a URL alone.
 
 | Capability | Description |
 |---|---|
-| **Post-Call Brain Dump** | Speak, type, or paste right after a founder call. A complete deal brief — recommendation, thesis fit, strengths, concerns, red flags, and a draft email — is ready before you leave the parking lot. |
+| **Post-Call Brain Dump** | Type notes, record a voice memo, or upload meeting audio right after a founder call. A complete deal brief — recommendation, thesis fit, strengths, concerns, red flags, and a draft email — is ready before you leave the parking lot. |
 | **Startup Intelligence** | Enter any company URL. The pipeline researches the company across the web, extracts every relevant signal, and produces an IC-grade report with moat analysis, diligence questions, and a thesis fit score. |
 | **Fund Thesis Match Engine** | Every company is scored 0–100 against the investor's own thesis — sector, stage, geography, business model — with written reasoning behind each dimension. Not a black box. |
 | **Persistent Deal Memory** | A living timeline per company. Every call, decision, concern, and milestone, permanently on record. Three months later you know exactly where you stood and precisely why. |
@@ -115,7 +115,7 @@ Conviction/
 │   ├── pages/                          # Route-level pages
 │   │   ├── LandingPage.tsx             # Marketing + demo access
 │   │   ├── DashboardPage.tsx           # Portfolio overview + KPIs
-│   │   ├── NewCallPage.tsx             # Voice / text / transcript input
+│   │   ├── NewCallPage.tsx             # Brain dump / voice memo / meeting recording upload
 │   │   ├── CallIntelligencePage.tsx    # Deal brief viewer
 │   │   ├── StartupIntelligencePage.tsx # Research + IC memo viewer
 │   │   ├── CompaniesPage.tsx           # Pipeline list
@@ -319,6 +319,8 @@ python -m app.db_seed
 3. Start command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
 4. Runtime: Python 3.12 (`backend/runtime.txt` is already set)
 5. Add all backend env vars in the Render dashboard
+
+> **Note:** The hosted API runs on Render's free tier and naps when idle. The app shows lighthearted "our server is waking up" messaging on slow loads — not an AI timeout.
 
 **Database → MongoDB Atlas**
 - Free M0 tier works for development and demos

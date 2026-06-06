@@ -31,6 +31,7 @@ import FadeIn, { FadeInStagger, FadeInItem } from '@/components/motion/FadeIn'
 import { MOCK_DEAL_INTELLIGENCE, MOCK_CALLS, MOCK_COMPANIES } from '@/mocks/data'
 import { useAuthStore } from '@/store'
 import { callsApi } from '@/services/api/calls'
+import { getFriendlyApiError } from '@/lib/apiErrors'
 import { formatDate } from '@/lib/utils'
 import type { CallIntelligenceData } from '@/types'
 import { cn } from '@/lib/utils'
@@ -257,7 +258,7 @@ export default function CallIntelligencePage() {
       if (error.message?.includes('404') || error.message?.includes('No intelligence')) {
         setError('No intelligence found for this call. Process it first from the Log Call page.')
       } else {
-        setError(error.message || 'Could not load intelligence. Please try again.')
+        setError(getFriendlyApiError(err, 'default', "Couldn't load this deal brief. Please try again."))
       }
     } finally {
       setLoading(false)

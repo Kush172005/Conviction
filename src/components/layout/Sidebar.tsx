@@ -9,10 +9,10 @@ import {
   ChevronLeft,
   ChevronRight,
   Plus,
-  TrendingUp,
   Zap,
   X,
 } from "lucide-react";
+import LogoMark from '@/components/LogoMark'
 import { cn, getInitials } from "@/lib/utils";
 import { useAuthStore, useUIStore } from "@/store";
 import { Badge } from "@/components/ui/badge";
@@ -74,7 +74,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
                 className="flex items-center gap-2.5 min-w-0 flex-1"
               >
                 <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-conviction flex-shrink-0">
-                  <TrendingUp className="h-4 w-4 text-white" />
+                  <LogoMark className="h-4 w-4" />
                 </div>
                 <span className="font-semibold text-foreground tracking-tight truncate">
                   Conviction
@@ -89,7 +89,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
                 transition={{ duration: 0.15 }}
                 className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-conviction mx-auto"
               >
-                <TrendingUp className="h-4 w-4 text-white" />
+                <LogoMark className="h-4 w-4" />
               </motion.div>
             )}
           </AnimatePresence>

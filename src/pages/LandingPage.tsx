@@ -19,7 +19,6 @@ import {
   Mic,
   Quote,
   Sparkles,
-  TrendingUp,
   Zap,
   Building2,
   FileText,
@@ -32,14 +31,17 @@ import {
   AlertTriangle,
   ClipboardList,
   MessageCircle,
+  AlertCircle,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import LogoMark from '@/components/LogoMark'
 import ScrollProgress from '@/components/motion/ScrollProgress'
 import TiltCard from '@/components/motion/TiltCard'
 import MagneticButton from '@/components/motion/MagneticButton'
 import Marquee from '@/components/motion/Marquee'
 import { useAuthStore } from '@/store'
 import { authApi, mapBackendUser } from '@/services/api/auth'
+import { getFriendlyApiError } from '@/lib/apiErrors'
 
 gsap.registerPlugin(ScrollTrigger, useGSAP)
 
@@ -353,26 +355,29 @@ export default function LandingPage() {
   const containerRef = useRef<HTMLDivElement>(null)
   const [activeTab, setActiveTab] = useState<'voice' | 'research' | 'memory'>('voice')
   const [demoLoading, setDemoLoading] = useState(false)
+  const [demoError, setDemoError] = useState<string | null>(null)
 
   const login = useAuthStore((s) => s.login)
 
   async function handleDemoAccess() {
-    // Already a demo user — just go straight to dashboard
     const { isAuthenticated, isDemo } = useAuthStore.getState()
     if (isAuthenticated && isDemo) {
       navigate('/dashboard')
       return
     }
     setDemoLoading(true)
+    setDemoError(null)
     try {
       const tokenResponse = await authApi.mockLogin()
       useAuthStore.setState({ token: tokenResponse.access_token, isAuthenticated: true })
       const backendUser = await authApi.getMe()
       login(mapBackendUser(backendUser), tokenResponse.access_token, true)
       navigate('/dashboard', { replace: true })
-    } catch {
-      // Backend not running — navigate to login page as fallback
-      navigate('/login')
+    } catch (err) {
+      setDemoError(
+        getFriendlyApiError(err, 'demo', "Couldn't load the demo. Please try again in a moment.")
+      )
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     } finally {
       setDemoLoading(false)
     }
@@ -465,7 +470,7 @@ export default function LandingPage() {
             transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-conviction">
-              <TrendingUp className="h-4 w-4 text-white" />
+              <LogoMark className="h-4 w-4" />
             </div>
             <span className="font-semibold text-foreground tracking-tight">Conviction</span>
             <span className="hidden sm:inline-flex items-center rounded-full border border-conviction-500/20 bg-conviction-500/8 px-2 py-0.5 text-2xs font-medium text-conviction-300 ml-1">
@@ -562,6 +567,13 @@ export default function LandingPage() {
               </Button>
             </MagneticButton>
           </div>
+
+          {demoError && (
+            <div className="hero-fade-in max-w-md mx-auto flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2.5 text-left text-xs text-amber-200/90">
+              <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+              <span>{demoError}</span>
+            </div>
+          )}
 
           <div className="hero-fade-in hero-fade-in-delay-4 flex items-center justify-center gap-4 text-xs text-muted-foreground flex-wrap">
             {['No credit card', 'Private & secure', 'Built for VC teams'].map((item) => (
@@ -1075,7 +1087,7 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-conviction">
-              <TrendingUp className="h-3.5 w-3.5 text-white" />
+              <LogoMark className="h-3.5 w-3.5" />
             </div>
             <span className="text-sm font-semibold text-foreground">Conviction</span>
             <span className="text-xs text-muted-foreground">— Deal Intelligence for VC</span>
