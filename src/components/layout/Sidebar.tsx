@@ -1,5 +1,5 @@
-import { NavLink, useNavigate } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import { NavLink, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard,
   Building2,
@@ -12,40 +12,46 @@ import {
   TrendingUp,
   Zap,
   X,
-} from 'lucide-react'
-import { cn, getInitials } from '@/lib/utils'
-import { useAuthStore, useUIStore } from '@/store'
-import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+} from "lucide-react";
+import { cn, getInitials } from "@/lib/utils";
+import { useAuthStore, useUIStore } from "@/store";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import SignOutButton from "@/components/auth/SignOutButton";
 
 const NAV_ITEMS = [
-  { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { href: '/companies', icon: Building2, label: 'Pipeline' },
-  { href: '/calls/new', icon: PhoneCall, label: 'Log a Call' },
-  { href: '/memory', icon: Brain, label: 'Deal Memory' },
-  { href: '/startup-intelligence', icon: Zap, label: 'Research' },
-  { href: '/settings', icon: Settings, label: 'Settings' },
-]
+  { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+  { href: "/companies", icon: Building2, label: "Pipeline" },
+  { href: "/calls/new", icon: PhoneCall, label: "Log a Call" },
+  { href: "/memory", icon: Brain, label: "Deal Memory" },
+  { href: "/startup-intelligence", icon: Zap, label: "Research" },
+  { href: "/settings", icon: Settings, label: "Settings" },
+];
 
 interface SidebarProps {
-  onMobileClose?: () => void
+  onMobileClose?: () => void;
 }
 
 export default function Sidebar({ onMobileClose }: SidebarProps) {
-  const user = useAuthStore((s) => s.user)
-  const isDemo = useAuthStore((s) => s.isDemo)
-  const { sidebarCollapsed, toggleSidebar } = useUIStore()
-  const navigate = useNavigate()
+  const user = useAuthStore((s) => s.user);
+  const isDemo = useAuthStore((s) => s.isDemo);
+  const { sidebarCollapsed, toggleSidebar } = useUIStore();
+  const navigate = useNavigate();
 
   // In mobile drawer mode: always expanded, no collapse toggle
-  const isMobile = !!onMobileClose
-  const collapsed = isMobile ? false : sidebarCollapsed
+  const isMobile = !!onMobileClose;
+  const collapsed = isMobile ? false : sidebarCollapsed;
 
   function handleNavClick(href: string) {
-    navigate(href)
-    onMobileClose?.()
+    navigate(href);
+    onMobileClose?.();
   }
 
   return (
@@ -101,13 +107,13 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
         </div>
 
         {/* New Call CTA */}
-        <div className={cn('px-3 pt-3 pb-1 flex-shrink-0')}>
+        <div className={cn("px-3 pt-3 pb-1 flex-shrink-0")}>
           {!collapsed ? (
             <Button
               variant="conviction"
               size="sm"
               className="w-full"
-              onClick={() => handleNavClick('/calls/new')}
+              onClick={() => handleNavClick("/calls/new")}
             >
               <Plus className="h-3.5 w-3.5" />
               Log Call
@@ -119,7 +125,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
                   variant="conviction"
                   size="icon-sm"
                   className="w-full"
-                  onClick={() => handleNavClick('/calls/new')}
+                  onClick={() => handleNavClick("/calls/new")}
                 >
                   <Plus className="h-3.5 w-3.5" />
                 </Button>
@@ -132,7 +138,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
         {/* Nav */}
         <nav className="flex-1 overflow-y-auto overflow-x-hidden thin-scrollbar px-2 py-2 space-y-0.5">
           {NAV_ITEMS.map((item) => {
-            const Icon = item.icon
+            const Icon = item.icon;
             if (collapsed) {
               return (
                 <Tooltip key={item.href}>
@@ -142,10 +148,10 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
                       onClick={() => onMobileClose?.()}
                       className={({ isActive }) =>
                         cn(
-                          'flex h-10 w-full items-center justify-center rounded-md transition-all duration-100',
+                          "flex h-10 w-full items-center justify-center rounded-md transition-all duration-100",
                           isActive
-                            ? 'bg-secondary text-foreground'
-                            : 'text-muted-foreground hover:bg-secondary/60 hover:text-foreground'
+                            ? "bg-secondary text-foreground"
+                            : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
                         )
                       }
                     >
@@ -154,7 +160,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
                   </TooltipTrigger>
                   <TooltipContent side="right">{item.label}</TooltipContent>
                 </Tooltip>
-              )
+              );
             }
             return (
               <NavLink
@@ -163,10 +169,10 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
                 onClick={() => onMobileClose?.()}
                 className={({ isActive }) =>
                   cn(
-                    'flex h-9 w-full items-center gap-2.5 rounded-md px-3 text-sm transition-all duration-100',
+                    "flex h-9 w-full items-center gap-2.5 rounded-md px-3 text-sm transition-all duration-100",
                     isActive
-                      ? 'bg-secondary text-foreground font-medium'
-                      : 'text-muted-foreground hover:bg-secondary/60 hover:text-foreground'
+                      ? "bg-secondary text-foreground font-medium"
+                      : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
                   )
                 }
               >
@@ -179,12 +185,14 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
                   {item.label}
                 </motion.span>
               </NavLink>
-            )
+            );
           })}
         </nav>
 
         {/* User */}
-        <div className={cn('border-t border-border p-3 flex-shrink-0 space-y-1')}>
+        <div
+          className={cn("border-t border-border p-3 flex-shrink-0 space-y-1")}
+        >
           {isDemo && !collapsed && (
             <div className="px-2 pb-1">
               <Badge className="text-2xs bg-amber-500/15 text-amber-400 border-amber-500/30 w-full justify-center">
@@ -193,30 +201,37 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
             </div>
           )}
           {user && (
-            <div
-              className={cn(
-                'flex items-center gap-2.5 rounded-md px-2 py-1.5 cursor-pointer hover:bg-secondary/60 transition-colors',
-                collapsed && 'justify-center px-0'
-              )}
-              onClick={() => handleNavClick('/settings')}
-            >
-              <Avatar className="h-7 w-7 flex-shrink-0">
-                <AvatarImage src={user.avatar} />
-                <AvatarFallback className="text-xs bg-primary/20 text-primary">
-                  {getInitials(user.name)}
-                </AvatarFallback>
-              </Avatar>
-              {!collapsed && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="min-w-0"
-                >
-                  <p className="text-xs font-medium truncate text-foreground">{user.name}</p>
-                  <p className="text-2xs text-muted-foreground truncate">{user.email}</p>
-                </motion.div>
-              )}
-            </div>
+            <>
+              <div
+                className={cn(
+                  "flex items-center gap-2.5 rounded-md px-2 py-1.5 cursor-pointer hover:bg-secondary/60 transition-colors",
+                  collapsed && "justify-center px-0"
+                )}
+                onClick={() => handleNavClick("/settings")}
+              >
+                <Avatar className="h-7 w-7 flex-shrink-0">
+                  <AvatarImage src={user.avatar} />
+                  <AvatarFallback className="text-xs bg-primary/20 text-primary">
+                    {getInitials(user.name)}
+                  </AvatarFallback>
+                </Avatar>
+                {!collapsed && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="min-w-0"
+                  >
+                    <p className="text-xs font-medium truncate text-foreground">
+                      {user.name}
+                    </p>
+                    <p className="text-2xs text-muted-foreground truncate">
+                      {user.email}
+                    </p>
+                  </motion.div>
+                )}
+              </div>
+              <SignOutButton collapsed={collapsed} />
+            </>
           )}
         </div>
 
@@ -225,7 +240,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
           <button
             onClick={toggleSidebar}
             className="absolute top-[52px] -right-3 z-20 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-sm hover:text-foreground transition-colors"
-            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             {collapsed ? (
               <ChevronRight className="h-3 w-3" />
@@ -236,5 +251,5 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
         )}
       </motion.aside>
     </TooltipProvider>
-  )
+  );
 }

@@ -434,7 +434,7 @@ function LiveDashboard({
             <div className="min-w-0">
               <p className="text-sm font-medium text-foreground">Capture your next conversation</p>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Log a voice note, brain dump, or transcript from your next founder call.
+                Log a brain dump, voice memo, or meeting recording from your next founder call.
               </p>
             </div>
           </div>
@@ -636,7 +636,7 @@ export default function DashboardPage() {
             <div className="min-w-0">
               <p className="text-sm font-medium text-foreground">Capture your next conversation</p>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Log a voice note, brain dump, or transcript from your next founder call.
+                Log a brain dump, voice memo, or meeting recording from your next founder call.
               </p>
             </div>
           </div>

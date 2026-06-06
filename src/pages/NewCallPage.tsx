@@ -3,19 +3,18 @@ import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Mic,
-  MicOff,
   Type,
-  FileText,
+  Upload,
   ArrowRight,
   Building2,
   Sparkles,
   StopCircle,
-  Clock,
   Plus,
   X,
   AlertCircle,
   Loader2,
   CheckCircle2,
+  FileAudio,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -31,24 +30,47 @@ import { cn } from '@/lib/utils'
 import { DemoGateOverlay } from '@/components/demo/DemoGate'
 import type { Company, CallIntelligenceData } from '@/types'
 
-type InputMode = 'voice' | 'text' | 'transcript'
+type InputMode = 'voice' | 'text' | 'recording'
 
 const MODE_CONFIG: Record<InputMode, { icon: React.ElementType; label: string; description: string }> = {
-  voice: {
-    icon: Mic,
-    label: 'Voice memo',
-    description: 'Record your post-call thoughts in real time.',
-  },
   text: {
     icon: Type,
     label: 'Brain dump',
-    description: 'Type your raw notes, no structure needed.',
+    description: 'Type quick notes right after the call.',
   },
-  transcript: {
-    icon: FileText,
-    label: 'Transcript',
-    description: 'Paste or upload a meeting transcript.',
+  voice: {
+    icon: Mic,
+    label: 'Voice memo',
+    description: 'Record a short post-call recap in your own words.',
   },
+  recording: {
+    icon: Upload,
+    label: 'Meeting recording',
+    description: 'Upload the call audio — Zoom, Otter, phone memo, etc.',
+  },
+}
+
+const ACCEPTED_AUDIO = 'audio/*,.m4a,.mp3,.wav,.webm,.mp4,.ogg,.aac'
+const MAX_AUDIO_BYTES = 19 * 1024 * 1024 // Gemini inline limit
+
+function guessAudioMime(file: File): string {
+  if (file.type && file.type.startsWith('audio/')) return file.type
+  const ext = file.name.split('.').pop()?.toLowerCase()
+  const map: Record<string, string> = {
+    m4a: 'audio/mp4',
+    mp3: 'audio/mpeg',
+    wav: 'audio/wav',
+    webm: 'audio/webm',
+    mp4: 'audio/mp4',
+    ogg: 'audio/ogg',
+    aac: 'audio/aac',
+  }
+  return (ext && map[ext]) || 'audio/webm'
+}
+
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
 // ─── Voice Recorder ────────────────────────────────────────────────────────────
@@ -191,6 +213,149 @@ function VoiceRecorder({ onRecordingComplete, onRecordingStart }: VoiceRecorderP
   )
 }
 
+// ─── Meeting Recording Upload ───────────────────────────────────────────────────
+
+interface AudioFileUploaderProps {
+  file: File | null
+  onFileSelect: (file: File | null) => void
+}
+
+function AudioFileUploader({ file, onFileSelect }: AudioFileUploaderProps) {
+  const inputRef = useRef<HTMLInputElement>(null)
+  const [dragOver, setDragOver] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!file) {
+      setPreviewUrl(null)
+      return
+    }
+    const url = URL.createObjectURL(file)
+    setPreviewUrl(url)
+    return () => URL.revokeObjectURL(url)
+  }, [file])
+
+  function validateAndSet(next: File | null) {
+    setError(null)
+    if (!next) {
+      onFileSelect(null)
+      return
+    }
+    if (next.size > MAX_AUDIO_BYTES) {
+      setError('File is too large. Please use a recording under 19 MB.')
+      return
+    }
+    onFileSelect(next)
+  }
+
+  function handleFiles(files: FileList | null) {
+    const next = files?.[0]
+    if (!next) return
+    validateAndSet(next)
+  }
+
+  return (
+    <div className="space-y-4">
+      <input
+        ref={inputRef}
+        type="file"
+        accept={ACCEPTED_AUDIO}
+        className="hidden"
+        onChange={(e) => handleFiles(e.target.files)}
+      />
+
+      {!file ? (
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          onDragOver={(e) => {
+            e.preventDefault()
+            setDragOver(true)
+          }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={(e) => {
+            e.preventDefault()
+            setDragOver(false)
+            handleFiles(e.dataTransfer.files)
+          }}
+          className={cn(
+            'w-full rounded-xl border-2 border-dashed p-10 transition-colors',
+            dragOver
+              ? 'border-primary bg-primary/5'
+              : 'border-border bg-card hover:border-muted-foreground hover:bg-surface-1/50'
+          )}
+        >
+          <div className="flex flex-col items-center gap-3 text-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+              <Upload className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-foreground">
+                Drop your meeting recording here
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                or click to browse — MP3, M4A, WAV, WebM, and more
+              </p>
+            </div>
+            <p className="text-[11px] text-muted-foreground">
+              Zoom exports · Otter downloads · iPhone voice memos · any call audio
+            </p>
+          </div>
+        </button>
+      ) : (
+        <div className="rounded-xl border border-border bg-card p-5 space-y-4">
+          <div className="flex items-start gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10">
+              <FileAudio className="h-5 w-5 text-emerald-400" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium text-foreground truncate">{file.name}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {formatFileSize(file.size)} · ready to process
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                validateAndSet(null)
+                if (inputRef.current) inputRef.current.value = ''
+              }}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Remove file"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+
+          {previewUrl && (
+            <audio controls src={previewUrl} className="w-full h-9" preload="metadata" />
+          )}
+
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Choose a different file
+          </button>
+        </div>
+      )}
+
+      {error && (
+        <p className="text-xs text-red-400 flex items-center gap-1.5">
+          <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+          {error}
+        </p>
+      )}
+
+      <p className="text-xs text-muted-foreground">
+        We listen to the full recording, pull out the investment signals, and turn it into your deal brief.
+      </p>
+    </div>
+  )
+}
+
 // ─── Add Company Modal ──────────────────────────────────────────────────────────
 
 function AddCompanyModal({
@@ -285,7 +450,7 @@ function AddCompanyModal({
 
 // ─── Processing Overlay ─────────────────────────────────────────────────────────
 
-const PROCESSING_STEPS = [
+const PROCESSING_STEPS_TEXT = [
   { label: 'Reading your notes…', delay: 0 },
   { label: 'Finding the key signals…', delay: 2500 },
   { label: 'Matching against your thesis…', delay: 6000 },
@@ -293,15 +458,24 @@ const PROCESSING_STEPS = [
   { label: 'Putting together your deal brief…', delay: 15000 },
 ]
 
+const PROCESSING_STEPS_VOICE = [
+  { label: 'Listening to your recording…', delay: 0 },
+  { label: 'Finding the key signals…', delay: 3500 },
+  { label: 'Matching against your thesis…', delay: 8000 },
+  { label: 'Drafting follow-up actions…', delay: 13000 },
+  { label: 'Putting together your deal brief…', delay: 18000 },
+]
+
 function ProcessingOverlay({ isVoice }: { isVoice: boolean }) {
+  const steps = isVoice ? PROCESSING_STEPS_VOICE : PROCESSING_STEPS_TEXT
   const [stepIndex, setStepIndex] = useState(0)
 
   useEffect(() => {
-    const timers = PROCESSING_STEPS.slice(1).map((step, i) =>
+    const timers = steps.slice(1).map((step, i) =>
       setTimeout(() => setStepIndex(i + 1), step.delay)
     )
     return () => timers.forEach(clearTimeout)
-  }, [])
+  }, [isVoice])
 
   return (
     <motion.div
@@ -332,13 +506,13 @@ function ProcessingOverlay({ isVoice }: { isVoice: boolean }) {
               exit={{ opacity: 0, y: -4 }}
               className="text-sm text-muted-foreground"
             >
-              {PROCESSING_STEPS[Math.min(stepIndex, PROCESSING_STEPS.length - 1)].label}
+              {steps[Math.min(stepIndex, steps.length - 1)].label}
             </motion.p>
           </AnimatePresence>
         </div>
 
         <div className="flex gap-1 justify-center">
-          {PROCESSING_STEPS.map((_, i) => (
+          {steps.map((_, i) => (
             <div
               key={i}
               className={cn(
@@ -376,9 +550,10 @@ export default function NewCallPage() {
   const [loadingCompanies, setLoadingCompanies] = useState(false)
   const [showAddCompany, setShowAddCompany] = useState(false)
 
-  // Voice recording
+  // Voice recording / file upload
   const audioBlobRef = useRef<{ blob: Blob; mimeType: string } | null>(null)
   const [voiceReady, setVoiceReady] = useState(false)
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null)
 
   // Load companies
   useEffect(() => {
@@ -410,9 +585,32 @@ export default function NewCallPage() {
 
   function generateTitle(companyName: string, mode: InputMode): string {
     const date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-    const modeLabel = mode === 'voice' ? 'Voice call' : mode === 'transcript' ? 'Transcript' : 'Call notes'
+    const modeLabel =
+      mode === 'voice'
+        ? 'Voice memo'
+        : mode === 'recording'
+        ? 'Meeting recording'
+        : 'Call notes'
     return `${modeLabel} — ${companyName} · ${date}`
   }
+
+  const submitVoiceAudio = useCallback(
+    async (
+      blob: Blob,
+      mimeType: string,
+      mode: 'voice' | 'recording',
+      filename?: string
+    ) => {
+      const fd = new FormData()
+      fd.append('company_id', selectedCompanyId)
+      fd.append('title', generateTitle(selectedCompany!.name, mode))
+      fd.append('input_mode', mode)
+      const ext = mimeType.includes('mpeg') ? 'mp3' : mimeType.includes('mp4') ? 'm4a' : 'webm'
+      fd.append('audio', blob, filename || `recording.${ext}`)
+      return callsApi.processVoice(fd)
+    },
+    [selectedCompanyId, selectedCompany]
+  )
 
   async function handleProcess() {
     if (!selectedCompanyId || !selectedCompany) return
@@ -430,24 +628,23 @@ export default function NewCallPage() {
       let intel: CallIntelligenceData
 
       if (selectedMode === 'voice') {
-        // ── Voice: upload audio, transcribe + process in one round trip ──────
         const audio = audioBlobRef.current
         if (!audio) return
-
-        const fd = new FormData()
-        fd.append('company_id', selectedCompanyId)
-        fd.append('title', generateTitle(selectedCompany.name, 'voice'))
-        fd.append('audio', audio.blob, 'recording.webm')
-
-        intel = await callsApi.processVoice(fd)
+        intel = await submitVoiceAudio(audio.blob, audio.mimeType, 'voice')
+      } else if (selectedMode === 'recording') {
+        if (!uploadedFile) return
+        intel = await submitVoiceAudio(
+          uploadedFile,
+          guessAudioMime(uploadedFile),
+          'recording',
+          uploadedFile.name
+        )
       } else {
-        // ── Text / Transcript: create call then process ───────────────────────
         const call = await callsApi.create({
           company_id: selectedCompanyId,
-          title: generateTitle(selectedCompany.name, selectedMode),
-          input_mode: selectedMode,
-          raw_notes: selectedMode === 'text' ? notes : undefined,
-          transcript_text: selectedMode === 'transcript' ? notes : undefined,
+          title: generateTitle(selectedCompany.name, 'text'),
+          input_mode: 'text',
+          raw_notes: notes,
         })
         intel = await callsApi.process(call.id)
       }
@@ -466,12 +663,19 @@ export default function NewCallPage() {
     }
   }
 
-  const canProcess = selectedMode === 'voice' ? voiceReady : notes.length > 20
+  const canProcess =
+    selectedMode === 'voice'
+      ? voiceReady
+      : selectedMode === 'recording'
+      ? !!uploadedFile
+      : notes.length > 20
   const canSubmit = canProcess && !!selectedCompanyId && !isProcessing
 
   return (
     <>
-      {isProcessing && <ProcessingOverlay isVoice={selectedMode === 'voice'} />}
+      {isProcessing && (
+        <ProcessingOverlay isVoice={selectedMode === 'voice' || selectedMode === 'recording'} />
+      )}
 
       <div className="p-6 max-w-3xl mx-auto">
         <FadeIn>
@@ -568,6 +772,8 @@ export default function NewCallPage() {
                           setSelectedMode(mode)
                           setVoiceReady(false)
                           audioBlobRef.current = null
+                          setUploadedFile(null)
+                          setNotes('')
                         }}
                         className={cn(
                           'flex flex-col items-center gap-2 rounded-lg border p-4 transition-all duration-150',
@@ -645,20 +851,10 @@ Examples:
                   </div>
                 )}
 
-                {selectedMode === 'transcript' && (
+                {selectedMode === 'recording' && (
                   <div className="space-y-2">
-                    <Label>Transcript</Label>
-                    <Textarea
-                      value={notes}
-                      onChange={(e) => setNotes(e.target.value)}
-                      placeholder="Paste your meeting transcript here. Conviction will extract the key investment signals and structure them into a deal profile.
-
-Supports Fireflies, Otter.ai, Zoom, Gong, and any plain text format."
-                      className="min-h-[280px] resize-none text-sm font-mono leading-relaxed"
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Longer transcripts = richer analysis. Paste as much as you have.
-                    </p>
+                    <Label>Meeting recording</Label>
+                    <AudioFileUploader file={uploadedFile} onFileSelect={setUploadedFile} />
                   </div>
                 )}
               </motion.div>

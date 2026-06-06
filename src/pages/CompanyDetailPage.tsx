@@ -454,7 +454,15 @@ export default function CompanyDetailPage() {
                         )}
                       </div>
                       <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                        <span className="capitalize">{call.inputMode}</span>
+                        <span>
+                          {call.inputMode === 'voice'
+                            ? 'Voice memo'
+                            : call.inputMode === 'recording'
+                            ? 'Meeting recording'
+                            : call.inputMode === 'transcript'
+                            ? 'Transcript'
+                            : 'Brain dump'}
+                        </span>
                         <span>·</span>
                         <span>{formatDate(call.occurredAt)}</span>
                       </div>

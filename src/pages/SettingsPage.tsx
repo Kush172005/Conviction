@@ -279,7 +279,7 @@ export default function SettingsPage() {
                   variant="outline"
                   size="sm"
                   onClick={handleLogout}
-                  className="text-muted-foreground hover:text-foreground w-full sm:w-auto"
+                  className="text-muted-foreground hover:text-red-400 hover:border-red-500/30 hover:bg-red-500/5 w-full sm:w-auto"
                 >
                   <LogOut className="h-3.5 w-3.5" />
                   {isDemo ? 'Exit demo' : 'Sign out'}

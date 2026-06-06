@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import type { CredentialResponse } from '@react-oauth/google'
-import { TrendingUp, ArrowRight, Shield, AlertCircle } from 'lucide-react'
+import { TrendingUp, ArrowRight, ArrowLeft, Shield, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import GoogleSignInButton from '@/components/auth/GoogleSignInButton'
 import { useAuthStore, useOnboardingStore } from '@/store'
@@ -103,21 +103,32 @@ export default function LoginPage() {
       <div className="absolute inset-0 dot-grid opacity-30 pointer-events-none" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-conviction-500/6 blur-[120px] pointer-events-none" />
 
+      <Link
+        to="/"
+        className="absolute top-5 left-5 z-20 inline-flex items-center gap-1.5 rounded-lg border border-border/80 bg-card/80 px-3 py-2 text-xs font-medium text-muted-foreground backdrop-blur-sm transition-colors hover:text-foreground hover:border-border hover:bg-card"
+      >
+        <ArrowLeft className="h-3.5 w-3.5" />
+        Back to home
+      </Link>
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
         className="relative z-10 w-full max-w-sm"
       >
-        <div className="text-center mb-8">
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-conviction mb-4 brand-glow-anim">
+        <Link
+          to="/"
+          className="block text-center mb-8 group rounded-xl p-2 -m-2 transition-colors hover:bg-card/40"
+        >
+          <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-conviction mb-4 brand-glow-anim transition-transform group-hover:scale-105">
             <TrendingUp className="h-6 w-6 text-white" />
           </div>
           <h1 className="text-xl font-semibold text-foreground">Conviction</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Never lose the reasoning behind a decision.
           </p>
-        </div>
+        </Link>
 
         <div className="rounded-xl border border-border bg-card p-6 shadow-card space-y-4">
           <div className="text-center">
@@ -196,9 +207,21 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <div className="mt-4 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-          <Shield className="h-3 w-3" />
-          <span>Your data is encrypted and private.</span>
+        <div className="mt-4 space-y-3 text-center">
+          <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+            <Shield className="h-3 w-3" />
+            <span>Your data is encrypted and private.</span>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            New here?{' '}
+            <Link
+              to="/"
+              className="font-medium text-conviction-300 hover:text-conviction-200 transition-colors inline-flex items-center gap-1"
+            >
+              See how Conviction works
+              <ArrowRight className="h-3 w-3" />
+            </Link>
+          </p>
         </div>
       </motion.div>
     </div>

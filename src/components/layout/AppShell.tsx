@@ -4,6 +4,7 @@ import { TrendingUp } from 'lucide-react'
 import Sidebar from './Sidebar'
 import BottomNav from './BottomNav'
 import DemoBanner from './DemoBanner'
+import SignOutButton from '@/components/auth/SignOutButton'
 
 interface AppShellProps {
   children: React.ReactNode
@@ -23,13 +24,14 @@ export default function AppShell({ children }: AppShellProps) {
       <DemoBanner />
 
       {/* Mobile top bar — logo only, bottom nav handles navigation */}
-      <div className="flex h-12 items-center px-4 border-b border-border bg-surface-1 md:hidden flex-shrink-0">
-        <div className="flex items-center gap-2.5">
+      <div className="flex h-12 items-center justify-between px-4 border-b border-border bg-surface-1 md:hidden flex-shrink-0">
+        <div className="flex items-center gap-2.5 min-w-0">
           <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-conviction flex-shrink-0">
             <TrendingUp className="h-3.5 w-3.5 text-white" />
           </div>
           <span className="font-semibold text-sm text-foreground tracking-tight">Conviction</span>
         </div>
+        <SignOutButton compact />
       </div>
 
       <div className="flex flex-1 overflow-hidden min-h-0">

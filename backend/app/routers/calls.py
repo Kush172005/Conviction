@@ -277,6 +277,7 @@ async def create_call(
 async def upload_voice_call(
     company_id: str = Form(...),
     title: Optional[str] = Form(default=None),
+    input_mode: str = Form(default="voice"),
     audio: UploadFile = File(...),
     current_user: dict = Depends(get_current_user),
     db: AsyncIOMotorDatabase = Depends(get_db),
@@ -315,11 +316,17 @@ async def upload_voice_call(
     # ── 2. Create call record ─────────────────────────────────────────────────
     call_repo = CallRepository(db)
     now = datetime.utcnow()
+    mode = input_mode if input_mode in ("voice", "recording") else "voice"
+    default_title = (
+        f"Meeting recording — {company['name']}"
+        if mode == "recording"
+        else f"Voice call — {company['name']}"
+    )
     call_doc = {
         "user_id": current_user["id"],
         "company_id": company_id,
-        "title": title or f"Voice call — {company['name']}",
-        "input_mode": "voice",
+        "title": title or default_title,
+        "input_mode": mode,
         "transcript_text": transcript,
         "status": "pending",
         "occurred_at": now,

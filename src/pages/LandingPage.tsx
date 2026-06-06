@@ -26,10 +26,12 @@ import {
   Search,
   Shield,
   Target,
-  BarChart3,
-  // BarChart3 kept for potential usage
   ChevronDown,
   Loader2,
+  CircleHelp,
+  AlertTriangle,
+  ClipboardList,
+  MessageCircle,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import ScrollProgress from '@/components/motion/ScrollProgress'
@@ -124,8 +126,8 @@ const HOW_IT_WORKS = [
     icon: Mic,
     title: 'Capture in any format',
     description:
-      'Hit record right after a founder call and speak your thoughts. Or type quick notes, paste a transcript — Conviction accepts everything, exactly as it comes out of your head.',
-    detail: 'Voice · Text · Transcript',
+      'Type a quick brain dump, record a voice memo, or upload the full meeting audio — Conviction accepts everything, exactly as it comes out of your head.',
+    detail: 'Voice · Text · Recording',
   },
   {
     step: '02',
@@ -144,6 +146,37 @@ const HOW_IT_WORKS = [
     detail: 'Timeline · IC Memos · Memory',
   },
 ]
+
+const PROBLEM_CARDS = [
+  {
+    label: 'Why did we pass on this?',
+    context: '3 months after a strong initial call',
+    icon: CircleHelp,
+    accent: 'border-amber-500/25 bg-amber-500/5',
+    iconColor: 'text-amber-400 bg-amber-500/15',
+  },
+  {
+    label: 'What were our concerns back in March?',
+    context: 'Preparing for IC meeting',
+    icon: AlertTriangle,
+    accent: 'border-red-500/25 bg-red-500/5',
+    iconColor: 'text-red-400 bg-red-500/15',
+  },
+  {
+    label: 'Did we ever follow up about their GTM pivot?',
+    context: 'After a founder re-engages',
+    icon: ClipboardList,
+    accent: 'border-blue-500/25 bg-blue-500/5',
+    iconColor: 'text-blue-400 bg-blue-500/15',
+  },
+  {
+    label: "I had a strong thesis here but I can't remember it",
+    context: 'Reviewing a company with LP',
+    icon: MessageCircle,
+    accent: 'border-conviction-500/25 bg-conviction-500/5',
+    iconColor: 'text-conviction-300 bg-conviction-500/15',
+  },
+] as const
 
 const TESTIMONIALS = [
   {
@@ -177,6 +210,47 @@ const TESTIMONIALS = [
 ]
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
+
+function SectionHeader({
+  eyebrow,
+  title,
+  subtitle,
+  className = '',
+}: {
+  eyebrow: string
+  title: React.ReactNode
+  subtitle?: string
+  className?: string
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+  const isInView = useInView(ref, { once: true, margin: '-8%' })
+
+  return (
+    <motion.div
+      ref={ref}
+      className={`text-center mb-10 md:mb-12 ${className}`}
+      initial={{ opacity: 0, y: 20 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+    >
+      <div className="inline-flex items-center gap-2 mb-3">
+        <span className="h-px w-8 bg-gradient-to-r from-transparent to-conviction-500/50" />
+        <p className="text-[11px] font-semibold text-conviction-300 uppercase tracking-[0.2em]">
+          {eyebrow}
+        </p>
+        <span className="h-px w-8 bg-gradient-to-l from-transparent to-conviction-500/50" />
+      </div>
+      <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight text-balance">
+        {title}
+      </h2>
+      {subtitle && (
+        <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto mt-3 leading-relaxed">
+          {subtitle}
+        </p>
+      )}
+    </motion.div>
+  )
+}
 
 function StatCounter({ value, suffix, label }: { value: number; suffix: string; label: string }) {
   const ref = useRef<HTMLDivElement>(null)
@@ -221,44 +295,6 @@ function StatCounter({ value, suffix, label }: { value: number; suffix: string; 
   )
 }
 
-function AnimatedWords({
-  text,
-  className,
-  delay = 0,
-}: {
-  text: string
-  className?: string
-  delay?: number
-}) {
-  const words = text.split(' ')
-  const container = {
-    hidden: {},
-    visible: { transition: { staggerChildren: 0.06, delayChildren: delay } },
-  }
-  const word = {
-    hidden: { y: 10, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { duration: 0.45, ease: [0.33, 1, 0.68, 1] },
-    },
-  }
-  return (
-    <motion.span className={className} variants={container} initial="hidden" animate="visible">
-      {words.map((w, i) => (
-        <motion.span
-          key={i}
-          className="inline-block mr-[0.25em] last:mr-0"
-          variants={word}
-          style={{ WebkitFontSmoothing: 'antialiased' }}
-        >
-          {w}
-        </motion.span>
-      ))}
-    </motion.span>
-  )
-}
-
 function HowItWorksStep({
   step,
   icon: Icon,
@@ -275,7 +311,7 @@ function HowItWorksStep({
   return (
     <motion.div
       ref={ref}
-      className="relative flex gap-8 pb-14 last:pb-0"
+      className="relative flex gap-5 pb-8 last:pb-0"
       initial={{ opacity: 0, x: -24 }}
       animate={isInView ? { opacity: 1, x: 0 } : {}}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -290,15 +326,15 @@ function HowItWorksStep({
         />
       )}
       <motion.div
-        className="flex-shrink-0 flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-card"
-        whileHover={{ scale: 1.1, borderColor: 'hsl(248 92% 68% / 0.4)' }}
+        className="flex-shrink-0 flex h-11 w-11 items-center justify-center rounded-xl border border-conviction-500/25 bg-gradient-to-br from-conviction-500/15 to-transparent shadow-[0_0_24px_hsl(248_92%_68%/0.08)]"
+        whileHover={{ scale: 1.08, borderColor: 'hsl(248 92% 68% / 0.5)' }}
         transition={{ type: 'spring', stiffness: 400, damping: 20 }}
       >
-        <Icon className="h-5 w-5 text-muted-foreground" />
+        <Icon className="h-5 w-5 text-conviction-300" />
       </motion.div>
-      <div className="pt-2 min-w-0">
-        <div className="flex items-center gap-3 mb-2">
-          <span className="text-xs font-mono text-muted-foreground/50">{step}</span>
+      <div className="pt-1 min-w-0">
+        <div className="flex items-center gap-3 mb-1.5 flex-wrap">
+          <span className="text-[10px] font-mono font-semibold text-conviction-400/80">{step}</span>
           <h3 className="font-semibold text-foreground">{title}</h3>
           <span className="text-2xs text-muted-foreground border border-border rounded-full px-2 py-0.5 hidden sm:inline">
             {detail}
@@ -461,59 +497,52 @@ export default function LandingPage() {
       </motion.nav>
 
       {/* ── Hero ──────────────────────────────────────────────────── */}
-      <section className="relative min-h-[100dvh] flex flex-col items-center justify-center px-6 pb-16 overflow-hidden">
-        {/* Animated background */}
-        <div className="absolute inset-0 dot-grid opacity-25 pointer-events-none" />
+      <section className="relative pt-24 pb-10 md:pt-28 md:pb-12 px-6 overflow-hidden">
+        <div className="absolute inset-0 dot-grid opacity-20 pointer-events-none" />
+        <motion.div
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[min(100%,720px)] h-[420px] rounded-full opacity-80 pointer-events-none"
+          style={{
+            y: glowY,
+            scale: glowScale,
+            background:
+              'radial-gradient(ellipse at center, hsl(248 92% 68% / 0.12) 0%, hsl(248 92% 68% / 0.04) 45%, transparent 70%)',
+          }}
+        />
+        <motion.div
+          className="absolute top-10 right-[10%] w-[240px] h-[240px] rounded-full opacity-60 pointer-events-none float-fast"
+          style={{
+            background:
+              'radial-gradient(circle, hsl(220 80% 60% / 0.08) 0%, transparent 70%)',
+          }}
+        />
 
-        {/* Floating orbs — Framer Motion parallax */}
-        <motion.div
-          className="hero-glow absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[550px] rounded-full bg-conviction-500/7 blur-[140px] pointer-events-none float-slow"
-          style={{ y: glowY, scale: glowScale }}
-        />
-        <motion.div
-          className="absolute top-1/4 right-1/4 w-[320px] h-[320px] rounded-full bg-blue-500/5 blur-[110px] pointer-events-none float-fast"
-          style={{ y: useTransform(heroProgress, [0, 1], ['0%', '-8%']) }}
-        />
-        <motion.div
-          className="absolute bottom-1/3 left-1/4 w-[280px] h-[280px] rounded-full bg-emerald-500/5 blur-[110px] pointer-events-none"
-          style={{ y: useTransform(heroProgress, [0, 1], ['0%', '12%']) }}
-        />
-
-        <div className="relative z-10 max-w-4xl mx-auto text-center space-y-7 xl:mt-[6%] md:mt-[12%] mt-[22%]">
-          {/* Badge — CSS animation (Safari-safe; Framer opacity:0 could stick invisible) */}
+        <div className="relative z-10 max-w-4xl mx-auto text-center space-y-5">
           <div className="hero-fade-in inline-flex items-center gap-2 rounded-full border border-conviction-500/25 bg-conviction-500/8 px-4 py-1.5 text-xs font-medium text-conviction-300">
             <Sparkles className="h-3 w-3" />
-            AI-Powered Deal Intelligence for Venture Capital
+            Deal intelligence for venture capital
           </div>
 
-          {/* Headline */}
-          <h1 className="hero-fade-in hero-fade-in-delay-1 text-balance font-semibold tracking-tight leading-[1.08]">
-            <span className="block text-5xl md:text-6xl lg:text-7xl text-foreground mb-2">
-              Every founder call
-            </span>
-            <span className="block text-5xl md:text-6xl lg:text-7xl text-foreground">
-              generates{' '}
+          <h1 className="hero-fade-in hero-fade-in-delay-1 text-balance font-semibold tracking-tight leading-[1.06]">
+            <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-[4.25rem] text-foreground">
+              Every founder call generates{' '}
               <span className="text-conviction-300">investment intelligence.</span>
             </span>
-            <span className="block text-4xl md:text-5xl lg:text-6xl text-muted-foreground/80 mt-3">
+            <span className="block text-3xl sm:text-4xl md:text-5xl text-muted-foreground/75 mt-2">
               Stop losing it.
             </span>
           </h1>
 
-          {/* Subheadline */}
-          <p className="hero-fade-in hero-fade-in-delay-2 max-w-2xl mx-auto text-lg text-muted-foreground leading-relaxed">
-            Conviction captures your post-call reasoning, researches companies from scratch, scores
-            thesis fit, generates IC memos, and builds a permanent deal memory — so your team
-            never debates "why did we pass?" again.
+          <p className="hero-fade-in hero-fade-in-delay-2 max-w-xl mx-auto text-base md:text-lg text-muted-foreground leading-relaxed">
+            Capture post-call reasoning, research any startup, score thesis fit, and build a
+            permanent deal memory — so your team never asks &ldquo;why did we pass?&rdquo; again.
           </p>
 
-          {/* CTAs */}
-          <div className="hero-fade-in hero-fade-in-delay-3 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div className="hero-fade-in hero-fade-in-delay-3 flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-1">
             <MagneticButton strength={0.4}>
               <Button
                 variant="conviction"
                 size="lg"
-                className="h-12 px-8 text-base shadow-lg ring-pulse"
+                className="h-11 px-7 text-base shadow-lg ring-pulse"
                 onClick={() => navigate('/login')}
               >
                 Start for free
@@ -524,7 +553,7 @@ export default function LandingPage() {
               <Button
                 variant="outline"
                 size="lg"
-                className="h-12 px-8 text-base"
+                className="h-11 px-7 text-base"
                 onClick={handleDemoAccess}
                 disabled={demoLoading}
               >
@@ -534,20 +563,22 @@ export default function LandingPage() {
             </MagneticButton>
           </div>
 
-          {/* Trust signals */}
-          <div className="hero-fade-in hero-fade-in-delay-4 flex items-center justify-center gap-5 text-xs text-muted-foreground flex-wrap">
-            {['No credit card', 'Private & secure', 'Works with any VC workflow'].map((item) => (
+          <div className="hero-fade-in hero-fade-in-delay-4 flex items-center justify-center gap-4 text-xs text-muted-foreground flex-wrap">
+            {['No credit card', 'Private & secure', 'Built for VC teams'].map((item) => (
               <div key={item} className="flex items-center gap-1.5">
                 <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
                 {item}
               </div>
             ))}
           </div>
+        </div>
+      </section>
 
-          {/* Product preview — tabbed */}
-          <div className="hero-fade-in hero-fade-in-delay-5 relative mt-8 mx-auto max-w-4xl w-full">
-            {/* Tab switcher */}
-            <div className="flex justify-center gap-1 mb-4">
+      {/* ── Product preview ───────────────────────────────────────── */}
+      <section className="relative px-6 pb-10 md:pb-14">
+        <div className="max-w-4xl mx-auto">
+          <div className="hero-fade-in hero-fade-in-delay-5 relative w-full">
+            <div className="flex justify-center gap-1 mb-3">
               {([
                 { id: 'voice', label: 'Post-Call Brain Dump', icon: Mic },
                 { id: 'research', label: 'Startup Intelligence', icon: Globe },
@@ -570,8 +601,7 @@ export default function LandingPage() {
               ))}
             </div>
 
-            {/* Preview window */}
-            <div className="relative rounded-xl border border-border overflow-hidden shadow-2xl surface-elevated">
+            <div className="relative rounded-xl border border-border/80 overflow-hidden shadow-2xl surface-elevated ring-1 ring-conviction-500/10">
               {/* Window chrome */}
               <div className="bg-surface-1 border-b border-border px-4 py-3 flex items-center gap-2">
                 <div className="flex gap-1.5">
@@ -602,7 +632,7 @@ export default function LandingPage() {
                     className="bg-background p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-12 gap-4 min-h-[300px]"
                   >
                     <div className="hidden sm:block sm:col-span-3 space-y-1">
-                      {['Dashboard', 'Companies', 'Log Call', 'Memory', 'Startup Intel'].map((item, i) => (
+                      {['Dashboard', 'Pipeline', 'Log a Call', 'Deal Memory', 'Research'].map((item, i) => (
                         <div
                           key={item}
                           className={`flex items-center gap-2 rounded-md px-2.5 py-1.5 text-xs ${
@@ -627,7 +657,7 @@ export default function LandingPage() {
                       </div>
                       <div className="rounded-md border border-border bg-card p-3 space-y-2">
                         <p className="text-2xs font-medium text-muted-foreground uppercase tracking-wider">
-                          AI Extraction — Live
+                          Deal brief — live
                         </p>
                         {[
                           { label: 'Recommendation', value: 'Invest', color: 'text-emerald-400' },
@@ -660,7 +690,7 @@ export default function LandingPage() {
                     className="bg-background p-5 grid grid-cols-12 gap-4 min-h-[300px]"
                   >
                     <div className="col-span-3 space-y-1">
-                      {['Dashboard', 'Companies', 'Log Call', 'Memory', 'Startup Intel'].map((item, i) => (
+                      {['Dashboard', 'Pipeline', 'Log a Call', 'Deal Memory', 'Research'].map((item, i) => (
                         <div
                           key={item}
                           className={`flex items-center gap-2 rounded-md px-2.5 py-1.5 text-xs ${
@@ -700,7 +730,7 @@ export default function LandingPage() {
                         ))}
                       </div>
                       <div className="rounded-md border border-emerald-500/20 bg-emerald-500/5 p-2.5">
-                        <p className="text-2xs font-medium text-emerald-400 mb-1">AI Synthesis</p>
+                        <p className="text-2xs font-medium text-emerald-400 mb-1">Research summary</p>
                         <p className="text-2xs text-foreground/80 leading-relaxed line-clamp-2">
                           Strong founder-market fit. Priya's Google Brain background directly addresses the
                           data quality problem. $180K ARR from 3 F500 customers validates enterprise demand.
@@ -720,7 +750,7 @@ export default function LandingPage() {
                     className="bg-background p-5 grid grid-cols-12 gap-4 min-h-[300px]"
                   >
                     <div className="col-span-3 space-y-1">
-                      {['Dashboard', 'Companies', 'Log Call', 'Memory', 'Startup Intel'].map((item, i) => (
+                      {['Dashboard', 'Pipeline', 'Log a Call', 'Deal Memory', 'Research'].map((item, i) => (
                         <div
                           key={item}
                           className={`flex items-center gap-2 rounded-md px-2.5 py-1.5 text-xs ${
@@ -773,15 +803,14 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Scroll hint */}
           <motion.div
-            className="flex flex-col items-center gap-2 pt-2 text-muted-foreground"
+            className="flex flex-col items-center gap-1 pt-4 text-muted-foreground/70"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 1.6 }}
+            transition={{ duration: 0.5, delay: 0.8 }}
           >
             <motion.div
-              animate={{ y: [0, 7, 0] }}
+              animate={{ y: [0, 5, 0] }}
               transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
             >
               <ChevronDown className="h-4 w-4" />
@@ -791,89 +820,94 @@ export default function LandingPage() {
       </section>
 
       {/* ── Stats ─────────────────────────────────────────────────── */}
-      <section className="stats-section py-20 px-6 border-y border-border/50 bg-surface-1/30">
-        <div className="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
+      <section className="stats-section py-10 md:py-12 px-6 border-y border-border/50 bg-gradient-to-b from-surface-1/40 via-surface-1/20 to-transparent">
+        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 divide-y md:divide-y-0 md:divide-x divide-border/50">
           {STATS.map((stat) => (
-            <StatCounter key={stat.label} {...stat} />
+            <div key={stat.label} className="py-4 md:py-0 md:px-6 first:md:pl-0 last:md:pr-0">
+              <StatCounter {...stat} />
+            </div>
           ))}
         </div>
       </section>
 
       {/* ── Problem ───────────────────────────────────────────────── */}
-      <section className="py-32 px-6 relative">
+      <section className="py-14 md:py-16 px-6 relative">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16 problem-fragment">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-4">
-              The Problem
-            </p>
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">
-              The reasoning disappears.{' '}
-              <span className="text-muted-foreground">Every time.</span>
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Investment professionals meet 5–15 founders every week. The insights from those
-              conversations are invaluable — and almost all of them evaporate within 72 hours.
-            </p>
+          <SectionHeader
+            className="problem-fragment"
+            eyebrow="The Problem"
+            title={
+              <>
+                The reasoning disappears.{' '}
+                <span className="text-muted-foreground">Every time.</span>
+              </>
+            }
+            subtitle="VC teams meet 5–15 founders a week. The insights from those conversations are invaluable — and almost all of them evaporate within 72 hours."
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {PROBLEM_CARDS.map((item) => {
+              const Icon = item.icon
+              return (
+                <motion.div
+                  key={item.label}
+                  className={`problem-fragment group rounded-xl border p-4 flex gap-3.5 cursor-default transition-all duration-200 ${item.accent}`}
+                  whileHover={{ y: -3, boxShadow: '0 12px 40px hsl(0 0% 0% / 0.35)' }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                >
+                  <div
+                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${item.iconColor}`}
+                  >
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-foreground leading-snug">
+                      &ldquo;{item.label}&rdquo;
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">{item.context}</p>
+                  </div>
+                </motion.div>
+              )
+            })}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[
-              { label: 'Why did we pass on this?', context: '3 months after a strong initial call', icon: '🤔' },
-              { label: "What were our concerns back in March?", context: 'Preparing for IC meeting', icon: '😰' },
-              { label: "Did we ever follow up about their GTM pivot?", context: 'After a founder re-engages', icon: '📋' },
-              { label: "I had a strong thesis here but I can't remember it", context: 'Reviewing a company with LP', icon: '💭' },
-            ].map((item) => (
-              <motion.div
-                key={item.label}
-                className="problem-fragment rounded-xl border border-border bg-card p-5 flex gap-4 hover:border-border/80 transition-colors cursor-default"
-                whileHover={{ y: -2, boxShadow: '0 8px 32px hsl(0 0% 0% / 0.4)' }}
-                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-              >
-                <div className="text-2xl flex-shrink-0">{item.icon}</div>
-                <div>
-                  <p className="text-sm font-medium text-foreground">"{item.label}"</p>
-                  <p className="text-xs text-muted-foreground mt-1">{item.context}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          <div className="problem-fragment mt-8 rounded-xl border border-destructive/20 bg-destructive/5 p-6 text-center">
-            <p className="text-sm font-semibold text-foreground">This is not a transcription problem.</p>
-            <p className="text-sm text-muted-foreground mt-2 max-w-lg mx-auto leading-relaxed">
-              Recording meetings doesn't help if you never re-watch them. The insight needs to be
-              structured and retrievable — immediately after the conversation. That's what Conviction
-              does.
+          <motion.div
+            className="problem-fragment mt-5 rounded-xl border border-conviction-500/20 bg-gradient-to-r from-conviction-500/8 via-transparent to-blue-500/5 p-5 md:p-6 text-center"
+            whileHover={{ borderColor: 'hsl(248 92% 68% / 0.35)' }}
+          >
+            <p className="text-sm font-semibold text-foreground">
+              This isn&apos;t a transcription problem.
             </p>
-          </div>
+            <p className="text-sm text-muted-foreground mt-1.5 max-w-lg mx-auto leading-relaxed">
+              Recording meetings doesn&apos;t help if you never re-watch them. The insight needs to be
+              structured and retrievable — right after the conversation. That&apos;s what Conviction does.
+            </p>
+          </motion.div>
         </div>
       </section>
 
       {/* ── Features ──────────────────────────────────────────────── */}
-      <section className="py-28 px-6 bg-surface-1/30">
+      <section className="py-14 md:py-16 px-6 bg-surface-1/30 border-y border-border/40">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <p className="feature-card text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-4">
-              Platform Capabilities
-            </p>
-            <h2 className="feature-card text-3xl md:text-4xl font-semibold tracking-tight mb-4">
-              Six ways Conviction makes you
-              <br />
-              <span className="gradient-text">a better investor.</span>
-            </h2>
-            <p className="feature-card text-muted-foreground max-w-xl mx-auto">
-              Every feature is built around how VC professionals actually work — not how software
-              companies think they should.
-            </p>
-          </div>
+          <SectionHeader
+            className="feature-card"
+            eyebrow="Platform"
+            title={
+              <>
+                Six ways Conviction makes you{' '}
+                <span className="gradient-text gradient-text-safe">a better investor.</span>
+              </>
+            }
+            subtitle="Every feature is built around how VC professionals actually work — not how software companies think they should."
+          />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {FEATURES.map((feature) => {
               const Icon = feature.icon
               return (
                 <TiltCard key={feature.title} intensity={8}>
                   <div
-                    className={`feature-card group relative rounded-xl border bg-card p-6 overflow-hidden cursor-default ${feature.accent} ${feature.glowColor} transition-shadow duration-300 hover:shadow-xl`}
+                    className={`feature-card group relative rounded-xl border bg-card p-5 overflow-hidden cursor-default h-full ${feature.accent} ${feature.glowColor} transition-shadow duration-300 hover:shadow-xl`}
                   >
                     <div
                       className={`absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${feature.accent}`}
@@ -907,22 +941,19 @@ export default function LandingPage() {
       </section>
 
       {/* ── How it works ──────────────────────────────────────────── */}
-      <section className="py-28 px-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <SlideInSection>
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-4">
-                How It Works
-              </p>
-              <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">
-                From raw thoughts to deal memory
-                <br />
+      <section className="py-14 md:py-16 px-6">
+        <div className="max-w-3xl mx-auto">
+          <SectionHeader
+            eyebrow="How It Works"
+            title={
+              <>
+                From raw thoughts to deal memory{' '}
                 <span className="text-muted-foreground">in under 60 seconds.</span>
-              </h2>
-            </SlideInSection>
-          </div>
+              </>
+            }
+          />
 
-          <div className="space-y-0">
+          <div className="rounded-2xl border border-border/80 bg-card/50 p-5 md:p-6">
             {HOW_IT_WORKS.map((step, i) => (
               <HowItWorksStep
                 key={step.step}
@@ -935,26 +966,20 @@ export default function LandingPage() {
       </section>
 
       {/* ── Testimonials (Marquee) ─────────────────────────────────── */}
-      <section className="py-28 px-6 overflow-hidden">
+      <section className="py-14 md:py-16 px-6 overflow-hidden bg-surface-1/20 border-y border-border/40">
         <div className="max-w-5xl mx-auto">
-          <SlideInSection className="text-center mb-14">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-4">
-              Early Partners
-            </p>
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">
-              Built for how VCs actually work.
-            </h2>
-            <p className="text-muted-foreground max-w-lg mx-auto">
-              Early access partners tell us what they experience.
-            </p>
-          </SlideInSection>
+          <SectionHeader
+            eyebrow="Early Partners"
+            title="Built for how VCs actually work."
+            subtitle="Early access partners on what changes when deal reasoning stops disappearing."
+          />
         </div>
 
-        <Marquee speed={28} gap={20} className="pb-2">
+        <Marquee speed={28} gap={16} className="pb-1">
           {TESTIMONIALS.map((t) => (
             <motion.div
               key={t.author}
-              className="w-80 flex-shrink-0 rounded-xl border border-border bg-card p-6 flex flex-col hover:border-conviction-500/20 transition-colors duration-200 cursor-default"
+              className="w-72 md:w-80 flex-shrink-0 rounded-xl border border-border/80 bg-card p-5 flex flex-col hover:border-conviction-500/30 hover:bg-card/90 transition-colors duration-200 cursor-default"
               whileHover={{ y: -4, boxShadow: '0 16px 48px hsl(0 0% 0% / 0.4)' }}
               transition={{ type: 'spring', stiffness: 300, damping: 22 }}
             >
@@ -975,12 +1000,17 @@ export default function LandingPage() {
       </section>
 
       {/* ── Final CTA ─────────────────────────────────────────────── */}
-      <section className="py-32 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 dot-grid opacity-25 pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[450px] rounded-full bg-conviction-500/8 blur-[130px] pointer-events-none float-slow" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[220px] rounded-full bg-blue-500/5 blur-[90px] pointer-events-none float-fast" />
+      <section className="py-16 md:py-20 px-6 relative overflow-hidden">
+        <div className="absolute inset-0 dot-grid opacity-15 pointer-events-none" />
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(100%,600px)] h-[360px] rounded-full pointer-events-none float-slow"
+          style={{
+            background:
+              'radial-gradient(ellipse at center, hsl(248 92% 68% / 0.14) 0%, hsl(248 92% 68% / 0.04) 50%, transparent 72%)',
+          }}
+        />
 
-        <div className="cta-content relative z-10 max-w-3xl mx-auto text-center space-y-8">
+        <div className="cta-content relative z-10 max-w-3xl mx-auto text-center space-y-5">
           <motion.div
             className="inline-flex items-center gap-2 rounded-full border border-conviction-500/20 bg-conviction-500/8 px-4 py-1.5 text-xs font-medium text-conviction-300"
             whileHover={{ scale: 1.04, borderColor: 'hsl(248 92% 68% / 0.4)' }}
@@ -990,13 +1020,12 @@ export default function LandingPage() {
             Private, secure, and built for professional investment teams
           </motion.div>
 
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-balance leading-[1.08]">
-            Stop losing the reasoning
-            <br />
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight text-balance leading-[1.08]">
+            Stop losing the reasoning{' '}
             <span className="gradient-text gradient-text-safe">behind every decision.</span>
           </h2>
 
-          <p className="text-muted-foreground text-lg max-w-md mx-auto leading-relaxed">
+          <p className="text-muted-foreground text-base md:text-lg max-w-md mx-auto leading-relaxed">
             Join VC teams using Conviction to capture, structure, and preserve deal intelligence
             across their entire pipeline.
           </p>
@@ -1029,7 +1058,7 @@ export default function LandingPage() {
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-5 text-xs text-muted-foreground">
-            {['No credit card required', 'Private & secure', '6 AI-powered features', 'Cancel anytime'].map(
+            {['No credit card required', 'Private & secure', '6 core features', 'Cancel anytime'].map(
               (item) => (
                 <div key={item} className="flex items-center gap-1.5">
                   <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
@@ -1042,7 +1071,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Footer ────────────────────────────────────────────────── */}
-      <footer className="border-t border-border py-8 px-6">
+      <footer className="border-t border-border py-6 px-6">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-conviction">
@@ -1074,19 +1103,3 @@ export default function LandingPage() {
   )
 }
 
-// ── Inline scroll-triggered section wrapper ───────────────────────────────────
-function SlideInSection({ children, className }: { children: React.ReactNode; className?: string }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, margin: '-10%' })
-  return (
-    <motion.div
-      ref={ref}
-      className={className}
-      initial={{ opacity: 0, y: 28 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-    >
-      {children}
-    </motion.div>
-  )
-}

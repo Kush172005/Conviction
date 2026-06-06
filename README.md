@@ -14,7 +14,7 @@
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
 [![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=flat-square&logo=mongodb&logoColor=white)](https://mongodb.com/atlas)
 
-[**Live App →**](https://your-deployment-url.vercel.app) &nbsp;&nbsp;·&nbsp;&nbsp; [**Documentation →**](https://your-docs-url.com) &nbsp;&nbsp;·&nbsp;&nbsp; [**Architecture Diagram →**](./docs/architecture.svg)
+[**Live App →**](https://conviction-vc.vercel.app) &nbsp;&nbsp;·&nbsp;&nbsp; [**GitHub →**](https://github.com/Kush172005/Conviction) &nbsp;&nbsp;·&nbsp;&nbsp; [**Architecture Diagram →**](./docs/architecture.svg)
 
 </div>
 
@@ -54,7 +54,7 @@ For companies you haven't met yet, it does the research: crawl the website, run 
 The frontend ships with a fully seeded demo workspace — RTP Global's sample pipeline, with real companies, calls, decisions, and memory. Every screen is interactive, no backend required.
 
 ```bash
-git clone https://github.com/<your-repo>/Conviction
+git clone https://github.com/Kush172005/Conviction
 cd Conviction
 npm install
 npm run dev
@@ -372,6 +372,6 @@ We left scope on the table deliberately. Vector recall, Slack ingestion, multi-t
 
 Built for the [**RTP Global**](https://rtp.vc) case study · 2026
 
-[Live App](https://your-deployment-url.vercel.app) &nbsp;·&nbsp; [Documentation](https://your-docs-url.com) &nbsp;·&nbsp; [Architecture](./docs/architecture.svg)
+[Live App](https://conviction-vc.vercel.app) &nbsp;·&nbsp; [GitHub](https://github.com/Kush172005/Conviction) &nbsp;·&nbsp; [Architecture](./docs/architecture.svg)
 
 </div>
