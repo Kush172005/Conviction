@@ -91,8 +91,8 @@ export function BlurIn({
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, filter: 'blur(8px)', y: 16 }}
-      animate={isInView ? { opacity: 1, filter: 'blur(0px)', y: 0 } : {}}
+      initial={{ opacity: 0, y: 12 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.6, delay, ease: EASE_OUT_EXPO }}
       className={className}
     >

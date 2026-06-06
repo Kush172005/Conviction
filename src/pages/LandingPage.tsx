@@ -207,7 +207,7 @@ function StatCounter({ value, suffix, label }: { value: number; suffix: string; 
       <div className="flex items-end justify-center gap-0.5">
         <span
           ref={ref}
-          className="text-5xl font-semibold tabular-nums gradient-text leading-none text-glow"
+          className="text-5xl font-semibold tabular-nums gradient-text gradient-text-safe leading-none"
         >
           {value}
         </span>
@@ -232,24 +232,27 @@ function AnimatedWords({
   const words = text.split(' ')
   const container = {
     hidden: {},
-    visible: { transition: { staggerChildren: 0.07, delayChildren: delay } },
+    visible: { transition: { staggerChildren: 0.06, delayChildren: delay } },
   }
   const word = {
-    hidden: { y: '115%', opacity: 0 },
+    hidden: { y: 10, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
-      transition: { duration: 0.55, ease: [0.33, 1, 0.68, 1] },
+      transition: { duration: 0.45, ease: [0.33, 1, 0.68, 1] },
     },
   }
   return (
     <motion.span className={className} variants={container} initial="hidden" animate="visible">
       {words.map((w, i) => (
-        <span key={i} className="word-clip mr-[0.25em] last:mr-0">
-          <motion.span className="inline-block" variants={word}>
-            {w}
-          </motion.span>
-        </span>
+        <motion.span
+          key={i}
+          className="inline-block mr-[0.25em] last:mr-0"
+          variants={word}
+          style={{ WebkitFontSmoothing: 'antialiased' }}
+        >
+          {w}
+        </motion.span>
       ))}
     </motion.span>
   )
@@ -469,7 +472,7 @@ export default function LandingPage() {
       </motion.nav>
 
       {/* ── Hero ──────────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-14 pb-16 noise-overlay overflow-hidden">
+      <section className="relative min-h-[100dvh] flex flex-col items-center justify-center px-6 pb-16 overflow-hidden">
         {/* Animated background */}
         <div className="absolute inset-0 dot-grid opacity-25 pointer-events-none" />
 
@@ -487,55 +490,36 @@ export default function LandingPage() {
           style={{ y: useTransform(heroProgress, [0, 1], ['0%', '12%']) }}
         />
 
-        <div className="relative z-10 max-w-4xl mx-auto text-center space-y-7 mt-5">
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 16, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="inline-flex items-center gap-2 rounded-full border border-conviction-500/25 bg-conviction-500/8 px-4 py-1.5 text-xs font-medium text-conviction-300"
-          >
+        <div className="relative z-10 max-w-4xl mx-auto text-center space-y-7 xl:mt-[6%] md:mt-[12%] mt-[22%]">
+          {/* Badge — CSS animation (Safari-safe; Framer opacity:0 could stick invisible) */}
+          <div className="hero-fade-in inline-flex items-center gap-2 rounded-full border border-conviction-500/25 bg-conviction-500/8 px-4 py-1.5 text-xs font-medium text-conviction-300">
             <Sparkles className="h-3 w-3" />
             AI-Powered Deal Intelligence for Venture Capital
-          </motion.div>
+          </div>
 
-          {/* Headline — word-by-word reveal */}
-          <h1 className="text-balance font-semibold tracking-tight leading-[1.08]">
+          {/* Headline */}
+          <h1 className="hero-fade-in hero-fade-in-delay-1 text-balance font-semibold tracking-tight leading-[1.08]">
             <span className="block text-5xl md:text-6xl lg:text-7xl text-foreground mb-2">
-              <AnimatedWords text="Every founder call" delay={0.18} />
+              Every founder call
             </span>
             <span className="block text-5xl md:text-6xl lg:text-7xl text-foreground">
-              <AnimatedWords text="generates" delay={0.34} />{' '}
-              <AnimatedWords
-                text="investment intelligence."
-                delay={0.46}
-                className="gradient-text text-glow"
-              />
+              generates{' '}
+              <span className="text-conviction-300">investment intelligence.</span>
             </span>
             <span className="block text-4xl md:text-5xl lg:text-6xl text-muted-foreground/80 mt-3">
-              <AnimatedWords text="Stop losing it." delay={0.7} />
+              Stop losing it.
             </span>
           </h1>
 
           {/* Subheadline */}
-          <motion.p
-            className="max-w-2xl mx-auto text-lg text-muted-foreground leading-relaxed"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.95, ease: [0.16, 1, 0.3, 1] }}
-          >
+          <p className="hero-fade-in hero-fade-in-delay-2 max-w-2xl mx-auto text-lg text-muted-foreground leading-relaxed">
             Conviction captures your post-call reasoning, researches companies from scratch, scores
             thesis fit, generates IC memos, and builds a permanent deal memory — so your team
             never debates "why did we pass?" again.
-          </motion.p>
+          </p>
 
           {/* CTAs */}
-          <motion.div
-            className="flex flex-col sm:flex-row items-center justify-center gap-3"
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 1.1, ease: [0.16, 1, 0.3, 1] }}
-          >
+          <div className="hero-fade-in hero-fade-in-delay-3 flex flex-col sm:flex-row items-center justify-center gap-3">
             <MagneticButton strength={0.4}>
               <Button
                 variant="conviction"
@@ -559,30 +543,20 @@ export default function LandingPage() {
                 View live demo
               </Button>
             </MagneticButton>
-          </motion.div>
+          </div>
 
           {/* Trust signals */}
-          <motion.div
-            className="flex items-center justify-center gap-5 text-xs text-muted-foreground flex-wrap"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 1.25 }}
-          >
+          <div className="hero-fade-in hero-fade-in-delay-4 flex items-center justify-center gap-5 text-xs text-muted-foreground flex-wrap">
             {['No credit card', 'Private & secure', 'Works with any VC workflow'].map((item) => (
               <div key={item} className="flex items-center gap-1.5">
                 <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
                 {item}
               </div>
             ))}
-          </motion.div>
+          </div>
 
           {/* Product preview — tabbed */}
-          <motion.div
-            className="relative mt-8 mx-auto max-w-4xl w-full"
-            initial={{ opacity: 0, y: 48 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.75, delay: 1.35, ease: [0.16, 1, 0.3, 1] }}
-          >
+          <div className="hero-fade-in hero-fade-in-delay-5 relative mt-8 mx-auto max-w-4xl w-full">
             {/* Tab switcher */}
             <div className="flex justify-center gap-1 mb-4">
               {([
@@ -808,7 +782,7 @@ export default function LandingPage() {
               {/* Bottom gradient fade */}
               <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-background to-transparent pointer-events-none" />
             </div>
-          </motion.div>
+          </div>
 
           {/* Scroll hint */}
           <motion.div
@@ -1069,7 +1043,7 @@ export default function LandingPage() {
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-balance leading-[1.08]">
             Stop losing the reasoning
             <br />
-            <span className="gradient-text text-glow">behind every decision.</span>
+            <span className="gradient-text gradient-text-safe">behind every decision.</span>
           </h2>
 
           <p className="text-muted-foreground text-lg max-w-md mx-auto leading-relaxed">

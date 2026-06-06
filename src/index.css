@@ -56,6 +56,8 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
   }
 
   ::selection {
@@ -101,11 +103,11 @@
     border: 1px solid hsl(var(--border));
   }
 
-  .gradient-text {
-    background: linear-gradient(135deg, hsl(248 92% 78%) 0%, hsl(280 80% 72%) 50%, hsl(220 80% 80%) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  /* Solid accent — background-clip:text renders invisible in Safari */
+  .gradient-text,
+  .gradient-text-safe {
+    color: hsl(248 92% 72%);
+    -webkit-text-fill-color: hsl(248 92% 72%);
   }
 
   .conviction-glow {
@@ -281,6 +283,37 @@
 }
 .ring-pulse { animation: ring-pulse 2s ease-out infinite; }
 
+/* Landing hero — CSS fade (visible even if animation is skipped) */
+@keyframes hero-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-fade-in {
+  opacity: 1;
+  animation: hero-fade-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.hero-fade-in-delay-1 { animation-delay: 0.1s; }
+.hero-fade-in-delay-2 { animation-delay: 0.22s; }
+.hero-fade-in-delay-3 { animation-delay: 0.34s; }
+.hero-fade-in-delay-4 { animation-delay: 0.46s; }
+.hero-fade-in-delay-5 { animation-delay: 0.58s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-fade-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* Word clip-reveal helper */
 .word-clip {
   display: inline-block;
@@ -300,9 +333,15 @@
   mix-blend-mode: overlay;
 }
 
-/* Glow text shadow */
+/* Glow text shadow — avoid on gradient-text (Safari renders blurry) */
 .text-glow {
   text-shadow: 0 0 40px hsl(248 92% 68% / 0.4);
+}
+
+@supports (-webkit-touch-callout: none) {
+  .text-glow {
+    text-shadow: none;
+  }
 }
 
 /* Step connector line draw */

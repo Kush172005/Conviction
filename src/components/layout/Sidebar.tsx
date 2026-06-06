@@ -5,7 +5,6 @@ import {
   Building2,
   PhoneCall,
   Brain,
-  Sparkles,
   Settings,
   ChevronLeft,
   ChevronRight,
@@ -26,7 +25,6 @@ const NAV_ITEMS = [
   { href: '/companies', icon: Building2, label: 'Companies' },
   { href: '/calls/new', icon: PhoneCall, label: 'Log Call' },
   { href: '/memory', icon: Brain, label: 'Memory' },
-  { href: '/intelligence', icon: Sparkles, label: 'Intelligence' },
   { href: '/startup-intelligence', icon: Zap, label: 'Startup Intel' },
   { href: '/settings', icon: Settings, label: 'Settings' },
 ]

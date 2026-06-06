@@ -39,7 +39,7 @@ export default function AppShell({ children }: AppShellProps) {
         </div>
 
         {/* Main content — extra bottom padding on mobile for bottom nav */}
-        <main className="flex-1 overflow-y-auto min-w-0">
+        <main className="flex-1 min-h-0 min-w-0 overflow-y-auto overscroll-y-contain [-webkit-overflow-scrolling:touch]">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
@@ -48,7 +48,7 @@ export default function AppShell({ children }: AppShellProps) {
               animate="animate"
               exit="exit"
               transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-              className="h-full pb-16 md:pb-0"
+              className="min-h-0 h-full pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0"
             >
               {children}
             </motion.div>

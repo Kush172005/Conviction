@@ -284,6 +284,13 @@ export default function StartupIntelligencePage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formError, setFormError] = useState('')
 
+  // Mobile always starts on the search form, not a report detail view
+  useEffect(() => {
+    if (window.matchMedia('(max-width: 767px)').matches) {
+      setMobileView('list')
+    }
+  }, [])
+
   // Load history on mount
   useEffect(() => {
     loadHistory()
@@ -294,11 +301,13 @@ export default function StartupIntelligencePage() {
     try {
       const items = await startupIntelligenceApi.listReports()
       setHistory(items)
-      // Auto-select most recent in-progress or completed report
-      if (items.length > 0 && !selectedReportId) {
+      // Desktop only: auto-open in-progress report. Mobile always starts on the search form.
+      const isDesktop = window.matchMedia('(min-width: 768px)').matches
+      if (isDesktop && items.length > 0 && !selectedReportId) {
         const inProgress = items.find(r => r.status !== 'completed' && r.status !== 'failed')
-        const first = inProgress ?? items[0]
-        openReport(first.id)
+        if (inProgress) {
+          openReport(inProgress.id)
+        }
       }
     } catch {
       // silently fail
@@ -450,10 +459,11 @@ export default function StartupIntelligencePage() {
   }
 
   return (
-    <div className="flex flex-col md:flex-row h-full overflow-hidden">
+    <div className="flex h-full min-h-full flex-col md:flex-row md:items-stretch">
       {/* ── Left panel: form + history ── */}
       <div className={cn(
-        'md:w-80 w-full flex-shrink-0 border-b md:border-b-0 md:border-r border-border flex flex-col md:h-full',
+        'w-full shrink-0 border-b border-border flex flex-col md:w-80 md:border-b-0 md:border-r',
+        'md:h-full md:overflow-hidden',
         mobileView === 'detail' ? 'hidden md:flex' : 'flex',
       )}>
         {/* Form */}
@@ -591,10 +601,10 @@ export default function StartupIntelligencePage() {
         </div>
       </div>
 
-      {/* ── Main content area ── */}
+      {/* ── Main content area — fills shell height so empty state centers in view */}
       <div className={cn(
-        'flex-1 overflow-y-auto',
-        mobileView === 'list' ? 'hidden md:block' : 'block',
+        'flex-1 min-w-0 min-h-0 flex flex-col md:overflow-y-auto',
+        mobileView === 'list' ? 'hidden md:flex' : 'flex',
       )}>
         {!selectedReportId && (
           <EmptyState onNewReport={() => setMobileView('list')} />
@@ -632,27 +642,36 @@ export default function StartupIntelligencePage() {
 function EmptyState({ onNewReport }: { onNewReport: () => void }) {
   const examples = ['stripe.com', 'notion.so', 'linear.app', 'vercel.com']
   return (
-    <div className="flex flex-col items-center justify-center h-full p-8 text-center">
-      <div className="w-16 h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-4">
-        <Zap className="w-8 h-8 text-blue-400" />
+    <div className="flex flex-1 flex-col items-center justify-center px-6 py-10 md:px-10 text-center">
+      <div className="w-full max-w-md mx-auto flex flex-col items-center">
+        <div className="w-16 h-16 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-5">
+          <Zap className="w-8 h-8 text-blue-400" />
+        </div>
+        <h2 className="text-2xl font-semibold mb-3">Startup Intelligence</h2>
+        <p className="text-muted-foreground text-sm leading-relaxed mb-8">
+          Generate a VC-grade investment report for any startup. We'll analyze the company against
+          your fund thesis and surface key signals.
+        </p>
+        <div className="flex flex-wrap gap-2 justify-center mb-8">
+          {examples.map(ex => (
+            <span
+              key={ex}
+              className="text-xs px-3 py-1.5 rounded-full border border-border bg-card text-muted-foreground"
+            >
+              {ex}
+            </span>
+          ))}
+        </div>
+        <p className="text-xs text-muted-foreground">
+          Enter a company name and website in the panel on the left to get started.
+        </p>
+        <button
+          onClick={onNewReport}
+          className="md:hidden mt-6 flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+        >
+          <Search className="w-4 h-4" /> New Report
+        </button>
       </div>
-      <h2 className="text-xl font-semibold mb-2">Startup Intelligence</h2>
-      <p className="text-muted-foreground text-sm max-w-sm mb-6">
-        Generate a VC-grade investment report for any startup. We'll analyze the company against your fund thesis and surface key signals.
-      </p>
-      <div className="flex flex-wrap gap-2 justify-center mb-6">
-        {examples.map(ex => (
-          <span key={ex} className="text-xs px-3 py-1.5 rounded-full border border-border text-muted-foreground">
-            {ex}
-          </span>
-        ))}
-      </div>
-      <button
-        onClick={onNewReport}
-        className="md:hidden flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
-      >
-        <Search className="w-4 h-4" /> New Report
-      </button>
     </div>
   )
 }

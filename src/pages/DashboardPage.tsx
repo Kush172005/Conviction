@@ -203,8 +203,8 @@ function NewUserDashboard({ name }: { name: string }) {
                 step: '3',
                 title: 'Get AI intelligence',
                 desc: 'Conviction extracts decisions, follow-ups, and thesis alignment.',
-                cta: 'See intelligence',
-                href: '/intelligence',
+                cta: 'Log a call',
+                href: '/calls/new',
               },
             ].map((item) => (
               <div

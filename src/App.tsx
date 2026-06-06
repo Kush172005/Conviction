@@ -10,7 +10,6 @@ import CompanyDetailPage from '@/pages/CompanyDetailPage'
 import NewCallPage from '@/pages/NewCallPage'
 import CallIntelligencePage from '@/pages/CallIntelligencePage'
 import MemoryPage from '@/pages/MemoryPage'
-import IntelligencePage from '@/pages/IntelligencePage'
 import SettingsPage from '@/pages/SettingsPage'
 import StartupIntelligencePage from '@/pages/StartupIntelligencePage'
 
@@ -95,16 +94,7 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-      <Route
-        path="/intelligence"
-        element={
-          <ProtectedRoute>
-            <AppShell>
-              <IntelligencePage />
-            </AppShell>
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/intelligence" element={<Navigate to="/dashboard" replace />} />
       <Route
         path="/settings"
         element={
