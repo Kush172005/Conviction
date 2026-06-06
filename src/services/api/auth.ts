@@ -49,17 +49,23 @@ export function mapBackendUser(user: BackendUser): User {
   }
 }
 
+const coldStart = { coldStart: true } as const
+
 export const authApi = {
   googleLogin: (idToken: string) =>
-    api.post<TokenResponse>('/auth/google', { id_token: idToken }),
+    api.post<TokenResponse>('/auth/google', { id_token: idToken }, coldStart),
 
   mockLogin: (email?: string, name?: string) =>
-    api.post<TokenResponse>('/auth/mock', {
-      email: email ?? 'arjun@rtpglobal.com',
-      name: name ?? 'Arjun Mehta',
-    }),
+    api.post<TokenResponse>(
+      '/auth/mock',
+      {
+        email: email ?? 'arjun@rtpglobal.com',
+        name: name ?? 'Arjun Mehta',
+      },
+      coldStart
+    ),
 
-  getMe: () => api.get<BackendUser>('/users/me'),
+  getMe: () => api.get<BackendUser>('/users/me', coldStart),
 
   updateMe: (data: { onboarding_completed?: boolean; name?: string }) =>
     api.patch<BackendUser>('/users/me', data),

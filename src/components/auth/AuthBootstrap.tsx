@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuthStore } from '@/store'
 import { authApi, mapBackendUser } from '@/services/api/auth'
+import { wakeServer } from '@/services/api/client'
 import { getFriendlyApiError, getLoadingHint } from '@/lib/apiErrors'
 
 interface AuthBootstrapProps {
@@ -22,6 +23,8 @@ export default function AuthBootstrap({ children }: AuthBootstrapProps) {
     let cancelled = false
 
     async function bootstrap() {
+      wakeServer().catch(() => {})
+
       // Wait for zustand persist rehydration
       if (!useAuthStore.persist.hasHydrated()) {
         await new Promise<void>((resolve) => {

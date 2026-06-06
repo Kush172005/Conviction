@@ -4,9 +4,9 @@ export type ApiErrorContext = 'auth' | 'demo' | 'default' | 'upload' | 'research
 
 const COLD_START_MESSAGES: Record<ApiErrorContext, string[]> = {
   auth: [
-    "Google's ready. Our server on Render? Still hitting snooze. Give it half a minute and sign in again.",
-    "Render put our API to bed. It's waking up — like a partner who said they'd join the call at 9:00 and rolled in at 9:04.",
-    "Sign-in bounced because Render was napping. Not you. Not Google. Just our cheap server stretching its legs.",
+    "The server took too long to wake up. Wait 30 seconds, then click sign in once more — it should go through.",
+    "Render's free tier sleeps after inactivity. We retried automatically but it still wasn't ready — one more try in half a minute usually works.",
+    "Not Google, not your account — the backend on Render was cold. Give it a moment, then sign in again.",
   ],
   demo: [
     "The demo's ready — our server on Render just isn't. It's waking up. Try again in a bit.",

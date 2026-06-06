@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
 import { useAuthStore, useOnboardingStore } from "@/store";
 import { authApi, mapBackendUser } from "@/services/api/auth";
+import { wakeServer } from "@/services/api/client";
 import { getFriendlyApiError } from "@/lib/apiErrors";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as
@@ -23,6 +24,12 @@ export default function LoginPage() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isDemoLoading, setIsDemoLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loadingHint, setLoadingHint] = useState("Signing in…");
+
+  // Wake Render before the user clicks sign-in (cold start can take ~60s)
+  useEffect(() => {
+    wakeServer().catch(() => {});
+  }, []);
 
   // Already logged in — redirect appropriately
   useEffect(() => {
@@ -60,6 +67,11 @@ export default function LoginPage() {
     }
     setIsGoogleLoading(true);
     setError(null);
+    setLoadingHint("Signing in…");
+    const slowTimer = window.setTimeout(
+      () => setLoadingHint("Waking up server — first visit after a while can take up to a minute…"),
+      6000
+    );
     try {
       const tokenResponse = await authApi.googleLogin(
         credentialResponse.credential
@@ -77,13 +89,20 @@ export default function LoginPage() {
         )
       );
     } finally {
+      window.clearTimeout(slowTimer);
       setIsGoogleLoading(false);
+      setLoadingHint("Signing in…");
     }
   }
 
   async function handleDemoLogin() {
     setIsDemoLoading(true);
     setError(null);
+    setLoadingHint("Loading demo…");
+    const slowTimer = window.setTimeout(
+      () => setLoadingHint("Waking up server — hang tight, almost there…"),
+      6000
+    );
     try {
       const tokenResponse = await authApi.mockLogin();
       useAuthStore.setState({
@@ -103,7 +122,9 @@ export default function LoginPage() {
         )
       );
     } finally {
+      window.clearTimeout(slowTimer);
       setIsDemoLoading(false);
+      setLoadingHint("Signing in…");
     }
   }
 
@@ -179,8 +200,8 @@ export default function LoginPage() {
               {isGoogleLoading && (
                 <div className="absolute inset-0 flex items-center justify-center gap-2 rounded-md">
                   <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/30 border-t-foreground animate-spin" />
-                  <span className="text-xs text-muted-foreground">
-                    Signing in…
+                  <span className="text-xs text-muted-foreground text-center max-w-[240px] leading-snug">
+                    {loadingHint}
                   </span>
                 </div>
               )}
@@ -218,7 +239,7 @@ export default function LoginPage() {
               disabled={isDemoLoading || isGoogleLoading}
             >
               {isDemoLoading ? (
-                <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/30 border-t-foreground animate-spin" />
+                <span className="text-xs text-muted-foreground">{loadingHint}</span>
               ) : (
                 <>
                   Load demo workspace
