@@ -307,7 +307,7 @@ export default function CompaniesPage() {
               : `${companies.length} ${companies.length === 1 ? 'company' : 'companies'} in your pipeline.`
           }
           actions={
-            <Button variant="conviction" size="sm" onClick={() => setShowNewModal(true)}>
+            <Button variant="conviction" size="sm" data-tour="tour-pipeline-add" onClick={() => setShowNewModal(true)}>
               <Plus className="h-3.5 w-3.5" />
               Add company
             </Button>
@@ -379,10 +379,16 @@ export default function CompaniesPage() {
 
       {/* Grid */}
       {!loading && !error && (
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4" data-tour="tour-pipeline-list">
           <AnimatePresence mode="popLayout">
-            {filtered.map((company) => (
-              <CompanyCard key={company.id} company={company} />
+            {filtered.map((company, index) => (
+              <div
+                key={company.id}
+                data-company-id={company.id}
+                data-tour={index === 0 ? 'tour-pipeline-card' : undefined}
+              >
+                <CompanyCard company={company} />
+              </div>
             ))}
             {filtered.length === 0 && (
               <motion.div

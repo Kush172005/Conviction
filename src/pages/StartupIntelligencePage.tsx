@@ -481,7 +481,7 @@ export default function StartupIntelligencePage() {
         mobileView === 'detail' ? 'hidden md:flex' : 'flex',
       )}>
         {/* Form */}
-        <div className="relative p-4 border-b border-border">
+        <div className="relative p-4 border-b border-border" data-tour="tour-research-form">
           {isDemo && (
             <DemoGateOverlay
               title="Sign in to research any startup"
@@ -552,7 +552,7 @@ export default function StartupIntelligencePage() {
         </div>
 
         {/* History list */}
-        <div className="flex-1 overflow-y-auto p-3 space-y-1.5">
+        <div className="flex-1 overflow-y-auto p-3 space-y-1.5" data-tour="tour-research-history">
           <p className="text-xs text-muted-foreground px-1 mb-2">Report History</p>
           {isLoadingHistory && (
             <div className="flex items-center justify-center py-8">

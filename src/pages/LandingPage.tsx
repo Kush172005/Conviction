@@ -42,6 +42,11 @@ import Marquee from "@/components/motion/Marquee";
 import { useAuthStore } from "@/store";
 import { authApi, mapBackendUser } from "@/services/api/auth";
 import { getFriendlyApiError } from "@/lib/apiErrors";
+import {
+  RtpGlobalBadge,
+  RtpGlobalCoBrandStrip,
+  RtpGlobalFooterCredit,
+} from "@/components/RtpGlobalBranding";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -530,6 +535,7 @@ export default function LandingPage() {
               for VC
             </span>
           </motion.div>
+          <RtpGlobalBadge className="hidden md:inline-flex absolute left-1/2 -translate-x-1/2" />
           <motion.div
             className="flex items-center gap-2"
             initial={{ opacity: 0, x: 16 }}
@@ -579,9 +585,12 @@ export default function LandingPage() {
         />
 
         <div className="relative z-10 max-w-4xl mx-auto text-center space-y-5">
-          <div className="hero-fade-in inline-flex items-center gap-2 rounded-full border border-conviction-500/25 bg-conviction-500/8 px-4 py-1.5 text-xs font-medium text-conviction-300">
-            <Sparkles className="h-3 w-3" />
-            Deal intelligence for venture capital
+          <div className="hero-fade-in flex flex-col items-center gap-2">
+            <div className="inline-flex items-center gap-2 rounded-full border border-conviction-500/25 bg-conviction-500/8 px-4 py-1.5 text-xs font-medium text-conviction-300">
+              <Sparkles className="h-3 w-3" />
+              Deal intelligence for venture capital
+            </div>
+            <RtpGlobalBadge className="md:hidden" />
           </div>
 
           <h1 className="hero-fade-in hero-fade-in-delay-1 text-balance font-semibold tracking-tight leading-[1.06]">
@@ -1233,6 +1242,8 @@ export default function LandingPage() {
         </Marquee>
       </section>
 
+      <RtpGlobalCoBrandStrip />
+
       {/* ── Final CTA ─────────────────────────────────────────────── */}
       <section className="py-16 md:py-20 px-6 relative overflow-hidden">
         <div className="absolute inset-0 dot-grid opacity-15 pointer-events-none" />
@@ -1315,35 +1326,38 @@ export default function LandingPage() {
 
       {/* ── Footer ────────────────────────────────────────────────── */}
       <footer className="border-t border-border py-6 px-6">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-conviction">
-              <LogoMark className="h-3.5 w-3.5" />
+        <div className="max-w-5xl mx-auto space-y-3">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-conviction">
+                <LogoMark className="h-3.5 w-3.5" />
+              </div>
+              <span className="text-sm font-semibold text-foreground">
+                Conviction
+              </span>
+              <span className="text-xs text-muted-foreground">
+                — Deal Intelligence for VC
+              </span>
             </div>
-            <span className="text-sm font-semibold text-foreground">
-              Conviction
-            </span>
-            <span className="text-xs text-muted-foreground">
-              — Deal Intelligence for VC
-            </span>
+            <p className="text-xs text-muted-foreground text-center">
+              Never lose the reasoning behind an investment decision.
+            </p>
+            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+              <button
+                onClick={() => navigate("/login")}
+                className="hover:text-foreground transition-colors"
+              >
+                Sign in
+              </button>
+              <button
+                onClick={handleDemoAccess}
+                className="hover:text-foreground transition-colors"
+              >
+                Demo
+              </button>
+            </div>
           </div>
-          <p className="text-xs text-muted-foreground text-center">
-            Never lose the reasoning behind an investment decision.
-          </p>
-          <div className="flex items-center gap-4 text-xs text-muted-foreground">
-            <button
-              onClick={() => navigate("/login")}
-              className="hover:text-foreground transition-colors"
-            >
-              Sign in
-            </button>
-            <button
-              onClick={handleDemoAccess}
-              className="hover:text-foreground transition-colors"
-            >
-              Demo
-            </button>
-          </div>
+          <RtpGlobalFooterCredit />
         </div>
       </footer>
     </div>

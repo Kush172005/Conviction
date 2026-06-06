@@ -113,6 +113,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
               variant="conviction"
               size="sm"
               className="w-full"
+              data-tour="tour-log-call"
               onClick={() => handleNavClick("/calls/new")}
             >
               <Plus className="h-3.5 w-3.5" />
@@ -125,6 +126,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
                   variant="conviction"
                   size="icon-sm"
                   className="w-full"
+                  data-tour="tour-log-call"
                   onClick={() => handleNavClick("/calls/new")}
                 >
                   <Plus className="h-3.5 w-3.5" />
@@ -139,12 +141,21 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
         <nav className="flex-1 overflow-y-auto overflow-x-hidden thin-scrollbar px-2 py-2 space-y-0.5">
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
+            const tourId =
+              item.href === '/dashboard' ? 'tour-nav-dashboard'
+              : item.href === '/companies' ? 'tour-nav-pipeline'
+              : item.href === '/calls/new' ? 'tour-nav-log-call'
+              : item.href === '/memory' ? 'tour-nav-memory'
+              : item.href === '/startup-intelligence' ? 'tour-nav-research'
+              : item.href === '/settings' ? 'tour-nav-settings'
+              : undefined
             if (collapsed) {
               return (
                 <Tooltip key={item.href}>
                   <TooltipTrigger asChild>
                     <NavLink
                       to={item.href}
+                      data-tour={tourId}
                       onClick={() => onMobileClose?.()}
                       className={({ isActive }) =>
                         cn(
@@ -166,6 +177,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
               <NavLink
                 key={item.href}
                 to={item.href}
+                data-tour={tourId}
                 onClick={() => onMobileClose?.()}
                 className={({ isActive }) =>
                   cn(

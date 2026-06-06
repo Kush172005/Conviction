@@ -90,10 +90,12 @@ export default function MemoryPage() {
   return (
     <div className="p-6 max-w-3xl mx-auto">
       <FadeIn>
-        <PageHeader
-          title="Memory"
-          description="The full history of your investment thinking, across every company."
-        />
+        <div data-tour="tour-memory-page">
+          <PageHeader
+            title="Memory"
+            description="The full history of your investment thinking, across every company."
+          />
+        </div>
       </FadeIn>
 
       {loading ? (
@@ -148,7 +150,7 @@ export default function MemoryPage() {
               </div>
             </FadeIn>
           ) : (
-            <div className="space-y-10">
+            <div className="space-y-10" data-tour="tour-memory-timeline">
               {grouped.map(([month, monthEntries], groupIdx) => (
                 <FadeIn key={month} delay={groupIdx * 0.08}>
                   <div>

@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LogOut, User, Building2, Check, Loader2 } from 'lucide-react'
+import LogoMark from '@/components/LogoMark'
+import { useTourStore } from '@/store/tourStore'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -27,6 +29,7 @@ export default function SettingsPage() {
   const user = useAuthStore((s) => s.user)
   const isDemo = useAuthStore((s) => s.isDemo)
   const logout = useAuthStore((s) => s.logout)
+  const restartTour = useTourStore((s) => s.restartTour)
   const navigate = useNavigate()
 
   const [profile, setProfile] = useState<BackendInvestorProfile | null>(null)
@@ -103,7 +106,9 @@ export default function SettingsPage() {
   return (
     <div className="p-6 max-w-3xl mx-auto">
       <FadeIn>
-        <PageHeader title="Settings" description="Manage your account and workspace preferences." />
+        <div data-tour="tour-settings-page">
+          <PageHeader title="Settings" description="Manage your account and workspace preferences." />
+        </div>
       </FadeIn>
 
       <div className="space-y-8">
@@ -151,7 +156,7 @@ export default function SettingsPage() {
 
         {/* Fund & Thesis */}
         <FadeIn delay={0.1}>
-          <div className="rounded-lg border border-border bg-card">
+          <div className="rounded-lg border border-border bg-card" data-tour="tour-settings-thesis">
             <div className="px-5 py-4 border-b border-border flex items-center justify-between">
               <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
                 <Building2 className="h-4 w-4 text-muted-foreground" />
@@ -254,6 +259,33 @@ export default function SettingsPage() {
                 )}
               </div>
             )}
+          </div>
+        </FadeIn>
+
+        {/* Product tour */}
+        <FadeIn delay={0.12}>
+          <div className="rounded-lg border border-border bg-card">
+            <div className="px-5 py-4 border-b border-border">
+              <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                <div className="flex h-5 w-5 items-center justify-center rounded bg-gradient-conviction">
+                  <LogoMark className="h-3 w-3" />
+                </div>
+                Product tour
+              </h2>
+            </div>
+            <div className="p-5">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:justify-between">
+                <div>
+                  <p className="text-sm font-medium text-foreground">Replay the walkthrough</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    A full walkthrough of every feature — what it does and what to click first.
+                  </p>
+                </div>
+                <Button variant="outline" size="sm" onClick={restartTour} className="w-full sm:w-auto">
+                  Start tour
+                </Button>
+              </div>
+            </div>
           </div>
         </FadeIn>
 

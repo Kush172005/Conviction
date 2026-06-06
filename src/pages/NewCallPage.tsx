@@ -694,7 +694,7 @@ export default function NewCallPage() {
           )}
           {/* Company selector */}
           <FadeIn delay={0.05}>
-            <div className="space-y-2">
+            <div className="space-y-2" data-tour="tour-log-call-company">
               <Label>Company</Label>
 
               {loadingCompanies ? (
@@ -757,7 +757,7 @@ export default function NewCallPage() {
 
           {/* Mode selector */}
           <FadeIn delay={0.1}>
-            <div className="space-y-2">
+            <div className="space-y-2" data-tour="tour-log-call-modes">
               <Label>Input method</Label>
               <div className="grid grid-cols-3 gap-3">
                 {(Object.entries(MODE_CONFIG) as [InputMode, typeof MODE_CONFIG[InputMode]][]).map(
@@ -887,7 +887,7 @@ Examples:
 
           {/* Process CTA */}
           <FadeIn delay={0.2}>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-lg border border-border bg-card">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-lg border border-border bg-card" data-tour="tour-log-call-flow">
               <div className="flex items-center gap-3 flex-1 min-w-0">
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-conviction-500/15 flex-shrink-0">
                   <Sparkles className="h-4 w-4 text-conviction-400" />

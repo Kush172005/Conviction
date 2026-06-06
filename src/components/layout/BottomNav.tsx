@@ -3,11 +3,11 @@ import { LayoutDashboard, Building2, PhoneCall, Zap, Settings } from 'lucide-rea
 import { cn } from '@/lib/utils'
 
 const ITEMS = [
-  { href: '/dashboard', icon: LayoutDashboard, label: 'Home' },
-  { href: '/companies', icon: Building2, label: 'Pipeline' },
-  { href: '/calls/new', icon: PhoneCall, label: 'Log Call', primary: true },
-  { href: '/startup-intelligence', icon: Zap, label: 'Research' },
-  { href: '/settings', icon: Settings, label: 'Settings' },
+  { href: '/dashboard', icon: LayoutDashboard, label: 'Home', tourId: 'tour-nav-dashboard' },
+  { href: '/companies', icon: Building2, label: 'Pipeline', tourId: 'tour-nav-pipeline' },
+  { href: '/calls/new', icon: PhoneCall, label: 'Log Call', primary: true, tourId: 'tour-log-call' },
+  { href: '/startup-intelligence', icon: Zap, label: 'Research', tourId: 'tour-nav-research' },
+  { href: '/settings', icon: Settings, label: 'Settings', tourId: 'tour-nav-settings' },
 ]
 
 export default function BottomNav() {
@@ -23,6 +23,7 @@ export default function BottomNav() {
             <NavLink
               key={item.href}
               to={item.href}
+              data-tour={item.tourId}
               className="flex flex-1 flex-col items-center justify-center py-2 gap-0.5"
             >
               {({ isActive }) => (
@@ -49,6 +50,7 @@ export default function BottomNav() {
           <NavLink
             key={item.href}
             to={item.href}
+            data-tour={item.tourId}
             className={({ isActive }) =>
               cn(
                 'flex flex-1 flex-col items-center justify-center py-2 gap-0.5 transition-colors',

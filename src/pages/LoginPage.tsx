@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import type { CredentialResponse } from "@react-oauth/google";
 import { ArrowRight, ArrowLeft, Shield, AlertCircle } from "lucide-react";
 import LogoMark from "@/components/LogoMark";
+import { RtpGlobalBadge } from "@/components/RtpGlobalBranding";
 import { Button } from "@/components/ui/button";
 import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
 import { useAuthStore, useOnboardingStore } from "@/store";
@@ -136,6 +137,9 @@ export default function LoginPage() {
           <p className="mt-1 text-sm text-muted-foreground">
             Never lose the reasoning behind a decision.
           </p>
+          <div className="mt-3 flex justify-center">
+            <RtpGlobalBadge />
+          </div>
         </Link>
 
         <div className="rounded-xl border border-border bg-card p-6 shadow-card space-y-4">

@@ -152,7 +152,7 @@ function NewUserDashboard({ name }: { name: string }) {
       </FadeIn>
 
       {/* Zero-state KPIs */}
-      <FadeInStagger staggerDelay={0.06} className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <FadeInStagger staggerDelay={0.06} className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8" data-tour="tour-dashboard-kpis">
         {DEMO_KPI_CARDS.map((card) => {
           const Icon = card.icon
           return (
@@ -306,7 +306,7 @@ function LiveDashboard({
       </FadeIn>
 
       {/* KPI Cards */}
-      <FadeInStagger staggerDelay={0.07} className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <FadeInStagger staggerDelay={0.07} className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8" data-tour="tour-dashboard-kpis">
         {kpiCards.map((card) => (
           <FadeInItem key={card.label}>
             <AnimatedKPICard
@@ -323,7 +323,7 @@ function LiveDashboard({
         {/* Active Pipeline */}
         <div className="lg:col-span-2">
           <FadeIn delay={0.2}>
-            <div className="rounded-lg border border-border bg-card">
+            <div className="rounded-lg border border-border bg-card" data-tour="tour-dashboard-pipeline">
               <div className="flex items-center justify-between px-5 py-4 border-b border-border">
                 <h2 className="text-sm font-semibold text-foreground">Active Pipeline</h2>
                 <Button
@@ -376,7 +376,7 @@ function LiveDashboard({
 
         {/* Open Follow-Ups */}
         <FadeIn delay={0.25}>
-          <div className="rounded-lg border border-border bg-card">
+          <div className="rounded-lg border border-border bg-card" data-tour="tour-dashboard-followups">
             <div className="flex items-center justify-between px-5 py-4 border-b border-border">
               <h2 className="text-sm font-semibold text-foreground">Open Follow-Ups</h2>
               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-500/15 text-2xs font-semibold text-amber-400">
@@ -495,7 +495,7 @@ export default function DashboardPage() {
       </FadeIn>
 
       {/* KPI Cards */}
-      <FadeInStagger staggerDelay={0.07} className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <FadeInStagger staggerDelay={0.07} className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8" data-tour="tour-dashboard-kpis">
         {DEMO_KPI_CARDS.map((card) => (
           <FadeInItem key={card.label}>
             <AnimatedKPICard
@@ -514,7 +514,7 @@ export default function DashboardPage() {
         {/* Recent Activity */}
         <div className="lg:col-span-2">
           <FadeIn delay={0.2}>
-            <div className="rounded-lg border border-border bg-card">
+            <div className="rounded-lg border border-border bg-card" data-tour="tour-dashboard-activity">
               <div className="flex items-center justify-between px-5 py-4 border-b border-border">
                 <h2 className="text-sm font-semibold text-foreground">Recent Activity</h2>
                 <Button variant="ghost-muted" size="sm" className="text-xs h-7">
@@ -553,7 +553,7 @@ export default function DashboardPage() {
         <div className="space-y-6">
           {/* Companies */}
           <FadeIn delay={0.25}>
-            <div className="rounded-lg border border-border bg-card">
+            <div className="rounded-lg border border-border bg-card" data-tour="tour-dashboard-pipeline">
               <div className="flex items-center justify-between px-5 py-4 border-b border-border">
                 <h2 className="text-sm font-semibold text-foreground">Active Pipeline</h2>
                 <Button
@@ -590,7 +590,7 @@ export default function DashboardPage() {
 
           {/* Open Follow-Ups */}
           <FadeIn delay={0.3}>
-            <div className="rounded-lg border border-border bg-card">
+            <div className="rounded-lg border border-border bg-card" data-tour="tour-dashboard-followups">
               <div className="flex items-center justify-between px-5 py-4 border-b border-border">
                 <h2 className="text-sm font-semibold text-foreground">Open Follow-Ups</h2>
                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-500/15 text-2xs font-semibold text-amber-400">

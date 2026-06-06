@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useLocation } from 'react-router-dom'
 import { TrendingUp } from 'lucide-react'
@@ -5,6 +6,9 @@ import Sidebar from './Sidebar'
 import BottomNav from './BottomNav'
 import DemoBanner from './DemoBanner'
 import SignOutButton from '@/components/auth/SignOutButton'
+import ProductTour from '@/components/tour/ProductTour'
+import { useAuthStore } from '@/store'
+import { useTourStore } from '@/store/tourStore'
 
 interface AppShellProps {
   children: React.ReactNode
@@ -14,6 +18,26 @@ const pageVariants = {
   initial: { opacity: 0, y: 6 },
   animate: { opacity: 1, y: 0 },
   exit: { opacity: 0, y: -4 },
+}
+
+function TourAutoStart() {
+  const user = useAuthStore((s) => s.user)
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
+  const isDemo = useAuthStore((s) => s.isDemo)
+  const active = useTourStore((s) => s.active)
+  const startTour = useTourStore((s) => s.startTour)
+  const hasCompletedTour = useTourStore((s) => s.hasCompletedTour)
+
+  useEffect(() => {
+    if (!isAuthenticated || !user || active) return
+    if (hasCompletedTour(user.id)) return
+    if (!isDemo && !user.onboardingCompleted) return
+
+    const timer = window.setTimeout(() => startTour(), 1200)
+    return () => window.clearTimeout(timer)
+  }, [isAuthenticated, user, isDemo, active, startTour, hasCompletedTour])
+
+  return null
 }
 
 export default function AppShell({ children }: AppShellProps) {
@@ -60,6 +84,9 @@ export default function AppShell({ children }: AppShellProps) {
 
       {/* Mobile bottom navigation */}
       <BottomNav />
+
+      <ProductTour />
+      <TourAutoStart />
     </div>
   )
 }

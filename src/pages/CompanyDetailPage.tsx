@@ -184,7 +184,7 @@ export default function CompanyDetailPage() {
 
       {/* Header */}
       <FadeIn delay={0.05}>
-        <div className="flex flex-col sm:flex-row items-start sm:justify-between gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:justify-between gap-4 mb-6" data-tour="tour-company-header">
           <div className="min-w-0">
             <div className="flex items-center gap-3 mb-1 flex-wrap">
               <h1 className="text-2xl font-semibold text-foreground">{company.name}</h1>
@@ -233,7 +233,7 @@ export default function CompanyDetailPage() {
       {/* Latest Decision summary */}
       {latestDecision && (
         <FadeIn delay={0.1}>
-          <div className="mb-6 rounded-lg border border-conviction-500/20 bg-conviction-500/5 p-4">
+          <div className="mb-6 rounded-lg border border-conviction-500/20 bg-conviction-500/5 p-4" data-tour="tour-company-decision">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-conviction-400" />
