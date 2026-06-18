@@ -24,7 +24,7 @@ export default function LoginPage() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isDemoLoading, setIsDemoLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [loadingHint, setLoadingHint] = useState("Signing in…");
+  const [loadingHint, setLoadingHint] = useState("");
 
   // Wake Render before the user clicks sign-in (cold start can take ~60s)
   useEffect(() => {
@@ -67,9 +67,9 @@ export default function LoginPage() {
     }
     setIsGoogleLoading(true);
     setError(null);
-    setLoadingHint("Signing in…");
+    setLoadingHint("");
     const slowTimer = window.setTimeout(
-      () => setLoadingHint("Waking up server — first visit after a while can take up to a minute…"),
+      () => setLoadingHint("The first login may take up to 20–25 seconds while the backend starts. Please keep this tab open."),
       6000
     );
     try {
@@ -91,16 +91,16 @@ export default function LoginPage() {
     } finally {
       window.clearTimeout(slowTimer);
       setIsGoogleLoading(false);
-      setLoadingHint("Signing in…");
+      setLoadingHint("");
     }
   }
 
   async function handleDemoLogin() {
     setIsDemoLoading(true);
     setError(null);
-    setLoadingHint("Loading demo…");
+    setLoadingHint("");
     const slowTimer = window.setTimeout(
-      () => setLoadingHint("Waking up server — hang tight, almost there…"),
+      () => setLoadingHint("The backend is starting up — almost there…"),
       6000
     );
     try {
@@ -124,12 +124,12 @@ export default function LoginPage() {
     } finally {
       window.clearTimeout(slowTimer);
       setIsDemoLoading(false);
-      setLoadingHint("Signing in…");
+      setLoadingHint("");
     }
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-6 relative overflow-hidden">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4 sm:px-6 py-16 sm:py-8 relative overflow-x-hidden overflow-y-auto">
       <div className="absolute inset-0 dot-grid opacity-30 pointer-events-none" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-conviction-500/6 blur-[120px] pointer-events-none" />
 
@@ -180,32 +180,30 @@ export default function LoginPage() {
 
           {/* Google sign-in — new user flow */}
           {GOOGLE_CLIENT_ID ? (
-            <div className="relative">
-              <div
-                className={`transition-opacity duration-200 ${
-                  isGoogleLoading ? "opacity-40 pointer-events-none" : ""
-                }`}
-              >
-                <GoogleSignInButton
-                  clientId={GOOGLE_CLIENT_ID}
-                  disabled={isGoogleLoading || isDemoLoading}
-                  onSuccess={handleGoogleSuccess}
-                  onError={() =>
-                    setError(
-                      "Google sign-in failed. Make sure http://localhost:5173 is added to Authorized JavaScript origins in Google Cloud Console."
-                    )
-                  }
-                />
-              </div>
-              {isGoogleLoading && (
-                <div className="absolute inset-0 flex items-center justify-center gap-2 rounded-md">
-                  <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/30 border-t-foreground animate-spin" />
-                  <span className="text-xs text-muted-foreground text-center max-w-[240px] leading-snug">
-                    {loadingHint}
-                  </span>
+            isGoogleLoading ? (
+              <div className="flex flex-col items-center gap-3 py-5 rounded-lg border border-border/60 bg-secondary/20">
+                <div className="h-5 w-5 rounded-full border-2 border-conviction-500/20 border-t-conviction-400 animate-spin" />
+                <div className="text-center space-y-1.5 px-4">
+                  <p className="text-sm font-medium text-foreground">Preparing your workspace…</p>
+                  {loadingHint && (
+                    <p className="text-xs text-muted-foreground leading-snug max-w-xs mx-auto">
+                      {loadingHint}
+                    </p>
+                  )}
                 </div>
-              )}
-            </div>
+              </div>
+            ) : (
+              <GoogleSignInButton
+                clientId={GOOGLE_CLIENT_ID}
+                disabled={isDemoLoading}
+                onSuccess={handleGoogleSuccess}
+                onError={() =>
+                  setError(
+                    "Google sign-in failed. Make sure http://localhost:5173 is added to Authorized JavaScript origins in Google Cloud Console."
+                  )
+                }
+              />
+            )
           ) : (
             <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 px-3 py-2.5 text-xs text-amber-400">
               Google OAuth is not configured. Add{" "}
@@ -239,7 +237,10 @@ export default function LoginPage() {
               disabled={isDemoLoading || isGoogleLoading}
             >
               {isDemoLoading ? (
-                <span className="text-xs text-muted-foreground">{loadingHint}</span>
+                <span className="flex items-center gap-2">
+                  <span className="h-3.5 w-3.5 rounded-full border-2 border-muted-foreground/20 border-t-muted-foreground animate-spin flex-shrink-0" />
+                  <span className="text-xs truncate">{loadingHint || "Loading demo workspace…"}</span>
+                </span>
               ) : (
                 <>
                   Load demo workspace
