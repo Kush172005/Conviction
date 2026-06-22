@@ -54,23 +54,23 @@ export function RtpGlobalCoBrandStrip({ className }: { className?: string }) {
             <div className="flex h-7 w-7 items-center justify-center rounded-md bg-foreground/90 text-background text-xs font-bold tracking-tight">
               R
             </div>
-            <span className="text-sm font-semibold text-foreground group-hover:text-foreground">
+            {/* <span className="text-sm font-semibold text-foreground group-hover:text-foreground">
               RTP Global
-            </span>
+            </span> */}
             <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
           </a>
         </div>
 
         <p className="text-sm text-muted-foreground max-w-lg mx-auto leading-relaxed">
           A working prototype built for{' '}
-          <a
+          {/* <a
             href={RTP_GLOBAL_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="text-foreground/90 underline-offset-2 hover:underline"
           >
             RTP Global
-          </a>
+          </a> */}
           &apos;s case study — pick a real VC problem, ship something useful, show how you think.
         </p>
       </div>
