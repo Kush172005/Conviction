@@ -1,0 +1,23 @@
+# Ignore virtual environments
+.venv
+backend/.venv
+venv
+ENV
+
+# Ignore python cache
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignore env file (we will pass it dynamically at runtime)
+.env
+backend/.env
+
+# Ignore node modules and frontend build artifacts
+node_modules
+dist
+
+# Ignore Git files
+.git
+.gitignore
+.github
