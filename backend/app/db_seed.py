@@ -1,5 +1,5 @@
 """
-Seed script for development — inserts realistic RTP Global deal flow.
+Seed script for development — inserts realistic deal flow.
 Run: python -m app.db_seed
 """
 import asyncio
@@ -8,8 +8,8 @@ from app.db import get_database, close_client
 
 
 SEED_USER = {
-    "google_id": "mock_arjun@rtpglobal.com",
-    "email": "arjun@rtpglobal.com",
+    "google_id": "mock_arjun@conviction.vc",
+    "email": "arjun@conviction.vc",
     "name": "Arjun Mehta",
     "onboarding_completed": True,
     "created_at": datetime.utcnow() - timedelta(days=120),
@@ -51,7 +51,7 @@ async def seed():
     db = get_database()
 
     # Clear existing seed data
-    await db.users.delete_many({"email": "arjun@rtpglobal.com"})
+    await db.users.delete_many({"email": "arjun@conviction.vc"})
 
     # Insert user
     user_result = await db.users.insert_one(SEED_USER)
@@ -62,7 +62,7 @@ async def seed():
     await db.investor_profiles.delete_many({"user_id": user_id})
     await db.investor_profiles.insert_one({
         "user_id": user_id,
-        "fund_name": "RTP Global",
+        "fund_name": "Conviction Capital",
         "investor_name": "Arjun Mehta",
         "investment_thesis": "We invest in category-defining B2B software companies with strong founder-market fit.",
         "preferred_sectors": ["B2B SaaS", "AI Infrastructure", "Developer Tools"],
@@ -86,7 +86,7 @@ async def seed():
         await db.companies.insert_one(company_data)
         print(f"Seeded company: {company_data['name']}")
 
-    print("\nSeed complete! Restart the API and log in with arjun@rtpglobal.com")
+    print("\nSeed complete! Restart the API and log in with arjun@conviction.vc")
     await close_client()
 
 

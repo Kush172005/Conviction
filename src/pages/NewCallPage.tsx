@@ -47,7 +47,7 @@ const MODE_CONFIG: Record<InputMode, { icon: React.ElementType; label: string; d
   recording: {
     icon: Upload,
     label: 'Meeting recording',
-    description: 'Upload the call audio — Zoom, Otter, phone memo, etc.',
+    description: 'Upload the call audio from Zoom, Otter, phone memo, etc.',
   },
 }
 
@@ -197,7 +197,7 @@ function VoiceRecorder({ onRecordingComplete, onRecordingStart }: VoiceRecorderP
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               {blob
-                ? `${mm}:${ss} captured — we'll turn this into your deal brief.`
+                ? `${mm}:${ss} captured: we'll turn this into your deal brief.`
                 : 'Tap the mic and speak your post-call thoughts freely.'}
             </p>
           </div>
@@ -296,7 +296,7 @@ function AudioFileUploader({ file, onFileSelect }: AudioFileUploaderProps) {
                 Drop your meeting recording here
               </p>
               <p className="text-xs text-muted-foreground mt-1">
-                or click to browse — MP3, M4A, WAV, WebM, and more
+                or click to browse (MP3, M4A, WAV, WebM, and more)
               </p>
             </div>
             <p className="text-[11px] text-muted-foreground">
@@ -592,7 +592,7 @@ export default function NewCallPage() {
         : mode === 'recording'
         ? 'Meeting recording'
         : 'Call notes'
-    return `${modeLabel} — ${companyName} · ${date}`
+    return `${modeLabel}: ${companyName} · ${date}`
   }
 
   const submitVoiceAudio = useCallback(
@@ -689,7 +689,7 @@ export default function NewCallPage() {
           {isDemo && (
             <DemoGateOverlay
               title="Sign in to log your first call"
-              description="See how it works below — then sign in to start building your own deal memory from real founder conversations."
+              description="See how it works below, then sign in to start building your own deal memory from real founder conversations."
             />
           )}
           {/* Company selector */}
@@ -828,10 +828,10 @@ export default function NewCallPage() {
                     <Textarea
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
-                      placeholder={`Brain dump your post-call thoughts here. No structure needed — just capture what you observed, felt, and decided.
+                      placeholder={`Brain dump your post-call thoughts here. No structure needed, just capture what you observed, felt, and decided.
 
 Examples:
-• Strong founder-market fit — Priya has lived this problem for 5 years
+• Strong founder-market fit: Priya has lived this problem for 5 years
 • Revenue numbers look real, 3 F500 pilots with real usage
 • Main concern: hyperscaler competition in 18-24 months
 • Decision: recommend to IC, 75%+ confidence
@@ -841,8 +841,8 @@ Examples:
                     <div className="flex justify-between items-center">
                       <p className="text-xs text-muted-foreground">
                         {notes.length > 0
-                          ? `${notes.length} characters — ${notes.split(' ').filter(Boolean).length} words`
-                          : 'Write freely — Conviction handles the structure.'}
+                          ? `${notes.length} characters, ${notes.split(' ').filter(Boolean).length} words`
+                          : 'Write freely; Conviction handles the structure.'}
                       </p>
                       {notes.length > 0 && notes.length < 20 && (
                         <p className="text-xs text-amber-400">Write a bit more for better analysis…</p>

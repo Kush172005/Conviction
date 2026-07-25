@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Lock, ArrowRight, Sparkles } from 'lucide-react'
 import { useAuthStore } from '@/store'
+import { useTourStore } from '@/store/tourStore'
 
 /**
  * DemoGateOverlay
@@ -10,7 +11,7 @@ import { useAuthStore } from '@/store'
  */
 export function DemoGateOverlay({
   title = 'Sign in to use this feature',
-  description = 'This is a live demo — create your own workspace to start capturing deal intelligence.',
+  description = 'This is a live demo: create your own workspace to start capturing deal intelligence.',
   className = '',
 }: {
   title?: string
@@ -20,12 +21,19 @@ export function DemoGateOverlay({
   const isDemo = useAuthStore((s) => s.isDemo)
   const logout = useAuthStore((s) => s.logout)
   const navigate = useNavigate()
+  const tourActive = useTourStore((s) => s.active)
 
   if (!isDemo) return null
 
   function goToLogin() {
     logout()
     navigate('/login', { replace: true })
+  }
+
+  if (tourActive) {
+    return (
+      <div className={`absolute inset-0 z-20 bg-transparent pointer-events-auto ${className}`} />
+    )
   }
 
   return (

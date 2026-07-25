@@ -11,7 +11,7 @@ import type {
 
 export const MOCK_USER: User = {
   id: 'usr_01',
-  email: 'arjun@rtpglobal.com',
+  email: 'arjun@conviction.vc',
   name: 'Arjun Mehta',
   avatar: undefined,
   googleId: 'google_01',
@@ -23,7 +23,7 @@ export const MOCK_USER: User = {
 export const MOCK_INVESTOR_PROFILE: InvestorProfile = {
   id: 'inv_01',
   userId: 'usr_01',
-  fundName: 'RTP Global',
+  fundName: 'Conviction Capital',
   investorName: 'Arjun Mehta',
   investmentThesis:
     'We invest in category-defining B2B software companies with strong founder-market fit, deep technical moats, and the potential to become global infrastructure across emerging and developed markets.',

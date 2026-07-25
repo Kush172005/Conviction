@@ -59,7 +59,7 @@ export const authApi = {
     api.post<TokenResponse>(
       '/auth/mock',
       {
-        email: email ?? 'arjun@rtpglobal.com',
+        email: email ?? 'arjun@conviction.vc',
         name: name ?? 'Arjun Mehta',
       },
       coldStart

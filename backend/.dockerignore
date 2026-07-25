@@ -8,5 +8,9 @@ ENV
 *.py[cod]
 *$py.class
 
-# Ignore env file
+# Ignore env file (secrets must never be baked into the image)
 .env
+
+# Ignore test files — not needed at runtime (Lambda or EC2)
+tests/
+pytest.ini

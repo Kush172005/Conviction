@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import type { CredentialResponse } from "@react-oauth/google";
 import { ArrowRight, ArrowLeft, Shield, AlertCircle } from "lucide-react";
 import LogoMark from "@/components/LogoMark";
-import { RtpGlobalBadge } from "@/components/RtpGlobalBranding";
+import { ProjectBadge } from "@/components/ProjectBranding";
 import { Button } from "@/components/ui/button";
 import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
 import { useAuthStore, useOnboardingStore } from "@/store";
@@ -159,7 +159,7 @@ export default function LoginPage() {
             Never lose the reasoning behind a decision.
           </p>
           <div className="mt-3 flex justify-center">
-            <RtpGlobalBadge />
+            <ProjectBadge />
           </div>
         </Link>
 
@@ -226,7 +226,7 @@ export default function LoginPage() {
                 Explore the demo workspace
               </p>
               <p className="text-2xs text-muted-foreground mt-0.5">
-                See the full product with RTP Global's sample deal pipeline — no
+                See the full product with a sample VC deal pipeline, with no
                 account needed.
               </p>
             </div>

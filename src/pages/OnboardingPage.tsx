@@ -49,7 +49,7 @@ const THESIS_TEMPLATES: ThesisTemplate[] = [
     label: 'AI & Deep Tech Infrastructure',
     tagline: 'Pre-seed → Series A · $1M–$10M',
     thesis:
-      'We back foundational AI and deep tech teams building the infrastructure layer that the next decade of software will run on. From frontier model tooling and chips to biotech and climate tech — we invest in science-heavy founders with asymmetric technical advantages.',
+      'We back foundational AI and deep tech teams building the infrastructure layer that the next decade of software will run on. From frontier model tooling and chips to biotech and climate tech, we invest in science-heavy founders with asymmetric technical advantages.',
     sectors: ['AI Infrastructure', 'Deep Tech', 'Climate Tech'],
     stages: ['pre-seed', 'seed', 'series-a'],
     checkSize: '$1M-$5M',
@@ -374,7 +374,7 @@ export default function OnboardingPage() {
                     <div className="space-y-1.5">
                       <div className="flex items-center justify-between flex-wrap gap-1">
                         <Label>Investment thesis</Label>
-                        <span className="text-2xs text-muted-foreground">Pre-filled from template — edit freely</span>
+                        <span className="text-2xs text-muted-foreground">Pre-filled from template, edit freely</span>
                       </div>
                       <Textarea
                         {...register('investmentThesis')}

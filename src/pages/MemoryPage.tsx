@@ -145,7 +145,7 @@ export default function MemoryPage() {
                 <Brain className="h-12 w-12 text-muted-foreground/30 mx-auto mb-4" />
                 <p className="text-sm font-medium text-foreground">No memory entries yet</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Log a call — Conviction will surface the key insights here automatically.
+                  Log a call and Conviction will surface the key insights here automatically.
                 </p>
               </div>
             </FadeIn>

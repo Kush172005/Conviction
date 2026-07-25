@@ -2,7 +2,7 @@
 
 <img src="./public/favicon.svg" width="72" height="72" alt="Conviction" />
 
-# RTP Conviction
+# Conviction
 
 ### The deal intelligence workspace for venture capital.
 
@@ -51,7 +51,7 @@ For companies you haven't met yet, it does the research: crawl the website, run 
 
 ## Try the demo
 
-The frontend ships with a fully seeded demo workspace — RTP Global's sample pipeline, with real companies, calls, decisions, and memory. Every screen is interactive, no backend required.
+The frontend ships with a fully seeded demo workspace — Conviction's sample pipeline, with real companies, calls, decisions, and memory. Every screen is interactive, no backend required.
 
 ```bash
 git clone https://github.com/Kush172005/Conviction
@@ -61,7 +61,7 @@ npm run dev
 # → http://localhost:5173
 ```
 
-Open the landing page and click **View live demo**. You'll get access to Arjun Mehta's deal pipeline at RTP Global — browse the dashboard, open company pages, read through call intelligence reports, explore the startup research on Fampay and Whatnot, review the deal memory timeline.
+Open the landing page and click **View live demo**. You'll get access to Arjun Mehta's deal pipeline at Conviction Capital — browse the dashboard, open company pages, read through call intelligence reports, explore the startup research on Fampay and Whatnot, review the deal memory timeline.
 
 To run the live AI pipeline against real data, see [Local setup](#local-setup) below.
 
@@ -70,7 +70,7 @@ To run the live AI pipeline against real data, see [Local setup](#local-setup) b
 ## Architecture
 
 <p align="center">
-  <img src="./docs/architecture.svg" alt="RTP Conviction — system architecture" width="100%">
+  <img src="./docs/architecture.svg" alt="Conviction — system architecture" width="100%">
 </p>
 
 Five layers, each independently deployable and independently degradable:
@@ -155,7 +155,7 @@ Conviction/
 │       ├── schemas/                    # Request/response DTOs
 │       ├── config.py                   # Pydantic-settings from .env
 │       ├── db.py                       # Motor client pool
-│       ├── db_seed.py                  # RTP Global demo data seed
+│       ├── db_seed.py                  # Conviction demo data seed
 │       └── main.py                     # FastAPI app + CORS + lifespan
 │
 ├── docs/
@@ -273,7 +273,7 @@ Vite proxies `/api/*` to `localhost:8000` automatically — no CORS configuratio
 ```bash
 cd backend
 python -m app.db_seed
-# Creates the RTP Global fund profile, sample companies, calls, decisions, and memory entries
+# Creates the Conviction Capital fund profile, sample companies, calls, decisions, and memory entries
 ```
 
 ---
@@ -360,19 +360,15 @@ The case study asked what we tried that didn't work and what we'd do differently
 
 ## A note on approach
 
-RTP's brief said *"we're more interested in how you think than in a clean outcome."*
+We built this project to address a specific, real-world challenge: the 72-hour window between a founder call and the moment the reasoning behind an investment decision becomes permanently inaccessible. That problem has a clear shape, a clear user (any investor who's ever walked into an IC meeting underprepared), and a clear success condition.
 
-We picked a narrow, specific problem — not "AI for VCs" broadly, but the 72-hour window between a founder call and the moment the reasoning behind a decision becomes permanently inaccessible. That problem has a clear shape, a clear user (any investor who's ever walked into an IC meeting underprepared), and a clear success condition.
-
-We optimized for the moment of real use, not the demo: three-tier AI fallbacks so the product works when a provider is down, a complete demo that runs without a backend so anyone can evaluate it immediately, a mobile-first layout because investors are often on their phones between meetings.
+We optimized for the moment of real use: three-tier AI fallbacks so the product works when a provider is down, a complete demo that runs without a backend so anyone can evaluate it immediately, a mobile-first layout because investors are often on their phones between meetings.
 
 We left scope on the table deliberately. Vector recall, Slack ingestion, multi-tenant collaboration — the schema hooks are there. Building them now would have produced a product that does ten things partially. We chose to do six things properly.
 
 ---
 
 <div align="center">
-
-Built for the [**RTP Global**](https://rtp.vc) case study · 2026
 
 [Live App](https://conviction-vc.vercel.app) &nbsp;·&nbsp; [GitHub](https://github.com/Kush172005/Conviction) &nbsp;·&nbsp; [Architecture](./docs/architecture.svg)
 

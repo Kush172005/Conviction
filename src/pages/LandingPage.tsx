@@ -43,10 +43,9 @@ import { useAuthStore } from "@/store";
 import { authApi, mapBackendUser } from "@/services/api/auth";
 import { getFriendlyApiError } from "@/lib/apiErrors";
 import {
-  RtpGlobalBadge,
-  RtpGlobalCoBrandStrip,
-  RtpGlobalFooterCredit,
-} from "@/components/RtpGlobalBranding";
+  ProjectBadge,
+  ProjectPitchStrip,
+} from "@/components/ProjectBranding";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -57,7 +56,7 @@ const FEATURES = [
     icon: Mic,
     title: "Post-Call Brain Dump",
     description:
-      "Hit record right after a founder call and speak freely. In under 60 seconds, your raw thoughts become a fully structured investment brief — with every signal that matters, none that doesn't.",
+      "Hit record right after a founder call and speak freely. In under 60 seconds, your raw thoughts become a fully structured investment brief, with every signal that matters and none that doesn't.",
     tag: "Voice + Notes",
     accent: "from-red-500/15 to-red-500/3 border-red-500/20",
     iconBg: "bg-red-500/10 text-red-400",
@@ -68,7 +67,7 @@ const FEATURES = [
     icon: Search,
     title: "Startup Intelligence",
     description:
-      "Enter any company URL. Conviction digs deep across the web and curates what matters for your thesis — founders, funding history, market position, and fit — surfaced in minutes, not hours.",
+      "Enter any company URL. Conviction digs deep across the web and curates what matters for your thesis (founders, funding history, market position, and fit), surfaced in minutes, not hours.",
     tag: "Deep Research",
     accent: "from-blue-500/15 to-blue-500/3 border-blue-500/20",
     iconBg: "bg-blue-500/10 text-blue-400",
@@ -79,7 +78,7 @@ const FEATURES = [
     icon: Target,
     title: "Fund Thesis Match Engine",
     description:
-      "Every company gets scored 0–100 against your fund's thesis — sector, stage, geography, and business model alignment — with specific, written reasons behind every point.",
+      "Every company gets scored 0–100 against your fund's thesis (including sector, stage, geography, and business model alignment) with specific, written reasons behind every point.",
     tag: "Thesis Scoring",
     accent:
       "from-conviction-500/15 to-conviction-500/3 border-conviction-500/20",
@@ -92,7 +91,7 @@ const FEATURES = [
     icon: Brain,
     title: "Persistent Deal Memory",
     description:
-      "A living intelligence timeline per company. See exactly how your conviction evolved from first call to term sheet. Every insight, concern, and milestone — permanently on record.",
+      "A living intelligence timeline per company. See exactly how your conviction evolved from first call to term sheet. Every insight, concern, and milestone is permanently on record.",
     tag: "Memory Layer",
     accent: "from-emerald-500/15 to-emerald-500/3 border-emerald-500/20",
     iconBg: "bg-emerald-500/10 text-emerald-400",
@@ -103,7 +102,7 @@ const FEATURES = [
     icon: FileText,
     title: "IC Memo Generation",
     description:
-      "From raw notes to a complete IC memo. Strengths, concerns, moat analysis, red flags, diligence questions, market sizing, and a clear recommendation — ready to share in minutes.",
+      "From raw notes to a complete IC memo. Strengths, concerns, moat analysis, red flags, diligence questions, market sizing, and a clear recommendation are ready to share in minutes.",
     tag: "Auto Memos",
     accent: "from-amber-500/15 to-amber-500/3 border-amber-500/20",
     iconBg: "bg-amber-500/10 text-amber-400",
@@ -139,7 +138,7 @@ const HOW_IT_WORKS = [
     icon: Mic,
     title: "Capture in any format",
     description:
-      "Type a quick brain dump, record a voice memo, or upload the full meeting audio — Conviction accepts everything, exactly as it comes out of your head.",
+      "Type a quick brain dump, record a voice memo, or upload the full meeting audio. Conviction accepts everything, exactly as it comes out of your head.",
     detail: "Voice · Text · Recording",
   },
   {
@@ -147,7 +146,7 @@ const HOW_IT_WORKS = [
     icon: Sparkles,
     title: "Your notes become a deal brief",
     description:
-      "In seconds, your raw input is shaped into a complete investment brief — deal summary, founder assessment, thesis fit score, red flags, strengths, concerns, and a draft IC recommendation.",
+      "In seconds, your raw input is shaped into a complete investment brief, featuring a deal summary, founder assessment, thesis fit score, red flags, strengths, concerns, and a draft IC recommendation.",
     detail: "Instant · Structured · IC-Ready",
   },
   {
@@ -215,7 +214,7 @@ const TESTIMONIALS = [
   },
   {
     quote:
-      "I used to dread IC prep — digging through Notion, Slack, email to reconstruct why we were even looking at something. Now it's all there, structured, in 60 seconds.",
+      "I used to dread IC prep, digging through Notion, Slack, and email to reconstruct why we were even looking at something. Now it's all there, structured in 60 seconds.",
     author: "Associate, B2B SaaS fund",
     fund: "$500M Series B focus",
     initials: "AS",
@@ -535,7 +534,7 @@ export default function LandingPage() {
               for VC
             </span>
           </motion.div>
-          <RtpGlobalBadge className="hidden md:inline-flex absolute left-1/2 -translate-x-1/2" />
+          <ProjectBadge className="hidden md:inline-flex absolute left-1/2 -translate-x-1/2" />
           <motion.div
             className="flex items-center gap-2"
             initial={{ opacity: 0, x: 16 }}
@@ -590,7 +589,7 @@ export default function LandingPage() {
               <Sparkles className="h-3 w-3" />
               Deal intelligence for venture capital
             </div>
-            <RtpGlobalBadge className="md:hidden" />
+            <ProjectBadge className="md:hidden" />
           </div>
 
           <h1 className="hero-fade-in hero-fade-in-delay-1 text-balance font-semibold tracking-tight leading-[1.06]">
@@ -607,7 +606,7 @@ export default function LandingPage() {
 
           <p className="hero-fade-in hero-fade-in-delay-2 max-w-xl mx-auto text-base md:text-lg text-muted-foreground leading-relaxed">
             Capture post-call reasoning, research any startup, score thesis fit,
-            and build a permanent deal memory — so your team never asks
+            and build a permanent deal memory, so your team never asks
             &ldquo;why did we pass?&rdquo; again.
           </p>
 
@@ -764,13 +763,13 @@ export default function LandingPage() {
                             Recording in progress…
                           </p>
                           <p className="text-2xs text-red-400 mt-0.5">
-                            ● 0:47 — ShipStack founder call
+                            ● 0:47: ShipStack founder call
                           </p>
                         </div>
                       </div>
                       <div className="rounded-md border border-border bg-card p-3 space-y-2">
                         <p className="text-2xs font-medium text-muted-foreground uppercase tracking-wider">
-                          Deal brief — live
+                          Deal brief: Live
                         </p>
                         {[
                           {
@@ -1064,7 +1063,7 @@ export default function LandingPage() {
                 <span className="text-muted-foreground">Every time.</span>
               </>
             }
-            subtitle="VC teams meet 5–15 founders a week. The insights from those conversations are invaluable — and almost all of them evaporate within 72 hours."
+            subtitle="VC teams meet 5–15 founders a week. The insights from those conversations are invaluable, yet almost all of them evaporate within 72 hours."
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -1107,7 +1106,7 @@ export default function LandingPage() {
             </p>
             <p className="text-sm text-muted-foreground mt-1.5 max-w-lg mx-auto leading-relaxed">
               Recording meetings doesn&apos;t help if you never re-watch them.
-              The insight needs to be structured and retrievable — right after
+              The insight needs to be structured and retrievable right after
               the conversation. That&apos;s what Conviction does.
             </p>
           </motion.div>
@@ -1128,7 +1127,7 @@ export default function LandingPage() {
                 </span>
               </>
             }
-            subtitle="Every feature is built around how VC professionals actually work — not how software companies think they should."
+            subtitle="Every feature is built around how VC professionals actually work, not how software companies think they should."
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -1242,7 +1241,7 @@ export default function LandingPage() {
         </Marquee>
       </section>
 
-      <RtpGlobalCoBrandStrip />
+      <ProjectPitchStrip />
 
       {/* ── Final CTA ─────────────────────────────────────────────── */}
       <section className="py-16 md:py-20 px-6 relative overflow-hidden">
@@ -1325,24 +1324,24 @@ export default function LandingPage() {
       </section>
 
       {/* ── Footer ────────────────────────────────────────────────── */}
-      <footer className="border-t border-border py-6 px-6">
-        <div className="max-w-5xl mx-auto space-y-3">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-conviction">
-                <LogoMark className="h-3.5 w-3.5" />
-              </div>
-              <span className="text-sm font-semibold text-foreground">
+      <footer className="border-t border-border/40 py-8 px-6 bg-surface-1/10">
+        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-3">
+            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-conviction">
+              <LogoMark className="h-4 w-4" />
+            </div>
+            <div className="text-left">
+              <span className="text-sm font-semibold text-foreground block">
                 Conviction
               </span>
-              <span className="text-xs text-muted-foreground">
-                — Deal Intelligence for VC
+              <span className="text-2xs text-muted-foreground block mt-0.5">
+                Venture capital deal intelligence and memory platform
               </span>
             </div>
-            <p className="text-xs text-muted-foreground text-center">
-              Never lose the reasoning behind an investment decision.
-            </p>
-            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-xs text-muted-foreground">
+            <div className="flex items-center gap-4">
               <button
                 onClick={() => navigate("/login")}
                 className="hover:text-foreground transition-colors"
@@ -1353,11 +1352,14 @@ export default function LandingPage() {
                 onClick={handleDemoAccess}
                 className="hover:text-foreground transition-colors"
               >
-                Demo
+                Demo workspace
               </button>
             </div>
+            <span className="hidden sm:inline text-muted-foreground/30">|</span>
+            <span className="text-2xs text-muted-foreground/60">
+              &copy; 2026 Conviction. Built to solve real VC deal memory.
+            </span>
           </div>
-          <RtpGlobalFooterCredit />
         </div>
       </footer>
     </div>

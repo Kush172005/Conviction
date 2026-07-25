@@ -17,7 +17,7 @@
   <!-- ─────────────────────────────────────────────────── -->
   <!-- TITLE                                              -->
   <!-- ─────────────────────────────────────────────────── -->
-  <text x="700" y="34" text-anchor="middle" font-size="21" font-weight="700" fill="#0F172A" letter-spacing="-0.5">RTP Conviction — System Architecture</text>
+  <text x="700" y="34" text-anchor="middle" font-size="21" font-weight="700" fill="#0F172A" letter-spacing="-0.5">Conviction — System Architecture</text>
   <text x="700" y="55" text-anchor="middle" font-size="12" fill="#94A3B8">React + FastAPI + MongoDB · Multi-provider AI pipeline with full graceful degradation</text>
 
   <!-- ─────────────────────────────────────────────────── -->
@@ -387,6 +387,6 @@
   <!-- ─────────────────────────────────────────────────── -->
   <!-- FOOTER                                             -->
   <!-- ─────────────────────────────────────────────────── -->
-  <text x="700" y="886" text-anchor="middle" font-size="9" fill="#CBD5E1">RTP Conviction · Built for RTP Global Case Study 2026 · React + FastAPI + MongoDB</text>
+  <text x="700" y="886" text-anchor="middle" font-size="9" fill="#CBD5E1">Conviction · Deal Intelligence & Memory Platform · React + FastAPI + MongoDB</text>
 
 </svg>

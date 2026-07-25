@@ -195,14 +195,14 @@ function NewUserDashboard({ name }: { name: string }) {
               {
                 step: '2',
                 title: 'Log a call',
-                desc: 'Speak, type, or paste — capture your thoughts any way they come out.',
+                desc: 'Speak, type, or paste to capture your thoughts any way they come out.',
                 cta: 'Log call',
                 href: '/calls/new',
               },
               {
                 step: '3',
                 title: 'Get your deal brief',
-                desc: 'Conviction surfaces decisions, follow-ups, and thesis alignment — structured and ready.',
+                desc: 'Conviction surfaces decisions, follow-ups, and thesis alignment, structured and ready.',
                 cta: 'Log a call',
                 href: '/calls/new',
               },
@@ -484,7 +484,7 @@ export default function DashboardPage() {
       <FadeIn>
         <PageHeader
           title={`${greeting}, ${user?.name?.split(' ')[0] || 'there'}.`}
-          description="Explore RTP Global's live pipeline — click anything to see how it works."
+          description="Explore the live demo pipeline, and click anything to see how it works."
           actions={
             <Button variant="conviction" size="sm" onClick={() => navigate('/calls/new')}>
               <PhoneCall className="h-3.5 w-3.5" />

@@ -6,7 +6,7 @@ class GoogleAuthRequest(BaseModel):
 
 
 class MockAuthRequest(BaseModel):
-    email: str = "arjun@rtpglobal.com"
+    email: str = "arjun@conviction.vc"
     name: str = "Arjun Mehta"
 
 

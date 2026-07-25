@@ -22,7 +22,7 @@ export default function DemoBanner() {
       </div>
       <span className="text-conviction-300/60 hidden sm:inline">—</span>
       <span className="text-conviction-300/70 flex-1 min-w-0 truncate hidden sm:inline">
-        Exploring RTP Global's live pipeline. Browse freely — sign in to start your own workspace.
+        Exploring Conviction's live demo pipeline. Browse freely — sign in to start your own workspace.
       </span>
       <button
         onClick={goToLogin}
