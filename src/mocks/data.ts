@@ -11,8 +11,8 @@ import type {
 
 export const MOCK_USER: User = {
   id: 'usr_01',
-  email: 'arjun@conviction.vc',
-  name: 'Arjun Mehta',
+  email: 'kush@conviction.vc',
+  name: 'Kush Agarwal',
   avatar: undefined,
   googleId: 'google_01',
   onboardingCompleted: true,
@@ -24,7 +24,7 @@ export const MOCK_INVESTOR_PROFILE: InvestorProfile = {
   id: 'inv_01',
   userId: 'usr_01',
   fundName: 'Conviction Capital',
-  investorName: 'Arjun Mehta',
+  investorName: 'Kush Agarwal',
   investmentThesis:
     'We invest in category-defining B2B software companies with strong founder-market fit, deep technical moats, and the potential to become global infrastructure across emerging and developed markets.',
   preferredSectors: ['B2B SaaS', 'Developer Tools', 'FinTech', 'AI Infrastructure', 'Future of Work'],
@@ -162,7 +162,7 @@ export const MOCK_DECISIONS: Decision[] = [
       'Veridian\'s platform monitors LLM deployments for policy violations, hallucinations, and compliance risks in real time. The core product is a middleware layer that sits between enterprise applications and LLM APIs, enforcing rules, logging all outputs, and generating audit trails.',
     suggestedFollowUpDate: '2026-06-20T00:00:00Z',
     draftEmail:
-      'Hi Priya,\n\nReally energizing call earlier. Your customer stories from the JPMorgan pilot landed exactly the way I hoped.\n\nWe\'d like to move forward with IC prep. Can we schedule a 30-min session next week with you and Sam to walk through unit economics and your multimodel roadmap?\n\nAlso — happy to do a warm intro to Notion Security and Figma\'s enterprise team if helpful for GTM validation.\n\nLooking forward to it,\nArjun',
+      'Hi Priya,\n\nReally energizing call earlier. Your customer stories from the JPMorgan pilot landed exactly the way I hoped.\n\nWe\'d like to move forward with IC prep. Can we schedule a 30-min session next week with you and Sam to walk through unit economics and your multimodel roadmap?\n\nAlso — happy to do a warm intro to Notion Security and Figma\'s enterprise team if helpful for GTM validation.\n\nLooking forward to it,\nKush',
     createdAt: '2026-05-28T16:00:00Z',
   },
 ]

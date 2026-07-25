@@ -1,511 +1,487 @@
-import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
+import {useRef, useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {gsap} from "gsap";
+import {ScrollTrigger} from "gsap/ScrollTrigger";
+import {useGSAP} from "@gsap/react";
 import {
-  motion,
-  AnimatePresence,
-  useScroll,
-  useTransform,
-  useInView,
+    motion,
+    AnimatePresence,
+    useScroll,
+    useTransform,
+    useInView
 } from "framer-motion";
 import {
-  ArrowRight,
-  Brain,
-  CheckCircle2,
-  ChevronRight,
-  Globe,
-  Mic,
-  Quote,
-  Sparkles,
-  Zap,
-  Building2,
-  FileText,
-  Search,
-  Shield,
-  Target,
-  ChevronDown,
-  Loader2,
-  CircleHelp,
-  AlertTriangle,
-  ClipboardList,
-  MessageCircle,
-  AlertCircle,
+    ArrowRight,
+    Brain,
+    CheckCircle2,
+    ChevronRight,
+    Globe,
+    Mic,
+    Quote,
+    Sparkles,
+    Zap,
+    Building2,
+    FileText,
+    Search,
+    Shield,
+    Target,
+    ChevronDown,
+    Loader2,
+    CircleHelp,
+    AlertTriangle,
+    ClipboardList,
+    MessageCircle,
+    AlertCircle
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import {Button} from "@/components/ui/button";
 import LogoMark from "@/components/LogoMark";
 import ScrollProgress from "@/components/motion/ScrollProgress";
 import TiltCard from "@/components/motion/TiltCard";
 import MagneticButton from "@/components/motion/MagneticButton";
 import Marquee from "@/components/motion/Marquee";
-import { useAuthStore } from "@/store";
-import { authApi, mapBackendUser } from "@/services/api/auth";
-import { getFriendlyApiError } from "@/lib/apiErrors";
-import {
-  ProjectBadge,
-  ProjectPitchStrip,
-} from "@/components/ProjectBranding";
+import {useAuthStore} from "@/store";
+import {authApi, mapBackendUser} from "@/services/api/auth";
+import {getFriendlyApiError} from "@/lib/apiErrors";
+import {ProjectBadge, ProjectPitchStrip} from "@/components/ProjectBranding";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
 const FEATURES = [
-  {
-    icon: Mic,
-    title: "Post-Call Brain Dump",
-    description:
-      "Hit record right after a founder call and speak freely. In under 60 seconds, your raw thoughts become a fully structured investment brief, with every signal that matters and none that doesn't.",
-    tag: "Voice + Notes",
-    accent: "from-red-500/15 to-red-500/3 border-red-500/20",
-    iconBg: "bg-red-500/10 text-red-400",
-    tagColor: "bg-red-500/10 text-red-400 border-red-500/20",
-    glowColor: "shadow-[0_0_30px_hsl(0_72%_51%/0.08)]",
-  },
-  {
-    icon: Search,
-    title: "Startup Intelligence",
-    description:
-      "Enter any company URL. Conviction digs deep across the web and curates what matters for your thesis (founders, funding history, market position, and fit), surfaced in minutes, not hours.",
-    tag: "Deep Research",
-    accent: "from-blue-500/15 to-blue-500/3 border-blue-500/20",
-    iconBg: "bg-blue-500/10 text-blue-400",
-    tagColor: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-    glowColor: "shadow-[0_0_30px_hsl(220_80%_60%/0.08)]",
-  },
-  {
-    icon: Target,
-    title: "Fund Thesis Match Engine",
-    description:
-      "Every company gets scored 0–100 against your fund's thesis (including sector, stage, geography, and business model alignment) with specific, written reasons behind every point.",
-    tag: "Thesis Scoring",
-    accent:
-      "from-conviction-500/15 to-conviction-500/3 border-conviction-500/20",
-    iconBg: "bg-conviction-500/10 text-conviction-400",
-    tagColor:
-      "bg-conviction-500/10 text-conviction-300 border-conviction-500/20",
-    glowColor: "shadow-[0_0_30px_hsl(248_92%_68%/0.1)]",
-  },
-  {
-    icon: Brain,
-    title: "Persistent Deal Memory",
-    description:
-      "A living intelligence timeline per company. See exactly how your conviction evolved from first call to term sheet. Every insight, concern, and milestone is permanently on record.",
-    tag: "Memory Layer",
-    accent: "from-emerald-500/15 to-emerald-500/3 border-emerald-500/20",
-    iconBg: "bg-emerald-500/10 text-emerald-400",
-    tagColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-    glowColor: "shadow-[0_0_30px_hsl(160_84%_39%/0.08)]",
-  },
-  {
-    icon: FileText,
-    title: "IC Memo Generation",
-    description:
-      "From raw notes to a complete IC memo. Strengths, concerns, moat analysis, red flags, diligence questions, market sizing, and a clear recommendation are ready to share in minutes.",
-    tag: "Auto Memos",
-    accent: "from-amber-500/15 to-amber-500/3 border-amber-500/20",
-    iconBg: "bg-amber-500/10 text-amber-400",
-    tagColor: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-    glowColor: "shadow-[0_0_30px_hsl(45_93%_47%/0.08)]",
-  },
-  {
-    icon: Zap,
-    title: "Automated Follow-Up Engine",
-    description:
-      "Every commitment you made on the call is captured and tracked. Draft follow-up emails are written for you, and overdue items surface before they become dropped balls.",
-    tag: "Action Engine",
-    accent: "from-purple-500/15 to-purple-500/3 border-purple-500/20",
-    iconBg: "bg-purple-500/10 text-purple-400",
-    tagColor: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-    glowColor: "shadow-[0_0_30px_hsl(270_95%_75%/0.08)]",
-  },
+    {
+        icon: Mic,
+        title: "Post-Call Brain Dump",
+        description: "Hit record right after a founder call and speak freely. In under 60 seconds, your raw thoughts become a fully structured investment brief, with every signal that matters and none that doesn't.",
+        tag: "Voice + Notes",
+        accent: "from-red-500/15 to-red-500/3 border-red-500/20",
+        iconBg: "bg-red-500/10 text-red-400",
+        tagColor: "bg-red-500/10 text-red-400 border-red-500/20",
+        glowColor: "shadow-[0_0_30px_hsl(0_72%_51%/0.08)]"
+    },
+    {
+        icon: Search,
+        title: "Startup Intelligence",
+        description: "Enter any company URL. Conviction digs deep across the web and curates what matters for your thesis (founders, funding history, market position, and fit), surfaced in minutes, not hours.",
+        tag: "Deep Research",
+        accent: "from-blue-500/15 to-blue-500/3 border-blue-500/20",
+        iconBg: "bg-blue-500/10 text-blue-400",
+        tagColor: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+        glowColor: "shadow-[0_0_30px_hsl(220_80%_60%/0.08)]"
+    },
+    {
+        icon: Target,
+        title: "Fund Thesis Match Engine",
+        description: "Every company gets scored 0–100 against your fund's thesis (including sector, stage, geography, and business model alignment) with specific, written reasons behind every point.",
+        tag: "Thesis Scoring",
+        accent: "from-conviction-500/15 to-conviction-500/3 border-conviction-500/20",
+        iconBg: "bg-conviction-500/10 text-conviction-400",
+        tagColor: "bg-conviction-500/10 text-conviction-300 border-conviction-500/20",
+        glowColor: "shadow-[0_0_30px_hsl(248_92%_68%/0.1)]"
+    },
+    {
+        icon: Brain,
+        title: "Persistent Deal Memory",
+        description: "A living intelligence timeline per company. See exactly how your conviction evolved from first call to term sheet. Every insight, concern, and milestone is permanently on record.",
+        tag: "Memory Layer",
+        accent: "from-emerald-500/15 to-emerald-500/3 border-emerald-500/20",
+        iconBg: "bg-emerald-500/10 text-emerald-400",
+        tagColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+        glowColor: "shadow-[0_0_30px_hsl(160_84%_39%/0.08)]"
+    }, {
+        icon: FileText,
+        title: "IC Memo Generation",
+        description: "From raw notes to a complete IC memo. Strengths, concerns, moat analysis, red flags, diligence questions, market sizing, and a clear recommendation are ready to share in minutes.",
+        tag: "Auto Memos",
+        accent: "from-amber-500/15 to-amber-500/3 border-amber-500/20",
+        iconBg: "bg-amber-500/10 text-amber-400",
+        tagColor: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+        glowColor: "shadow-[0_0_30px_hsl(45_93%_47%/0.08)]"
+    }, {
+        icon: Zap,
+        title: "Automated Follow-Up Engine",
+        description: "Every commitment you made on the call is captured and tracked. Draft follow-up emails are written for you, and overdue items surface before they become dropped balls.",
+        tag: "Action Engine",
+        accent: "from-purple-500/15 to-purple-500/3 border-purple-500/20",
+        iconBg: "bg-purple-500/10 text-purple-400",
+        tagColor: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+        glowColor: "shadow-[0_0_30px_hsl(270_95%_75%/0.08)]"
+    },
 ];
 
 const STATS = [
-  { value: 60, suffix: "s", label: "Brain dump → structured investment brief" },
-  { value: 100, suffix: "+", label: "Signals surfaced per company" },
-  {
-    value: 0,
-    suffix: " notes lost",
-    label: "With Conviction in your workflow",
-  },
+    {
+        value: 60,
+        suffix: "s",
+        label: "Brain dump → structured investment brief"
+    }, {
+        value: 100,
+        suffix: "+",
+        label: "Signals surfaced per company"
+    }, {
+        value: 0,
+        suffix: " notes lost",
+        label: "With Conviction in your workflow"
+    },
 ];
 
 const HOW_IT_WORKS = [
-  {
-    step: "01",
-    icon: Mic,
-    title: "Capture in any format",
-    description:
-      "Type a quick brain dump, record a voice memo, or upload the full meeting audio. Conviction accepts everything, exactly as it comes out of your head.",
-    detail: "Voice · Text · Recording",
-  },
-  {
-    step: "02",
-    icon: Sparkles,
-    title: "Your notes become a deal brief",
-    description:
-      "In seconds, your raw input is shaped into a complete investment brief, featuring a deal summary, founder assessment, thesis fit score, red flags, strengths, concerns, and a draft IC recommendation.",
-    detail: "Instant · Structured · IC-Ready",
-  },
-  {
-    step: "03",
-    icon: Brain,
-    title: "Build a permanent deal record",
-    description:
-      "Every call becomes a timestamped entry in your investment memory. Three months later, you'll know exactly where you stood, precisely why, and what you promised to follow up on.",
-    detail: "Timeline · IC Memos · Memory",
-  },
+    {
+        step: "01",
+        icon: Mic,
+        title: "Capture in any format",
+        description: "Type a quick brain dump, record a voice memo, or upload the full meeting audio. Conviction accepts everything, exactly as it comes out of your head.",
+        detail: "Voice · Text · Recording"
+    }, {
+        step: "02",
+        icon: Sparkles,
+        title: "Your notes become a deal brief",
+        description: "In seconds, your raw input is shaped into a complete investment brief, featuring a deal summary, founder assessment, thesis fit score, red flags, strengths, concerns, and a draft IC recommendation.",
+        detail: "Instant · Structured · IC-Ready"
+    }, {
+        step: "03",
+        icon: Brain,
+        title: "Build a permanent deal record",
+        description: "Every call becomes a timestamped entry in your investment memory. Three months later, you'll know exactly where you stood, precisely why, and what you promised to follow up on.",
+        detail: "Timeline · IC Memos · Memory"
+    },
 ];
 
 const PROBLEM_CARDS = [
-  {
-    label: "Why did we pass on this?",
-    context: "3 months after a strong initial call",
-    icon: CircleHelp,
-    accent: "border-amber-500/25 bg-amber-500/5",
-    iconColor: "text-amber-400 bg-amber-500/15",
-  },
-  {
-    label: "What were our concerns back in March?",
-    context: "Preparing for IC meeting",
-    icon: AlertTriangle,
-    accent: "border-red-500/25 bg-red-500/5",
-    iconColor: "text-red-400 bg-red-500/15",
-  },
-  {
-    label: "Did we ever follow up about their GTM pivot?",
-    context: "After a founder re-engages",
-    icon: ClipboardList,
-    accent: "border-blue-500/25 bg-blue-500/5",
-    iconColor: "text-blue-400 bg-blue-500/15",
-  },
-  {
-    label: "I had a strong thesis here but I can't remember it",
-    context: "Reviewing a company with LP",
-    icon: MessageCircle,
-    accent: "border-conviction-500/25 bg-conviction-500/5",
-    iconColor: "text-conviction-300 bg-conviction-500/15",
-  },
+    {
+        label: "Why did we pass on this?",
+        context: "3 months after a strong initial call",
+        icon: CircleHelp,
+        accent: "border-amber-500/25 bg-amber-500/5",
+        iconColor: "text-amber-400 bg-amber-500/15"
+    }, {
+        label: "What were our concerns back in March?",
+        context: "Preparing for IC meeting",
+        icon: AlertTriangle,
+        accent: "border-red-500/25 bg-red-500/5",
+        iconColor: "text-red-400 bg-red-500/15"
+    }, {
+        label: "Did we ever follow up about their GTM pivot?",
+        context: "After a founder re-engages",
+        icon: ClipboardList,
+        accent: "border-blue-500/25 bg-blue-500/5",
+        iconColor: "text-blue-400 bg-blue-500/15"
+    }, {
+        label: "I had a strong thesis here but I can't remember it",
+        context: "Reviewing a company with LP",
+        icon: MessageCircle,
+        accent: "border-conviction-500/25 bg-conviction-500/5",
+        iconColor: "text-conviction-300 bg-conviction-500/15"
+    },
 ] as const;
 
 const TESTIMONIALS = [
-  {
-    quote:
-      "We tracked 200+ companies last year. By Q3, half our team couldn't remember why we passed on deals we'd spent weeks evaluating. Conviction solved that.",
-    author: "Partner at a Series A fund",
-    fund: "Top 10 fintech-focused VC",
-    initials: "PA",
-  },
-  {
-    quote:
-      "The startup intelligence feature saves us 3–4 hours per company. Point it at a URL and get a full diligence brief in minutes. Thesis fit scoring is insanely useful.",
-    author: "Principal, Growth Equity",
-    fund: "$2B AUM fund",
-    initials: "PG",
-  },
-  {
-    quote:
-      "Deal continuity is the unsexy problem nobody talks about. Conviction made it disappear. We ship better memos, faster, with full audit trails.",
-    author: "VP of Investments",
-    fund: "Early-stage consumer fund",
-    initials: "VP",
-  },
-  {
-    quote:
-      "I used to dread IC prep, digging through Notion, Slack, and email to reconstruct why we were even looking at something. Now it's all there, structured in 60 seconds.",
-    author: "Associate, B2B SaaS fund",
-    fund: "$500M Series B focus",
-    initials: "AS",
-  },
+    {
+        quote: "We tracked 200+ companies last year. By Q3, half our team couldn't remember why we passed on deals we'd spent weeks evaluating. Conviction solved that.",
+        author: "Partner at a Series A fund",
+        fund: "Top 10 fintech-focused VC",
+        initials: "PA"
+    }, {
+        quote: "The startup intelligence feature saves us 3–4 hours per company. Point it at a URL and get a full diligence brief in minutes. Thesis fit scoring is insanely useful.",
+        author: "Principal, Growth Equity",
+        fund: "$2B AUM fund",
+        initials: "PG"
+    }, {
+        quote: "Deal continuity is the unsexy problem nobody talks about. Conviction made it disappear. We ship better memos, faster, with full audit trails.",
+        author: "VP of Investments",
+        fund: "Early-stage consumer fund",
+        initials: "VP"
+    }, {
+        quote: "I used to dread IC prep, digging through Notion, Slack, and email to reconstruct why we were even looking at something. Now it's all there, structured in 60 seconds.",
+        author: "Associate, B2B SaaS fund",
+        fund: "$500M Series B focus",
+        initials: "AS"
+    },
 ];
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
 function SectionHeader({
-  eyebrow,
-  title,
-  subtitle,
-  className = "",
-}: {
-  eyebrow: string;
-  title: React.ReactNode;
-  subtitle?: string;
-  className?: string;
+    eyebrow,
+    title,
+    subtitle,
+    className = ""
+} : {
+    eyebrow : string;
+    title : React.ReactNode;
+    subtitle? : string;
+    className? : string;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-8%" });
+    const ref = useRef < HTMLDivElement > (null);
+    const isInView = useInView(ref, {
+        once: true,
+        margin: "-8%"
+    });
 
-  return (
-    <motion.div
-      ref={ref}
-      className={`text-center mb-10 md:mb-12 ${className}`}
-      initial={{ opacity: 0, y: 20 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-    >
-      <div className="inline-flex items-center gap-2 mb-3">
-        <span className="h-px w-8 bg-gradient-to-r from-transparent to-conviction-500/50" />
-        <p className="text-[11px] font-semibold text-conviction-300 uppercase tracking-[0.2em]">
-          {eyebrow}
-        </p>
-        <span className="h-px w-8 bg-gradient-to-l from-transparent to-conviction-500/50" />
-      </div>
+    return(< motion.div ref = {
+        ref
+    }
+    className = {
+        `text-center mb-10 md:mb-12 ${className}`
+    }
+    initial = {{ opacity: 0, y: 20 }}animate = {
+        isInView ? {
+            opacity: 1,
+            y: 0
+        } : {}
+    }
+    transition = {{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }} > <div className="inline-flex items-center gap-2 mb-3"> < span className = "h-px w-8 bg-gradient-to-r from-transparent to-conviction-500/50" /> <p className="text-[11px] font-semibold text-conviction-300 uppercase tracking-[0.2em]"> {
+        eyebrow
+} < /p>
+        <span className="h-px w-8 bg-gradient-to-l from-transparent to-conviction-500/50 " />
+ < /div>
       <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight text-balance">
         {title}
-      </h2>
-      {subtitle && (
-        <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto mt-3 leading-relaxed">
-          {subtitle}
-        </p>
+      </h2 > {
+    subtitle && (< p className = "text-sm md:text-base text-muted-foreground max-w-2xl mx-auto mt-3 leading-relaxed" > {
+        subtitle
+    } < /p>
       )}
-    </motion.div>
-  );
+    </motion.div >);
 }
 
-function StatCounter({
-  value,
-  suffix,
-  label,
-}: {
-  value: number;
-  suffix: string;
-  label: string;
+function StatCounter({value, suffix, label} : {
+    value : number;
+    suffix : string;
+    label : string;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(containerRef, { once: true, margin: "-10%" });
-
-  useGSAP(() => {
-    const mm = gsap.matchMedia();
-    mm.add("(prefers-reduced-motion: no-preference)", () => {
-      if (!ref.current) return;
-      gsap.from(ref.current, {
-        textContent: 0,
-        duration: 2,
-        ease: "power3.out",
-        snap: { textContent: 1 },
-        scrollTrigger: { trigger: ref.current, start: "top 85%", once: true },
-      });
+    const ref = useRef < HTMLDivElement > (null);
+    const containerRef = useRef < HTMLDivElement > (null);
+    const isInView = useInView(containerRef, {
+        once: true,
+        margin: "-10%"
     });
-  });
 
-  return (
-    <motion.div
-      ref={containerRef}
-      className="text-center"
-      initial={{ opacity: 0, y: 20 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-    >
-      <div className="flex items-end justify-center gap-0.5">
-        <span
-          ref={ref}
-          className="text-5xl font-semibold tabular-nums gradient-text gradient-text-safe leading-none"
-        >
-          {value}
-        </span>
+    useGSAP(() => {
+        const mm = gsap.matchMedia();
+        mm.add("(prefers-reduced-motion: no-preference)", () => {
+            if (! ref.current) 
+                return;
+            
+            gsap.from(ref.current, {
+                textContent: 0,
+                duration: 2,
+                ease: "power3.out",
+                snap: {
+                    textContent: 1
+                },
+                scrollTrigger: {
+                    trigger: ref.current,
+                    start: "top 85%",
+                    once: true
+                }
+            });
+        });
+    });
+
+    return(< motion.div ref = {
+        containerRef
+    }
+    className = "text-center" initial = {{ opacity: 0, y: 20 }}animate = {
+        isInView ? {
+            opacity: 1,
+            y: 0
+        } : {}
+    }
+    transition = {{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }} > <div className="flex items-end justify-center gap-0.5"> < span ref = {
+        ref
+    }
+    className = "text-5xl font-semibold tabular-nums gradient-text gradient-text-safe leading-none" > {
+        value
+    } < /span>
         <span className="text-2xl font-semibold text-muted-foreground leading-none pb-1">
           {suffix}
-        </span>
-      </div>
-      <p className="mt-2 text-sm text-muted-foreground">{label}</p>
-    </motion.div>
-  );
+        </span > </div> < p className = "mt-2 text-sm text-muted-foreground" > {
+        label
+    } < /p>
+    </motion.div >);
 }
 
 function HowItWorksStep({
-  step,
-  icon: Icon,
-  title,
-  description,
-  detail,
-  isLast,
-}: (typeof HOW_IT_WORKS)[0] & { isLast: boolean }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-15%" });
-  const lineRef = useRef<HTMLDivElement>(null);
-  const lineInView = useInView(lineRef, { once: true, margin: "-20%" });
+    step,
+    icon: Icon,
+    title,
+    description,
+    detail,
+    isLast
+} : (typeof HOW_IT_WORKS)[0] & {
+    isLast : boolean
+}) {
+    const ref = useRef < HTMLDivElement > (null);
+    const isInView = useInView(ref, {
+        once: true,
+        margin: "-15%"
+    });
+    const lineRef = useRef < HTMLDivElement > (null);
+    const lineInView = useInView(lineRef, {
+        once: true,
+        margin: "-20%"
+    });
 
-  return (
-    <motion.div
-      ref={ref}
-      className="relative flex gap-5 pb-8 last:pb-0"
-      initial={{ opacity: 0, x: -24 }}
-      animate={isInView ? { opacity: 1, x: 0 } : {}}
-      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-    >
-      {!isLast && (
-        <motion.div
-          ref={lineRef}
-          className="absolute left-6 top-14 bottom-0 w-px bg-gradient-to-b from-border to-transparent origin-top connector-line"
-          initial={{ scaleY: 0 }}
-          animate={lineInView ? { scaleY: 1 } : {}}
-          transition={{ duration: 0.9, ease: "easeInOut", delay: 0.3 }}
-        />
+    return(< motion.div ref = {
+        ref
+    }
+    className = "relative flex gap-5 pb-8 last:pb-0" initial = {{ opacity: 0, x: -24 }}animate = {
+        isInView ? {
+            opacity: 1,
+            x: 0
+        } : {}
+    }
+    transition = {{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }} > {
+        !isLast && (< motion.div ref =
+            { lineRef
+        }
+        className = "absolute left-6 top-14 bottom-0 w-px bg-gradient-to-b from-border to-transparent origin-top connector-line" initial ={{ scaleY: 0 }} animate =
+            { lineInView ? {
+                scaleY: 1
+            } : {}
+        }
+        transition ={{ duration: 0.9, ease: "easeInOut", delay: 0.3 }}/>
       )}
       <motion.div
-        className="flex-shrink-0 flex h-11 w-11 items-center justify-center rounded-xl border border-conviction-500/25 bg-gradient-to-br from-conviction-500/15 to-transparent shadow-[0_0_24px_hsl(248_92%_68%/0.08)]"
-        whileHover={{ scale: 1.08, borderColor: "hsl(248 92% 68% / 0.5)" }}
-        transition={{ type: "spring", stiffness: 400, damping: 20 }}
-      >
-        <Icon className="h-5 w-5 text-conviction-300" />
-      </motion.div>
+        className="flex-shrink-0 flex h-11 w-11 items-center justify-center rounded-xl border border-conviction-500/ 25 bg - gradient - to - br from - conviction - 500 / 15 to - transparent shadow - [
+        0 _0_24px_hsl(248 _92 % _68 % /0.08)]"
+        whileHover={{ scale: 1.08, borderColor: "hsl(248 92% 68% /0.5)" }}
+ transition = {{ type: "spring", stiffness: 400, damping: 20 }} > <Icon className="h-5 w-5 text-conviction-300" /> < /motion.div>
       <div className="pt-1 min-w-0">
         <div className="flex items-center gap-3 mb-1.5 flex-wrap">
-          <span className="text-[10px] font-mono font-semibold text-conviction-400/80">
-            {step}
-          </span>
-          <h3 className="font-semibold text-foreground">{title}</h3>
-          <span className="text-2xs text-muted-foreground border border-border rounded-full px-2 py-0.5 hidden sm:inline">
-            {detail}
-          </span>
-        </div>
-        <p className="text-sm text-muted-foreground leading-relaxed max-w-lg">
-          {description}
-        </p>
-      </div>
-    </motion.div>
-  );
+          <span className="text-[10px] font-mono font-semibold text-conviction-400/80 ">
+ {
+                    step
+                } < /span>
+          <h3 className="font-semibold text-foreground">{title}</h3 > <span className="text-2xs text-muted-foreground border border-border rounded-full px-2 py-0.5 hidden sm:inline"> {
+                    detail
+            } < /span>
+        </div > <p className="text-sm text-muted-foreground leading-relaxed max-w-lg"> {
+                description
+        } < /p>
+      </div > </motion.div>
+    );
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function LandingPage() {
-  const navigate = useNavigate();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [activeTab, setActiveTab] = useState<"voice" | "research" | "memory">(
-    "voice"
-  );
-  const [demoLoading, setDemoLoading] = useState(false);
-  const [demoError, setDemoError] = useState<string | null>(null);
+    const navigate = useNavigate();
+    const containerRef = useRef < HTMLDivElement > (null);
+    const [activeTab, setActiveTab] = useState < "voice" | "research" | "memory" > ("voice");
+    const [demoLoading, setDemoLoading] = useState(false);
+    const [demoError, setDemoError] = useState < string | null > (null);
 
-  const login = useAuthStore((s) => s.login);
+    const login = useAuthStore((s) => s.login);
 
-  async function handleDemoAccess() {
-    const { isAuthenticated, isDemo } = useAuthStore.getState();
-    if (isAuthenticated && isDemo) {
-      navigate("/dashboard");
-      return;
+    async function handleDemoAccess() {
+        const {isAuthenticated, isDemo} = useAuthStore.getState();
+        if (isAuthenticated && isDemo) {
+            navigate("/dashboard");
+            return;
+        }
+        setDemoLoading(true);
+        setDemoError(null);
+        try {
+            const tokenResponse = await authApi.mockLogin();
+            useAuthStore.setState({token: tokenResponse.access_token, isAuthenticated: true});
+            const backendUser = await authApi.getMe();
+            login(mapBackendUser(backendUser), tokenResponse.access_token, true);
+            navigate("/dashboard", {replace: true});
+        } catch (err) {
+            setDemoError(getFriendlyApiError(err, "demo", "Couldn't load the demo. Please try again in a moment."));
+            window.scrollTo({top: 0, behavior: "smooth"});
+        } finally {
+            setDemoLoading(false);
+        }
     }
-    setDemoLoading(true);
-    setDemoError(null);
-    try {
-      const tokenResponse = await authApi.mockLogin();
-      useAuthStore.setState({
-        token: tokenResponse.access_token,
-        isAuthenticated: true,
-      });
-      const backendUser = await authApi.getMe();
-      login(mapBackendUser(backendUser), tokenResponse.access_token, true);
-      navigate("/dashboard", { replace: true });
-    } catch (err) {
-      setDemoError(
-        getFriendlyApiError(
-          err,
-          "demo",
-          "Couldn't load the demo. Please try again in a moment."
-        )
-      );
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } finally {
-      setDemoLoading(false);
+
+    // Scroll-based nav shadow
+    const {scrollY} = useScroll();
+    const navShadowOpacity = useTransform(scrollY, [
+        0, 60
+    ], [0, 1]);
+
+    // Hero glow parallax via Framer Motion (smoother than GSAP scrub)
+    const {scrollYProgress: heroProgress} = useScroll({
+        target: containerRef,
+        offset: ["start start", "30% start"]
+    });
+    const glowY = useTransform(heroProgress, [
+        0, 1
+    ], ["0%", "-18%"]);
+    const glowScale = useTransform(heroProgress, [
+        0, 1
+    ], [1, 1.15]);
+
+    useGSAP(() => {
+        const mm = gsap.matchMedia();
+        mm.add("(prefers-reduced-motion: no-preference)", () => { // Stats counter section
+            gsap.from(".stats-section", {
+                autoAlpha: 0,
+                y: 24,
+                duration: 0.7,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: ".stats-section",
+                    start: "top 85%",
+                    once: true
+                }
+            });
+
+            // Problem fragments
+            ScrollTrigger.batch(".problem-fragment", {
+                onEnter: (els) => gsap.fromTo(els, {
+                    autoAlpha: 0,
+                    y: 20
+                }, {
+                    autoAlpha: 1,
+                    y: 0,
+                    stagger: 0.09,
+                    duration: 0.55,
+                    ease: "power2.out"
+                }),
+                start: "top 87%",
+                once: true
+            });
+
+            // Feature cards — keep for non-TiltCard fallback
+            ScrollTrigger.batch(".feature-card", {
+                onEnter: (els) => gsap.fromTo(els, {
+                    autoAlpha: 0,
+                    y: 28
+                }, {
+                    autoAlpha: 1,
+                    y: 0,
+                    stagger: 0.07,
+                    duration: 0.5,
+                    ease: "power2.out"
+                }),
+                start: "top 89%",
+                once: true
+            });
+
+            // CTA section
+            gsap.from(".cta-content", {
+                autoAlpha: 0,
+                y: 28,
+                duration: 0.7,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: ".cta-content",
+                    start: "top 85%",
+                    once: true
+                }
+            });
+        });
+    }, {scope: containerRef});
+
+    return(< div ref = {
+        containerRef
     }
-  }
-
-  // Scroll-based nav shadow
-  const { scrollY } = useScroll();
-  const navShadowOpacity = useTransform(scrollY, [0, 60], [0, 1]);
-
-  // Hero glow parallax via Framer Motion (smoother than GSAP scrub)
-  const { scrollYProgress: heroProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "30% start"],
-  });
-  const glowY = useTransform(heroProgress, [0, 1], ["0%", "-18%"]);
-  const glowScale = useTransform(heroProgress, [0, 1], [1, 1.15]);
-
-  useGSAP(
-    () => {
-      const mm = gsap.matchMedia();
-      mm.add("(prefers-reduced-motion: no-preference)", () => {
-        // Stats counter section
-        gsap.from(".stats-section", {
-          autoAlpha: 0,
-          y: 24,
-          duration: 0.7,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: ".stats-section",
-            start: "top 85%",
-            once: true,
-          },
-        });
-
-        // Problem fragments
-        ScrollTrigger.batch(".problem-fragment", {
-          onEnter: (els) =>
-            gsap.fromTo(
-              els,
-              { autoAlpha: 0, y: 20 },
-              {
-                autoAlpha: 1,
-                y: 0,
-                stagger: 0.09,
-                duration: 0.55,
-                ease: "power2.out",
-              }
-            ),
-          start: "top 87%",
-          once: true,
-        });
-
-        // Feature cards — keep for non-TiltCard fallback
-        ScrollTrigger.batch(".feature-card", {
-          onEnter: (els) =>
-            gsap.fromTo(
-              els,
-              { autoAlpha: 0, y: 28 },
-              {
-                autoAlpha: 1,
-                y: 0,
-                stagger: 0.07,
-                duration: 0.5,
-                ease: "power2.out",
-              }
-            ),
-          start: "top 89%",
-          once: true,
-        });
-
-        // CTA section
-        gsap.from(".cta-content", {
-          autoAlpha: 0,
-          y: 28,
-          duration: 0.7,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: ".cta-content",
-            start: "top 85%",
-            once: true,
-          },
-        });
-      });
-    },
-    { scope: containerRef }
-  );
-
-  return (
-    <div
-      ref={containerRef}
-      className="min-h-screen bg-background text-foreground overflow-x-hidden"
-    >
-      <ScrollProgress />
-
-      {/* ── Nav ───────────────────────────────────────────────────── */}
-      <motion.nav
-        style={{ "--nav-shadow": navShadowOpacity } as React.CSSProperties}
+    className = "min-h-screen bg-background text-foreground overflow-x-hidden" > <ScrollProgress /> { /* ── Nav ───────────────────────────────────────────────────── */
+    } < motion.nav style = {{ "--nav-shadow": navShadowOpacity } as React.CSSProperties}
         className="fixed top-0 left-0 right-0 z-50 glass border-b border-border/40"
         animate={{ borderBottomColor: "hsl(var(--border) / 0.4)" }}
       >
@@ -805,7 +781,7 @@ export default function LandingPage() {
                       </div>
                       <div className="rounded-md border border-conviction-500/20 bg-conviction-500/5 p-2.5">
                         <p className="text-2xs text-conviction-300 leading-relaxed line-clamp-2">
-                          "Strong founder-market fit. Arjun has deep logistics
+                          "Strong founder-market fit. Kush has deep logistics
                           expertise, Rohan brings the GTM. Revenue growing 3x
                           YoY. Moat defensible through proprietary carrier
                           relationships."

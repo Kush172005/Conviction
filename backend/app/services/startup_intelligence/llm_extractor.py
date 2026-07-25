@@ -54,7 +54,7 @@ async def _gemini_research(
         system=GEMINI_GROUNDING_SYSTEM,
         user=prompt,
         use_grounding=True,
-        max_output_tokens=2048,
+        max_output_tokens=4096,
         temperature=0.1,
         log=log,
         log_provider="gemini_research",

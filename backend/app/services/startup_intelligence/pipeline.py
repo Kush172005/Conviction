@@ -147,12 +147,12 @@ async def run_research_pipeline(
             evidence = EvidenceLayer(**ev_raw) if isinstance(ev_raw, dict) else ev_raw
             conf_raw = cache_doc.get("evidence_confidence", {})
             ev_confidence = EvidenceConfidence(**conf_raw) if isinstance(conf_raw, dict) else conf_raw
-            await _update_stage(report_repo, report_id, stages, 0, "completed", 15, "Cache hit — reusing evidence")
+            await _update_stage(report_repo, report_id, stages, 0, "completed", 15, "Cache hit - reusing evidence")
             for i in [1, 2, 3]:
-                await _update_stage(report_repo, report_id, stages, i, "skipped", 15, "Cache hit — reusing evidence")
+                await _update_stage(report_repo, report_id, stages, i, "skipped", 15, "Cache hit - reusing evidence")
             provider_log.record("cache", "reuse", "ok", f"domain={normalized_domain} age_h={cache_age_hours}")
         else:
-            await _update_stage(report_repo, report_id, stages, 0, "completed", 12, "No fresh cache — starting research")
+            await _update_stage(report_repo, report_id, stages, 0, "completed", 12, "No fresh cache - starting research")
 
             # ── Stage 1: Crawl website ────────────────────────────────────────
             await _update_stage(report_repo, report_id, stages, 1, "running", 20, "Crawling website")
@@ -165,7 +165,7 @@ async def run_research_pipeline(
                 )
             except Exception as e:
                 website_sources = []
-                await _update_stage(report_repo, report_id, stages, 1, "failed", 25, "Crawl failed — continuing", error=str(e))
+                await _update_stage(report_repo, report_id, stages, 1, "failed", 25, "Crawl failed - continuing", error=str(e))
             else:
                 await _update_stage(report_repo, report_id, stages, 1, "completed", 35, f"Crawled {len(website_sources)} pages")
 
@@ -182,7 +182,7 @@ async def run_research_pipeline(
                 )
             except Exception as e:
                 search_sources = []
-                await _update_stage(report_repo, report_id, stages, 2, "failed", 45, "Search failed — continuing", error=str(e))
+                await _update_stage(report_repo, report_id, stages, 2, "failed", 45, "Search failed - continuing", error=str(e))
             else:
                 await _update_stage(report_repo, report_id, stages, 2, "completed", 50, f"Found {len(search_sources)} search results")
 

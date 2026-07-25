@@ -61,7 +61,7 @@ npm run dev
 # → http://localhost:5173
 ```
 
-Open the landing page and click **View live demo**. You'll get access to Arjun Mehta's deal pipeline at Conviction Capital — browse the dashboard, open company pages, read through call intelligence reports, explore the startup research on Fampay and Whatnot, review the deal memory timeline.
+Open the landing page and click **View live demo**. You'll get access to Kush Agarwal's deal pipeline at Conviction Capital — browse the dashboard, open company pages, read through call intelligence reports, explore the startup research on Fampay and Whatnot, review the deal memory timeline.
 
 To run the live AI pipeline against real data, see [Local setup](#local-setup) below.
 

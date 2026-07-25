@@ -2,6 +2,7 @@
 Seed script for development — inserts realistic deal flow.
 Run: python -m app.db_seed
 """
+
 import asyncio
 from datetime import datetime, timedelta
 from app.db import get_database, close_client
@@ -23,7 +24,11 @@ SEED_COMPANIES = [
         "industry": "AI Infrastructure",
         "description": "Building the compliance layer for enterprise AI deployments.",
         "founders": [
-            {"name": "Priya Anand", "role": "CEO", "background": "Ex-Google Brain, PhD Stanford ML"},
+            {
+                "name": "Priya Anand",
+                "role": "CEO",
+                "background": "Ex-Google Brain, PhD Stanford ML",
+            },
             {"name": "Sam Torres", "role": "CTO", "background": "Ex-Palantir"},
         ],
         "status": "active",
@@ -60,19 +65,21 @@ async def seed():
 
     # Insert investor profile
     await db.investor_profiles.delete_many({"user_id": user_id})
-    await db.investor_profiles.insert_one({
-        "user_id": user_id,
-        "fund_name": "Conviction Capital",
-        "investor_name": "Arjun Mehta",
-        "investment_thesis": "We invest in category-defining B2B software companies with strong founder-market fit.",
-        "preferred_sectors": ["B2B SaaS", "AI Infrastructure", "Developer Tools"],
-        "preferred_stages": ["seed", "series-a"],
-        "typical_check_size": "$1M-$5M",
-        "geographies": ["US", "India", "Europe"],
-        "investment_style": "lead",
-        "created_at": datetime.utcnow(),
-        "updated_at": datetime.utcnow(),
-    })
+    await db.investor_profiles.insert_one(
+        {
+            "user_id": user_id,
+            "fund_name": "Conviction Capital",
+            "investor_name": "Arjun Mehta",
+            "investment_thesis": "We invest in category-defining B2B software companies with strong founder-market fit.",
+            "preferred_sectors": ["B2B SaaS", "AI Infrastructure", "Developer Tools"],
+            "preferred_stages": ["seed", "series-a"],
+            "typical_check_size": "$1M-$5M",
+            "geographies": ["US", "India", "Europe"],
+            "investment_style": "lead",
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow(),
+        }
+    )
     print("Seeded investor profile")
 
     # Insert companies

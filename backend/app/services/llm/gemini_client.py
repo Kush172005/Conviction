@@ -48,7 +48,8 @@ async def _post_gemini(
 ) -> tuple[int, Dict[str, Any], str]:
     async with httpx.AsyncClient(timeout=90) as client:
         resp = await client.post(
-            f"{GEMINI_BASE}/{model}:generateContent?key={api_key}",
+            f"{GEMINI_BASE}/{model}:generateContent",
+            headers={"x-goog-api-key": api_key},
             json=payload,
         )
         preview = resp.text[:500]

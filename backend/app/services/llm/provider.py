@@ -124,10 +124,21 @@ def parse_json_from_llm(text: str) -> Optional[Dict[str, Any]]:
     end = text.rfind("}")
     if start == -1 or end == -1 or end <= start:
         return None
+    
+    json_str = text[start : end + 1]
     try:
-        return json.loads(text[start : end + 1])
+        return json.loads(json_str, strict=False)
     except json.JSONDecodeError:
-        return None
+        pass
+
+    try:
+        # Clean trailing commas inside lists or objects
+        cleaned = re.sub(r",\s*([}\]])", r"\1", json_str)
+        return json.loads(cleaned, strict=False)
+    except json.JSONDecodeError:
+        pass
+
+    return None
 
 
 def get_llm() -> HuggingFaceLLM:

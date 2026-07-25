@@ -33,7 +33,7 @@ class ProviderLog:
         level = logging.INFO if status in ("ok", "skipped") else logging.WARNING
         logger.log(
             level,
-            "[%s] %s — %s | %s%s",
+            "[%s] %s - %s | %s%s",
             provider,
             action,
             status,
