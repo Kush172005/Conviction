@@ -2,16 +2,15 @@
 Seed script for development — inserts realistic deal flow.
 Run: python -m app.db_seed
 """
-
 import asyncio
 from datetime import datetime, timedelta
 from app.db import get_database, close_client
 
 
 SEED_USER = {
-    "google_id": "mock_arjun@conviction.vc",
-    "email": "arjun@conviction.vc",
-    "name": "Arjun Mehta",
+    "google_id": "mock_kush@conviction.vc",
+    "email": "kush@conviction.vc",
+    "name": "Kush Agarwal",
     "onboarding_completed": True,
     "created_at": datetime.utcnow() - timedelta(days=120),
     "updated_at": datetime.utcnow(),
@@ -24,11 +23,7 @@ SEED_COMPANIES = [
         "industry": "AI Infrastructure",
         "description": "Building the compliance layer for enterprise AI deployments.",
         "founders": [
-            {
-                "name": "Priya Anand",
-                "role": "CEO",
-                "background": "Ex-Google Brain, PhD Stanford ML",
-            },
+            {"name": "Priya Anand", "role": "CEO", "background": "Ex-Google Brain, PhD Stanford ML"},
             {"name": "Sam Torres", "role": "CTO", "background": "Ex-Palantir"},
         ],
         "status": "active",
@@ -56,7 +51,7 @@ async def seed():
     db = get_database()
 
     # Clear existing seed data
-    await db.users.delete_many({"email": "arjun@conviction.vc"})
+    await db.users.delete_many({"email": "kush@conviction.vc"})
 
     # Insert user
     user_result = await db.users.insert_one(SEED_USER)
@@ -65,21 +60,19 @@ async def seed():
 
     # Insert investor profile
     await db.investor_profiles.delete_many({"user_id": user_id})
-    await db.investor_profiles.insert_one(
-        {
-            "user_id": user_id,
-            "fund_name": "Conviction Capital",
-            "investor_name": "Arjun Mehta",
-            "investment_thesis": "We invest in category-defining B2B software companies with strong founder-market fit.",
-            "preferred_sectors": ["B2B SaaS", "AI Infrastructure", "Developer Tools"],
-            "preferred_stages": ["seed", "series-a"],
-            "typical_check_size": "$1M-$5M",
-            "geographies": ["US", "India", "Europe"],
-            "investment_style": "lead",
-            "created_at": datetime.utcnow(),
-            "updated_at": datetime.utcnow(),
-        }
-    )
+    await db.investor_profiles.insert_one({
+        "user_id": user_id,
+        "fund_name": "Conviction Capital",
+        "investor_name": "Kush Agarwal",
+        "investment_thesis": "We invest in category-defining B2B software companies with strong founder-market fit.",
+        "preferred_sectors": ["B2B SaaS", "AI Infrastructure", "Developer Tools"],
+        "preferred_stages": ["seed", "series-a"],
+        "typical_check_size": "$1M-$5M",
+        "geographies": ["US", "India", "Europe"],
+        "investment_style": "lead",
+        "created_at": datetime.utcnow(),
+        "updated_at": datetime.utcnow(),
+    })
     print("Seeded investor profile")
 
     # Insert companies
@@ -93,7 +86,7 @@ async def seed():
         await db.companies.insert_one(company_data)
         print(f"Seeded company: {company_data['name']}")
 
-    print("\nSeed complete! Restart the API and log in with arjun@conviction.vc")
+    print("\nSeed complete! Restart the API and log in with kush@conviction.vc")
     await close_client()
 
 

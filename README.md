@@ -14,7 +14,7 @@
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
 [![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=flat-square&logo=mongodb&logoColor=white)](https://mongodb.com/atlas)
 
-[**Live App →**](https://conviction-vc.vercel.app) &nbsp;&nbsp;·&nbsp;&nbsp; [**GitHub →**](https://github.com/Kush172005/Conviction) &nbsp;&nbsp;·&nbsp;&nbsp; [**Architecture Diagram →**](./docs/architecture.svg)
+[**Live App →**](https://conviction.kushagarwal.tech) &nbsp;&nbsp;·&nbsp;&nbsp; [**GitHub →**](https://github.com/Kush172005/Conviction) &nbsp;&nbsp;·&nbsp;&nbsp; [**Architecture Diagram →**](./docs/architecture.svg)
 
 </div>
 
@@ -370,6 +370,6 @@ We left scope on the table deliberately. Vector recall, Slack ingestion, multi-t
 
 <div align="center">
 
-[Live App](https://conviction-vc.vercel.app) &nbsp;·&nbsp; [GitHub](https://github.com/Kush172005/Conviction) &nbsp;·&nbsp; [Architecture](./docs/architecture.svg)
+[Live App](https://conviction.kushagarwal.tech) &nbsp;·&nbsp; [GitHub](https://github.com/Kush172005/Conviction) &nbsp;·&nbsp; [Architecture](./docs/architecture.svg)
 
 </div>
