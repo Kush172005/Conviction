@@ -20,9 +20,9 @@ export default function DemoBanner() {
         <Eye className="h-3.5 w-3.5" />
         <span className="font-semibold">Demo workspace</span>
       </div>
-      <span className="text-conviction-300/60 hidden sm:inline">—</span>
+      <span className="text-conviction-300/60 hidden sm:inline">|</span>
       <span className="text-conviction-300/70 flex-1 min-w-0 truncate hidden sm:inline">
-        Exploring Conviction's live demo pipeline. Browse freely — sign in to start your own workspace.
+        Exploring Conviction's live demo pipeline. Browse freely - sign in to start your own workspace.
       </span>
       <button
         onClick={goToLogin}
