@@ -15,6 +15,8 @@ import {
   Loader2,
   CheckCircle2,
   FileAudio,
+  RotateCcw,
+  Volume2,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -79,24 +81,46 @@ function formatFileSize(bytes: number): string {
 interface VoiceRecorderProps {
   onRecordingComplete: (blob: Blob, mimeType: string) => void
   onRecordingStart: () => void
+  onProcess?: () => void
+  canSubmit?: boolean
+  isProcessing?: boolean
+  companyName?: string
 }
 
-function VoiceRecorder({ onRecordingComplete, onRecordingStart }: VoiceRecorderProps) {
+function VoiceRecorder({
+  onRecordingComplete,
+  onRecordingStart,
+  onProcess,
+  canSubmit = false,
+  isProcessing = false,
+  companyName,
+}: VoiceRecorderProps) {
   const [isRecording, setIsRecording] = useState(false)
   const [seconds, setSeconds] = useState(0)
+  const [recordedDuration, setRecordedDuration] = useState<number>(0)
   const [permissionError, setPermissionError] = useState<string | null>(null)
   const [blob, setBlob] = useState<Blob | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  useEffect(() => {
+    if (!blob) {
+      setPreviewUrl(null)
+      return
+    }
+    const url = URL.createObjectURL(blob)
+    setPreviewUrl(url)
+    return () => URL.revokeObjectURL(url)
+  }, [blob])
 
   async function startRecording() {
     setPermissionError(null)
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
 
-      // Pick a supported mime type
       const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
         ? 'audio/webm;codecs=opus'
         : MediaRecorder.isTypeSupported('audio/webm')
@@ -121,6 +145,7 @@ function VoiceRecorder({ onRecordingComplete, onRecordingStart }: VoiceRecorderP
       recorder.start(250)
       setIsRecording(true)
       setSeconds(0)
+      setRecordedDuration(0)
       setBlob(null)
       onRecordingStart()
 
@@ -139,15 +164,27 @@ function VoiceRecorder({ onRecordingComplete, onRecordingStart }: VoiceRecorderP
 
   function stopRecording() {
     if (intervalRef.current) clearInterval(intervalRef.current)
+    setRecordedDuration(seconds)
     setIsRecording(false)
     mediaRecorderRef.current?.stop()
   }
 
-  const mm = String(Math.floor(seconds / 60)).padStart(2, '0')
-  const ss = String(seconds % 60).padStart(2, '0')
+  function handleReset() {
+    if (intervalRef.current) clearInterval(intervalRef.current)
+    setIsRecording(false)
+    setSeconds(0)
+    setRecordedDuration(0)
+    setBlob(null)
+    setPreviewUrl(null)
+    onRecordingStart()
+  }
+
+  const activeSecs = isRecording ? seconds : recordedDuration
+  const mm = String(Math.floor(activeSecs / 60)).padStart(2, '0')
+  const ss = String(activeSecs % 60).padStart(2, '0')
 
   return (
-    <div className="flex flex-col items-center gap-8 py-10">
+    <div className="flex flex-col items-center gap-6 p-6 sm:p-8">
       {permissionError && (
         <div className="flex items-start gap-2.5 rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-400 max-w-sm text-center">
           <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
@@ -155,60 +192,136 @@ function VoiceRecorder({ onRecordingComplete, onRecordingStart }: VoiceRecorderP
         </div>
       )}
 
-      <div className="relative">
-        {isRecording && (
-          <>
-            <div className="absolute inset-0 rounded-full bg-red-500/20 animate-ping" />
-            <div className="absolute inset-[-12px] rounded-full bg-red-500/10 animate-pulse" />
-          </>
-        )}
-        <motion.button
-          whileHover={{ scale: 1.04 }}
-          whileTap={{ scale: 0.96 }}
-          onClick={isRecording ? stopRecording : startRecording}
-          className={cn(
-            'relative flex h-24 w-24 items-center justify-center rounded-full border-2 transition-all duration-300',
-            isRecording
-              ? 'border-red-500 bg-red-500/15'
-              : 'border-border bg-card hover:border-muted-foreground'
-          )}
+      {(!blob || isRecording) && (
+        <>
+          <div className="relative">
+            {isRecording && (
+              <>
+                <div className="absolute inset-0 rounded-full bg-red-500/20 animate-ping" />
+                <div className="absolute inset-[-12px] rounded-full bg-red-500/10 animate-pulse" />
+              </>
+            )}
+            <motion.button
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
+              onClick={isRecording ? stopRecording : startRecording}
+              className={cn(
+                'relative flex h-24 w-24 items-center justify-center rounded-full border-2 transition-all duration-300 shadow-md',
+                isRecording
+                  ? 'border-red-500 bg-red-500/15 text-red-400'
+                  : 'border-conviction-500/40 bg-conviction-500/10 text-conviction-400 hover:border-conviction-500 hover:bg-conviction-500/20'
+              )}
+            >
+              {isRecording ? (
+                <StopCircle className="h-10 w-10 text-red-400" />
+              ) : (
+                <Mic className="h-10 w-10 text-conviction-400" />
+              )}
+            </motion.button>
+          </div>
+
+          <div className="text-center">
+            {isRecording ? (
+              <div>
+                <div className="font-mono text-3xl font-semibold text-foreground tabular-nums">
+                  {mm}:{ss}
+                </div>
+                <p className="text-sm text-red-400 mt-1 font-medium">Recording voice memo…</p>
+                <p className="text-xs text-muted-foreground mt-1">Tap stop when done.</p>
+              </div>
+            ) : (
+              <div>
+                <p className="text-base font-semibold text-foreground">
+                  Tap mic to record voice memo
+                </p>
+                <p className="text-xs text-muted-foreground mt-1 max-w-sm">
+                  Speak your raw post-call observations, takeaways, or concerns freely.
+                </p>
+              </div>
+            )}
+          </div>
+        </>
+      )}
+
+      {/* Captured Audio Player & Obvious Action Card */}
+      {!isRecording && blob && previewUrl && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.97, y: 4 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          className="w-full max-w-md rounded-2xl border border-conviction-500/30 bg-conviction-500/5 p-5 space-y-4 shadow-lg"
         >
-          {isRecording ? (
-            <StopCircle className="h-10 w-10 text-red-400" />
-          ) : (
-            <Mic className="h-10 w-10 text-foreground" />
-          )}
-        </motion.button>
-      </div>
-
-      <div className="text-center">
-        {isRecording ? (
-          <div>
-            <div className="font-mono text-3xl font-semibold text-foreground tabular-nums">
-              {mm}:{ss}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
+                <CheckCircle2 className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-foreground">Voice memo captured</p>
+                <p className="text-xs text-muted-foreground">
+                  Duration: <span className="font-mono font-medium text-foreground">{mm}:{ss}</span> · {formatFileSize(blob.size)}
+                </p>
+              </div>
             </div>
-            <p className="text-sm text-red-400 mt-1 font-medium">Recording…</p>
-            <p className="text-xs text-muted-foreground mt-1">Tap stop when done.</p>
+            <Button
+              variant="ghost-muted"
+              size="sm"
+              className="text-xs text-muted-foreground hover:text-foreground gap-1.5 h-8"
+              onClick={handleReset}
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              Re-record
+            </Button>
           </div>
-        ) : (
-          <div>
-            <p className="text-sm font-medium text-foreground">
-              {blob ? 'Recording ready' : 'Ready to record'}
-            </p>
-            <p className="text-xs text-muted-foreground mt-1">
-              {blob
-                ? `${mm}:${ss} captured: we'll turn this into your deal brief.`
-                : 'Tap the mic and speak your post-call thoughts freely.'}
-            </p>
-          </div>
-        )}
-      </div>
 
-      {!isRecording && blob && (
-        <div className="flex items-center gap-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-4 py-2">
-          <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-          <span className="text-sm text-emerald-400 font-medium">Voice memo ready · {mm}:{ss}</span>
-        </div>
+          {/* Audio Player Preview */}
+          <div className="rounded-xl border border-border/80 bg-card p-3 space-y-1.5">
+            <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
+              <span className="font-medium flex items-center gap-1.5">
+                <Volume2 className="h-3.5 w-3.5 text-conviction-400" />
+                Listen to your recording
+              </span>
+              <span className="text-[10px] text-emerald-400 font-medium bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                Audio ready
+              </span>
+            </div>
+            <audio controls src={previewUrl} className="w-full h-10 rounded-lg" preload="metadata" />
+          </div>
+
+          {/* Obvious Primary Process CTA */}
+          {onProcess && (
+            <div className="space-y-2 pt-1">
+              <Button
+                variant="conviction"
+                size="lg"
+                onClick={onProcess}
+                disabled={!canSubmit || isProcessing}
+                className="w-full h-12 text-sm font-semibold shadow-glow-md flex items-center justify-center gap-2"
+              >
+                {isProcessing ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Generating deal brief…
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="h-4 w-4 text-conviction-300 animate-pulse" />
+                    Process Voice Memo &amp; Generate Deal Brief
+                    <ArrowRight className="h-4 w-4" />
+                  </>
+                )}
+              </Button>
+              {!companyName ? (
+                <p className="text-xs text-amber-400 text-center font-medium">
+                  ⚠️ Select a company above to process
+                </p>
+              ) : (
+                <p className="text-2xs text-muted-foreground text-center">
+                  Will generate deal brief for <span className="font-semibold text-foreground">{companyName}</span>
+                </p>
+              )}
+            </div>
+          )}
+        </motion.div>
       )}
     </div>
   )
@@ -219,9 +332,20 @@ function VoiceRecorder({ onRecordingComplete, onRecordingStart }: VoiceRecorderP
 interface AudioFileUploaderProps {
   file: File | null
   onFileSelect: (file: File | null) => void
+  onProcess?: () => void
+  canSubmit?: boolean
+  isProcessing?: boolean
+  companyName?: string
 }
 
-function AudioFileUploader({ file, onFileSelect }: AudioFileUploaderProps) {
+function AudioFileUploader({
+  file,
+  onFileSelect,
+  onProcess,
+  canSubmit = false,
+  isProcessing = false,
+  companyName,
+}: AudioFileUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [dragOver, setDragOver] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -305,15 +429,15 @@ function AudioFileUploader({ file, onFileSelect }: AudioFileUploaderProps) {
           </div>
         </button>
       ) : (
-        <div className="rounded-xl border border-border bg-card p-5 space-y-4">
+        <div className="rounded-xl border border-conviction-500/30 bg-conviction-500/5 p-5 space-y-4 shadow-md">
           <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10">
-              <FileAudio className="h-5 w-5 text-emerald-400" />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
+              <FileAudio className="h-5 w-5" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-foreground truncate">{file.name}</p>
+              <p className="text-sm font-semibold text-foreground truncate">{file.name}</p>
               <p className="text-xs text-muted-foreground mt-0.5">
-                {formatFileSize(file.size)} · ready to process
+                {formatFileSize(file.size)} · ready for AI analysis
               </p>
             </div>
             <button
@@ -322,7 +446,7 @@ function AudioFileUploader({ file, onFileSelect }: AudioFileUploaderProps) {
                 validateAndSet(null)
                 if (inputRef.current) inputRef.current.value = ''
               }}
-              className="text-muted-foreground hover:text-foreground transition-colors"
+              className="text-muted-foreground hover:text-foreground transition-colors p-1"
               aria-label="Remove file"
             >
               <X className="h-4 w-4" />
@@ -330,16 +454,64 @@ function AudioFileUploader({ file, onFileSelect }: AudioFileUploaderProps) {
           </div>
 
           {previewUrl && (
-            <audio controls src={previewUrl} className="w-full h-9" preload="metadata" />
+            <div className="rounded-xl border border-border/80 bg-card p-3 space-y-1.5">
+              <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
+                <span className="font-medium flex items-center gap-1.5">
+                  <Volume2 className="h-3.5 w-3.5 text-conviction-400" />
+                  Listen to uploaded recording
+                </span>
+                <span className="text-[10px] text-emerald-400 font-medium bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                  Audio ready
+                </span>
+              </div>
+              <audio controls src={previewUrl} className="w-full h-10 rounded-lg" preload="metadata" />
+            </div>
           )}
 
-          <button
-            type="button"
-            onClick={() => inputRef.current?.click()}
-            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Choose a different file
-          </button>
+          <div className="flex items-center justify-between pt-1">
+            <button
+              type="button"
+              onClick={() => inputRef.current?.click()}
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Choose a different file
+            </button>
+          </div>
+
+          {/* Obvious Primary Process CTA */}
+          {onProcess && (
+            <div className="space-y-2 pt-1">
+              <Button
+                variant="conviction"
+                size="lg"
+                onClick={onProcess}
+                disabled={!canSubmit || isProcessing}
+                className="w-full h-12 text-sm font-semibold shadow-glow-md flex items-center justify-center gap-2"
+              >
+                {isProcessing ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Processing meeting recording…
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="h-4 w-4 text-conviction-300 animate-pulse" />
+                    Process Recording &amp; Generate Deal Brief
+                    <ArrowRight className="h-4 w-4" />
+                  </>
+                )}
+              </Button>
+              {!companyName ? (
+                <p className="text-xs text-amber-400 text-center font-medium">
+                  ⚠️ Select a company above to process
+                </p>
+              ) : (
+                <p className="text-2xs text-muted-foreground text-center">
+                  Will generate deal brief for <span className="font-semibold text-foreground">{companyName}</span>
+                </p>
+              )}
+            </div>
+          )}
         </div>
       )}
 
@@ -769,6 +941,11 @@ export default function NewCallPage() {
                         whileHover={{ y: -1 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => {
+                          if (selectedMode === 'voice' && voiceReady && mode !== 'voice') {
+                            if (!window.confirm('Switching input methods will clear your recorded voice memo. Are you sure?')) {
+                              return
+                            }
+                          }
                           setSelectedMode(mode)
                           setVoiceReady(false)
                           audioBlobRef.current = null
@@ -818,6 +995,10 @@ export default function NewCallPage() {
                         audioBlobRef.current = { blob, mimeType }
                         setVoiceReady(true)
                       }}
+                      onProcess={handleProcess}
+                      canSubmit={canSubmit}
+                      isProcessing={isProcessing}
+                      companyName={selectedCompany?.name}
                     />
                   </div>
                 )}
@@ -854,7 +1035,14 @@ Examples:
                 {selectedMode === 'recording' && (
                   <div className="space-y-2">
                     <Label>Meeting recording</Label>
-                    <AudioFileUploader file={uploadedFile} onFileSelect={setUploadedFile} />
+                    <AudioFileUploader
+                      file={uploadedFile}
+                      onFileSelect={setUploadedFile}
+                      onProcess={handleProcess}
+                      canSubmit={canSubmit}
+                      isProcessing={isProcessing}
+                      companyName={selectedCompany?.name}
+                    />
                   </div>
                 )}
               </motion.div>
@@ -885,40 +1073,42 @@ Examples:
             )}
           </AnimatePresence>
 
-          {/* Process CTA */}
-          <FadeIn delay={0.2}>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-lg border border-border bg-card" data-tour="tour-log-call-flow">
-              <div className="flex items-center gap-3 flex-1 min-w-0">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-conviction-500/15 flex-shrink-0">
-                  <Sparkles className="h-4 w-4 text-conviction-400" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-foreground">Generate your deal brief</p>
-                  <p className="text-xs text-muted-foreground">
-                    Conviction surfaces strengths, concerns, thesis fit, follow-ups, and a draft email in under a minute.
-                  </p>
-                </div>
-              </div>
-              <Button
-                variant="conviction"
-                onClick={handleProcess}
-                disabled={!canSubmit}
-                className="w-full sm:w-auto sm:min-w-[140px]"
-              >
-                  {isProcessing ? (
-                  <div className="flex items-center gap-2">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Working on it…
+          {/* Process CTA (Only for text brain dump mode — voice and recording modes have inline CTAs) */}
+          {selectedMode === 'text' && (
+            <FadeIn delay={0.2}>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-lg border border-border bg-card" data-tour="tour-log-call-flow">
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-conviction-500/15 flex-shrink-0">
+                    <Sparkles className="h-4 w-4 text-conviction-400" />
                   </div>
-                ) : (
-                  <>
-                    Process
-                    <ArrowRight className="h-4 w-4" />
-                  </>
-                )}
-              </Button>
-            </div>
-          </FadeIn>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-foreground">Generate your deal brief</p>
+                    <p className="text-xs text-muted-foreground">
+                      Conviction surfaces strengths, concerns, thesis fit, follow-ups, and a draft email in under a minute.
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  variant="conviction"
+                  onClick={handleProcess}
+                  disabled={!canSubmit}
+                  className="w-full sm:w-auto sm:min-w-[140px]"
+                >
+                  {isProcessing ? (
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Working on it…
+                    </div>
+                  ) : (
+                    <>
+                      Process
+                      <ArrowRight className="h-4 w-4" />
+                    </>
+                  )}
+                </Button>
+              </div>
+            </FadeIn>
+          )}
         </div>
       </div>
     </>
