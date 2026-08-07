@@ -97,6 +97,10 @@ async def get_company_latest_decision(
         "confidence": decision.get("confidence"),
         "thesis_fit": decision.get("thesis_fit"),
         "rationale": decision.get("rationale"),
+        "deal_summary": decision.get("deal_summary"),
+        "business_overview": decision.get("business_overview"),
+        "founder_assessment": decision.get("founder_assessment"),
+        "founders": decision.get("founders", []),
         "created_at": decision.get("created_at"),
     }
 

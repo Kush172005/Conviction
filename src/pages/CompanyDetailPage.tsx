@@ -124,8 +124,25 @@ export default function CompanyDetailPage() {
   }, [companyId, isDemo])
 
   useEffect(() => {
-    loadData()
-  }, [loadData])
+    let isMounted = true
+    if (!companyId) return
+
+    async function run() {
+      try {
+        await loadData()
+      } catch {
+        // ignore async error on unmount
+      }
+    }
+
+    if (isMounted) {
+      run()
+    }
+
+    return () => {
+      isMounted = false
+    }
+  }, [companyId, loadData])
 
   if (loading) {
     return (
@@ -169,6 +186,24 @@ export default function CompanyDetailPage() {
   const recColor = latestDecision
     ? (RECOMMENDATION_COLORS[latestDecision.recommendation] || 'text-muted-foreground')
     : ''
+
+  const overviewText =
+    company?.description ||
+    latestDecision?.businessOverview ||
+    latestDecision?.dealSummary
+
+  const displayFounders =
+    company?.founders && company.founders.length > 0
+      ? company.founders
+      : latestDecision?.founders && latestDecision.founders.length > 0
+      ? latestDecision.founders
+      : []
+
+  const founderAssessment = latestDecision?.founderAssessment
+  const hasValidAssessment =
+    founderAssessment &&
+    !founderAssessment.toLowerCase().includes('not sufficiently captured') &&
+    !founderAssessment.toLowerCase().includes('unavailable')
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
@@ -305,9 +340,11 @@ export default function CompanyDetailPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               <FadeInItem>
                 <div className="rounded-lg border border-border bg-card p-5">
-                  <h3 className="text-sm font-semibold text-foreground mb-3">Business Overview</h3>
+                  <h3 className="text-sm font-semibold text-foreground mb-3">
+                    Business Overview
+                  </h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    {company.description || 'No description yet. Log a call to generate AI insights.'}
+                    {overviewText || 'No description yet. Log a call to generate AI insights.'}
                   </p>
                 </div>
               </FadeInItem>
@@ -315,9 +352,9 @@ export default function CompanyDetailPage() {
               <FadeInItem>
                 <div className="rounded-lg border border-border bg-card p-5">
                   <h3 className="text-sm font-semibold text-foreground mb-3">Founder Team</h3>
-                  {company.founders.length > 0 ? (
+                  {displayFounders.length > 0 ? (
                     <div className="space-y-3">
-                      {company.founders.map((founder) => (
+                      {displayFounders.map((founder) => (
                         <div key={founder.name} className="flex items-start gap-3">
                           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-conviction-500/15 text-conviction-300 text-xs font-semibold">
                             {founder.name[0]}
@@ -327,7 +364,9 @@ export default function CompanyDetailPage() {
                               <span className="text-sm font-medium text-foreground">
                                 {founder.name}
                               </span>
-                              <span className="text-xs text-muted-foreground">{founder.role}</span>
+                              <span className="text-xs text-muted-foreground">
+                                {founder.role}
+                              </span>
                             </div>
                             {founder.background && (
                               <p className="text-xs text-muted-foreground mt-0.5">
@@ -338,6 +377,10 @@ export default function CompanyDetailPage() {
                         </div>
                       ))}
                     </div>
+                  ) : hasValidAssessment ? (
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {founderAssessment}
+                    </p>
                   ) : (
                     <p className="text-sm text-muted-foreground">
                       No founder info yet. Add founders or generate intelligence from a call.

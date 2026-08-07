@@ -119,6 +119,7 @@ async def _run_pipeline_and_persist(
         "concerns": intel["concerns"],
         "confidence": intel["confidence"],
         "deal_summary": intel.get("deal_summary"),
+        "founders": intel.get("founders", []),
         "founder_assessment": intel.get("founder_assessment"),
         "business_overview": intel.get("business_overview"),
         "market_assessment": intel.get("market_assessment"),
@@ -176,6 +177,35 @@ async def _run_pipeline_and_persist(
     # Mark call completed
     await call_repo.update_one(call_id, {"status": "completed"})
 
+    # Update company record with extracted business overview & founders
+    company_updates: dict = {}
+    extracted_overview = intel.get("business_overview") or intel.get("deal_summary")
+    if extracted_overview and "require additional documentation" not in extracted_overview.lower():
+        existing_comp = await company_repo.find_by_id_for_user(company_id, user_id)
+        if existing_comp:
+            curr_desc = existing_comp.get("description") or ""
+            if not curr_desc or "No description yet" in curr_desc or len(extracted_overview) > len(curr_desc):
+                company_updates["description"] = extracted_overview
+
+    extracted_founders = intel.get("founders") or []
+    if extracted_founders:
+        existing_comp = await company_repo.find_by_id_for_user(company_id, user_id)
+        if existing_comp:
+            existing_founders = existing_comp.get("founders") or []
+            existing_names = {f.get("name", "").strip().lower() for f in existing_founders if isinstance(f, dict) and f.get("name")}
+            merged_founders = list(existing_founders)
+            for ef in extracted_founders:
+                if isinstance(ef, dict) and ef.get("name"):
+                    ef_name = str(ef["name"]).strip()
+                    if ef_name.lower() not in existing_names:
+                        merged_founders.append(ef)
+                        existing_names.add(ef_name.lower())
+            company_updates["founders"] = merged_founders
+
+    if company_updates:
+        company_updates["updated_at"] = now
+        await company_repo.update_one(company_id, company_updates)
+
     # Update company last_interaction
     await company_repo.increment_call_count(company_id)
 
@@ -210,6 +240,7 @@ async def _build_intelligence_response(
         confidence=int(decision.get("confidence", 45)),
         rationale=decision.get("rationale", ""),
         deal_summary=decision.get("deal_summary"),
+        founders=decision.get("founders", []),
         founder_assessment=decision.get("founder_assessment"),
         business_overview=decision.get("business_overview"),
         market_assessment=decision.get("market_assessment"),

@@ -49,6 +49,7 @@ class CallIntelligenceResponse(BaseModel):
     confidence: int
     rationale: str
     deal_summary: Optional[str] = None
+    founders: List[Dict[str, Any]] = []
     founder_assessment: Optional[str] = None
     business_overview: Optional[str] = None
     market_assessment: Optional[str] = None

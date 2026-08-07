@@ -32,6 +32,10 @@ export interface LatestDecision {
   confidence: number
   thesisFit: string
   rationale: string
+  dealSummary?: string
+  businessOverview?: string
+  founderAssessment?: string
+  founders?: Founder[]
   createdAt: string
 }
 
@@ -76,6 +80,10 @@ export const companiesApi = {
       confidence: raw.confidence as number,
       thesisFit: raw.thesis_fit as string,
       rationale: raw.rationale as string,
+      dealSummary: raw.deal_summary as string | undefined,
+      businessOverview: raw.business_overview as string | undefined,
+      founderAssessment: raw.founder_assessment as string | undefined,
+      founders: (raw.founders as Founder[]) || [],
       createdAt: raw.created_at as string,
     }
   },

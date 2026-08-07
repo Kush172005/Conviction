@@ -12,11 +12,13 @@ Your task: Transform these messy notes into world-class, IC-ready structured dea
 
 Critical rules:
 1. ONLY extract facts explicitly stated or clearly implied. NEVER invent data.
-2. When information is missing, use professional language: "Not discussed", "Unclear from notes", etc.
-3. Be specific — cite exact numbers, quotes, and details from the notes.
-4. Write as if presenting at a demanding Investment Committee meeting.
-5. The draft email must be personalized using specific details from the call.
-6. Return ONLY valid JSON. No markdown fences, no commentary, no preamble.\
+2. If any person names are mentioned in connection with the startup (e.g. "Rakesh Singh told me...", "Spoke with founder Priya", "Met with CEO Alex"), ALWAYS extract them into the "founders" array. Infer role ("Founder", "Co-Founder", "CEO", "CTO", etc.) if not explicitly stated.
+3. Provide a clear, informative 2-3 sentence "business_overview" describing what the company builds, its value prop, and target market based on the notes.
+4. When information is missing, use professional language: "Not discussed", "Unclear from notes", etc.
+5. Be specific — cite exact numbers, quotes, and details from the notes.
+6. Write as if presenting at a demanding Investment Committee meeting.
+7. The draft email must be personalized using specific details from the call.
+8. Return ONLY valid JSON. No markdown fences, no commentary, no preamble.\
 """
 
 
@@ -52,6 +54,13 @@ Extract structured deal intelligence from these notes. Return ONLY this JSON obj
   "confidence": <integer 0-100, your confidence given available evidence>,
   "rationale": "<2-3 sentences. Specific, evidence-backed rationale. Cite exactly what in the notes drives this.>",
   "deal_summary": "<3-4 sentence executive overview: what they build, who they serve, stage, single best traction signal, single biggest risk.>",
+  "founders": [
+    {{
+      "name": "<Founder or key team member name, e.g. Rakesh Singh>",
+      "role": "<Role/title if mentioned or inferred, e.g. Founder & CEO, CTO, Head of Product. Default to 'Founder' if unspecified>",
+      "background": "<Background, domain experience or key quotes/context from notes, or null>"
+    }}
+  ],
   "founder_assessment": "<Founder credentials, domain expertise, execution signals, interpersonal dynamic if observed. If limited info in notes, state that explicitly.>",
   "business_overview": "<Product description, business model, pricing model, customer profile, traction metrics. Use exact numbers from notes where available.>",
   "market_assessment": "<Market size, growth dynamics, timing, regulatory tailwinds/headwinds. Evidence-backed. Cite sources in notes.>",

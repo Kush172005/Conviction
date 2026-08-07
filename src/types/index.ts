@@ -95,6 +95,7 @@ export interface Decision {
   concerns: string[]
   confidence: number
   dealSummary?: string
+  founders?: Founder[]
   founderAssessment?: string
   marketAssessment?: string
   businessOverview?: string
@@ -166,6 +167,7 @@ export interface CallIntelligenceData {
   confidence: number
   rationale: string
   dealSummary?: string
+  founders?: Founder[]
   founderAssessment?: string
   businessOverview?: string
   marketAssessment?: string

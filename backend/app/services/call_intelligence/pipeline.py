@@ -123,6 +123,24 @@ def _normalize(raw: Dict[str, Any], company_name: str) -> Dict[str, Any]:
     except (TypeError, ValueError):
         confidence = 45
 
+    # Founders parsing
+    raw_founders = raw.get("founders") or []
+    founders: List[Dict[str, Any]] = []
+    if isinstance(raw_founders, list):
+        for f in raw_founders:
+            if not isinstance(f, dict):
+                continue
+            name = str(f.get("name") or "").strip()
+            if not name:
+                continue
+            role = str(f.get("role") or "").strip() or "Founder"
+            background = str(f.get("background") or "").strip() if f.get("background") else None
+            founders.append({
+                "name": name,
+                "role": role,
+                "background": background,
+            })
+
     # Follow-up actions — list of {action, priority, due_in_days}
     raw_actions = raw.get("follow_up_actions") or []
     follow_up_actions: List[Dict[str, Any]] = []
@@ -171,6 +189,7 @@ def _normalize(raw: Dict[str, Any], company_name: str) -> Dict[str, Any]:
             raw, "deal_summary",
             f"Call notes captured for {company_name}. Process again for complete analysis."
         ),
+        "founders": founders,
         "founder_assessment": _str(
             raw, "founder_assessment",
             "Founder details not sufficiently captured in notes for a full assessment."
@@ -238,6 +257,7 @@ def _heuristic_result(
             "Connect an AI provider for richer analysis."
         ),
         "deal_summary": f"Call notes captured for {company_name}. AI providers unavailable — connect Gemini or HuggingFace for full extraction.",
+        "founders": [],
         "founder_assessment": "AI analysis unavailable — add provider keys for founder assessment.",
         "business_overview": f"{company_name} opportunity identified from call. Full business profile pending AI analysis.",
         "market_assessment": "Market analysis unavailable without AI providers.",

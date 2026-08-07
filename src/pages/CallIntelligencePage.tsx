@@ -182,6 +182,7 @@ export default function CallIntelligencePage() {
   const [showTranscript, setShowTranscript] = useState(false)
 
   const loadIntelligence = useCallback(async () => {
+    if (!callId) return
     setLoading(true)
     setError(null)
 
@@ -250,7 +251,6 @@ export default function CallIntelligencePage() {
       }
 
       // ── Fetch from API ───────────────────────────────────────────────────
-      if (!callId) throw new Error('No call ID in URL')
       const data = await callsApi.getIntelligence(callId)
       setIntel(data)
     } catch (err: unknown) {
@@ -263,11 +263,28 @@ export default function CallIntelligencePage() {
     } finally {
       setLoading(false)
     }
-  }, [callId, isDemo, location.state])
+  }, [callId, isDemo])
 
   useEffect(() => {
-    loadIntelligence()
-  }, [loadIntelligence])
+    let isMounted = true
+
+    async function run() {
+      if (!callId) return
+      try {
+        await loadIntelligence()
+      } catch {
+        // ignore unhandled async error on unmount
+      }
+    }
+
+    if (isMounted) {
+      run()
+    }
+
+    return () => {
+      isMounted = false
+    }
+  }, [callId, loadIntelligence])
 
   function copyEmail() {
     if (intel?.draftEmail) {
@@ -353,6 +370,26 @@ export default function CallIntelligencePage() {
 
         {/* Founder Assessment */}
         <IntelCard title="Founder Assessment" icon={User} delay={0.12}>
+          {intel.founders && intel.founders.length > 0 && (
+            <div className="mb-4 space-y-2.5 pb-3 border-b border-border/50">
+              {intel.founders.map((founder) => (
+                <div key={founder.name} className="flex items-start gap-3">
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-conviction-500/15 text-conviction-300 text-xs font-semibold">
+                    {founder.name[0]}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-foreground">{founder.name}</span>
+                      <span className="text-xs text-muted-foreground">{founder.role}</span>
+                    </div>
+                    {founder.background && (
+                      <p className="text-xs text-muted-foreground mt-0.5">{founder.background}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
           <p className="text-sm text-muted-foreground leading-relaxed">{intel.founderAssessment}</p>
         </IntelCard>
 

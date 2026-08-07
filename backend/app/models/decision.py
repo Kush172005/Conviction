@@ -28,6 +28,7 @@ class DecisionDocument(BaseModel):
     confidence: int  # 0–100
 
     deal_summary: Optional[str] = None
+    founders: List[dict] = []
     founder_assessment: Optional[str] = None
     business_overview: Optional[str] = None
     market_assessment: Optional[str] = None
