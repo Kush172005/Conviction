@@ -3,7 +3,6 @@ from typing import Any, Dict, List, Optional
 from pydantic import BaseModel
 from app.models.decision import Recommendation
 
-
 class DecisionResponse(BaseModel):
     id: str
     call_id: str

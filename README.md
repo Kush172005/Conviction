@@ -70,7 +70,7 @@ To run the live AI pipeline against real data, see [Local setup](#local-setup) b
 ## Architecture
 
 <p align="center">
-  <img src="./docs/architecture.svg" alt="Conviction — system architecture" width="100%">
+  <img src="./docs/architecture.png" alt="Conviction — system architecture" width="100%">
 </p>
 
 Five layers, each independently deployable and independently degradable:

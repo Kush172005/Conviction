@@ -387,6 +387,6 @@
   <!-- ─────────────────────────────────────────────────── -->
   <!-- FOOTER                                             -->
   <!-- ─────────────────────────────────────────────────── -->
-  <text x="700" y="886" text-anchor="middle" font-size="9" fill="#CBD5E1">Conviction · Deal Intelligence & Memory Platform · React + FastAPI + MongoDB</text>
+  <text x="700" y="886" text-anchor="middle" font-size="9" fill="#CBD5E1">Conviction · Deal Intelligence &amp; Memory Platform · React + FastAPI + MongoDB</text>
 
 </svg>
