@@ -46,6 +46,8 @@ class CompanyResponse(BaseModel):
     total_funding: Optional[str] = None
     enrichment_status: EnrichmentStatus
     call_count: int
+    latest_recommendation: Optional[str] = None
+    latest_confidence: Optional[int] = None
     last_interaction_at: Optional[datetime] = None
     created_at: datetime
     updated_at: datetime

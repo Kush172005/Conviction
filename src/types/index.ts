@@ -60,6 +60,8 @@ export interface Company {
   enrichmentStatus: 'pending' | 'completed' | 'failed' | 'not_started'
   lastInteractionAt?: string
   callCount: number
+  latestRecommendation?: Recommendation | string
+  latestConfidence?: number
   createdAt: string
   updatedAt: string
 }

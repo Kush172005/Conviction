@@ -74,6 +74,103 @@ const ACTIVITY_ICONS: Record<string, React.ElementType> = {
   company: Building2,
 }
 
+const RECOMMENDATION_STYLES: Record<string, { label: string; colorClass: string }> = {
+  strong_invest: { label: 'Strong Invest', colorClass: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' },
+  invest: { label: 'Invest', colorClass: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' },
+  pass: { label: 'Pass', colorClass: 'bg-red-500/15 text-red-400 border-red-500/30' },
+  monitor: { label: 'Monitor', colorClass: 'bg-amber-500/15 text-amber-400 border-amber-500/30' },
+  need_more_info: { label: 'Need Info', colorClass: 'bg-blue-500/15 text-blue-400 border-blue-500/30' },
+}
+
+function PipelineCompanyItem({ company }: { company: Company }) {
+  const navigate = useNavigate()
+  const recStyle = company.latestRecommendation
+    ? RECOMMENDATION_STYLES[company.latestRecommendation]
+    : null
+
+  return (
+    <div
+      onClick={() => navigate(`/companies/${company.id}`)}
+      className="group p-4 hover:bg-secondary/30 transition-all duration-200 cursor-pointer space-y-2.5 border-b border-border/60 last:border-b-0"
+    >
+      {/* Top Header */}
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-sm font-semibold text-foreground group-hover:text-conviction-300 transition-colors">
+              {company.name}
+            </span>
+            {company.stage && (
+              <span className="text-2xs font-medium px-2 py-0.5 rounded-full bg-secondary text-muted-foreground capitalize">
+                {company.stage}
+              </span>
+            )}
+            {company.industry && (
+              <span className="text-2xs text-muted-foreground truncate">
+                · {company.industry}
+              </span>
+            )}
+          </div>
+        </div>
+
+        <Badge className={`text-2xs ${STATUS_COLORS[company.status]}`}>
+          {company.status}
+        </Badge>
+      </div>
+
+      {/* Business Overview Snippet */}
+      {company.description && (
+        <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+          {company.description}
+        </p>
+      )}
+
+      {/* Founder Team Badges */}
+      {company.founders && company.founders.length > 0 && (
+        <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
+          {company.founders.slice(0, 3).map((f) => (
+            <span
+              key={f.name}
+              className="inline-flex items-center gap-1 rounded-md bg-secondary/80 px-2 py-0.5 text-2xs font-medium text-foreground border border-border/40"
+            >
+              <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-conviction-500/20 text-conviction-300 text-[9px] font-bold">
+                {f.name[0]}
+              </span>
+              <span>{f.name}</span>
+              {f.role && <span className="text-muted-foreground text-[10px]">({f.role})</span>}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* Bottom AI Signal & Metadata */}
+      <div className="flex items-center justify-between pt-1 text-2xs text-muted-foreground border-t border-border/40">
+        <div className="flex items-center gap-3">
+          {recStyle ? (
+            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-2xs font-medium border ${recStyle.colorClass}`}>
+              <Sparkles className="h-3 w-3" />
+              {recStyle.label}
+              {company.latestConfidence && ` (${company.latestConfidence}%)`}
+            </span>
+          ) : (
+            <span className="flex items-center gap-1">
+              <PhoneCall className="h-3 w-3 text-muted-foreground" />
+              {company.callCount} call{company.callCount !== 1 ? 's' : ''}
+            </span>
+          )}
+          {company.lastInteractionAt && (
+            <span>{formatRelativeTime(company.lastInteractionAt)}</span>
+          )}
+        </div>
+
+        <span className="text-conviction-400 group-hover:text-conviction-300 flex items-center gap-0.5 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+          View brief <ArrowRight className="h-3 w-3" />
+        </span>
+      </div>
+    </div>
+  )
+}
+
 // ─── Animated KPI card with GSAP counter ─────────────────────────────────────
 
 function AnimatedKPICard({
@@ -349,24 +446,9 @@ function LiveDashboard({
                   </Button>
                 </div>
               ) : (
-                <div className="divide-y divide-border">
+                <div>
                   {activeCompanies.map((company) => (
-                    <div
-                      key={company.id}
-                      className="flex items-center justify-between px-5 py-3.5 hover:bg-secondary/30 transition-colors cursor-pointer"
-                      onClick={() => navigate(`/companies/${company.id}`)}
-                    >
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium text-foreground truncate">{company.name}</p>
-                        <p className="text-xs text-muted-foreground truncate">
-                          {company.industry || 'No industry set'}
-                          {company.lastInteractionAt && ` · ${formatRelativeTime(company.lastInteractionAt)}`}
-                        </p>
-                      </div>
-                      <Badge className={`text-2xs ${STATUS_COLORS[company.status]}`}>
-                        {company.status}
-                      </Badge>
-                    </div>
+                    <PipelineCompanyItem key={company.id} company={company} />
                   ))}
                 </div>
               )}
@@ -566,23 +648,11 @@ export default function DashboardPage() {
                   <ArrowRight className="h-3 w-3" />
                 </Button>
               </div>
-              <div className="divide-y divide-border">
+              <div>
                 {MOCK_COMPANIES.filter((c) => c.status === 'active' || c.status === 'tracking')
                   .slice(0, 4)
                   .map((company) => (
-                    <div
-                      key={company.id}
-                      className="flex items-center justify-between px-5 py-3.5 hover:bg-secondary/30 transition-colors cursor-pointer"
-                      onClick={() => navigate(`/companies/${company.id}`)}
-                    >
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium text-foreground truncate">{company.name}</p>
-                        <p className="text-xs text-muted-foreground truncate">{company.industry}</p>
-                      </div>
-                      <Badge className={`text-2xs ${STATUS_COLORS[company.status]}`}>
-                        {company.status}
-                      </Badge>
-                    </div>
+                    <PipelineCompanyItem key={company.id} company={company} />
                   ))}
               </div>
             </div>

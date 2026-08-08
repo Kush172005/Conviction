@@ -202,6 +202,11 @@ async def _run_pipeline_and_persist(
                         existing_names.add(ef_name.lower())
             company_updates["founders"] = merged_founders
 
+    if intel.get("recommendation"):
+        company_updates["latest_recommendation"] = intel.get("recommendation")
+    if intel.get("confidence") is not None:
+        company_updates["latest_confidence"] = int(intel.get("confidence"))
+
     if company_updates:
         company_updates["updated_at"] = now
         await company_repo.update_one(company_id, company_updates)

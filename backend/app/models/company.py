@@ -54,6 +54,8 @@ class CompanyDocument(BaseModel):
     embedding_model: Optional[str] = None
 
     call_count: int = 0
+    latest_recommendation: Optional[str] = None
+    latest_confidence: Optional[int] = None
     last_interaction_at: Optional[datetime] = None
 
     created_at: datetime = Field(default_factory=datetime.utcnow)

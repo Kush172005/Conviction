@@ -11,6 +11,7 @@ import {
   AlertCircle,
   Loader2,
   RefreshCw,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,10 +42,22 @@ const ALL_STATUSES: CompanyStatus[] = [
   "archived",
 ];
 
+const RECOMMENDATION_STYLES: Record<string, { label: string; colorClass: string }> = {
+  strong_invest: { label: 'Strong Invest', colorClass: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' },
+  invest: { label: 'Invest', colorClass: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' },
+  pass: { label: 'Pass', colorClass: 'bg-red-500/15 text-red-400 border-red-500/30' },
+  monitor: { label: 'Monitor', colorClass: 'bg-amber-500/15 text-amber-400 border-amber-500/30' },
+  need_more_info: { label: 'Need Info', colorClass: 'bg-blue-500/15 text-blue-400 border-blue-500/30' },
+};
+
 // ─── Company Card ─────────────────────────────────────────────────────────────
 
 function CompanyCard({ company }: { company: Company }) {
   const navigate = useNavigate();
+  const recStyle = company.latestRecommendation
+    ? RECOMMENDATION_STYLES[company.latestRecommendation]
+    : null;
+
   return (
     <motion.div
       layout
@@ -105,11 +118,23 @@ function CompanyCard({ company }: { company: Company }) {
                 <span className="text-xs font-medium text-foreground">
                   {founder.name}
                 </span>
-                <span className="text-2xs text-muted-foreground">
-                  {founder.role}
-                </span>
+                {founder.role && (
+                  <span className="text-2xs text-muted-foreground">
+                    {founder.role}
+                  </span>
+                )}
               </div>
             ))}
+          </div>
+        )}
+
+        {recStyle && (
+          <div className="mb-3">
+            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-2xs font-medium border ${recStyle.colorClass}`}>
+              <Sparkles className="h-3 w-3" />
+              AI Recommendation: {recStyle.label}
+              {company.latestConfidence && ` (${company.latestConfidence}%)`}
+            </span>
           </div>
         )}
 

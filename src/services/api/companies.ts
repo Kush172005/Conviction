@@ -19,6 +19,8 @@ export function mapCompany(raw: Record<string, unknown>): Company {
     totalFunding: raw.total_funding as string | undefined,
     enrichmentStatus: (raw.enrichment_status as Company['enrichmentStatus']) || 'not_started',
     callCount: (raw.call_count as number) ?? 0,
+    latestRecommendation: raw.latest_recommendation as string | undefined,
+    latestConfidence: raw.latest_confidence as number | undefined,
     lastInteractionAt: raw.last_interaction_at as string | undefined,
     createdAt: raw.created_at as string,
     updatedAt: raw.updated_at as string,
