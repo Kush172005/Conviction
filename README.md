@@ -102,7 +102,7 @@ The deliberate choice was multi-provider with layered fallbacks, not a single-ve
 | Website crawl | Jina Reader (free) | httpx + BeautifulSoup | Firecrawl (paid) |
 | Web search | Tavily (3 queries max) | — | Skipped, marked partial |
 
-**Why this matters for a VC tool:** investors won't tolerate a product that fails when an AI provider has an outage. Deal memory is only useful if it's always there. So we built for the case where Gemini is down, Hugging Face is rate-limited, and Tavily is slow — and the product still ships a useful brief.
+**Why this matters for a VC tool:** investors won't tolerate a product that fails when an AI provider has an outage. Deal memory is only useful if it's always there. So I built for the case where Gemini is down, Hugging Face is rate-limited, and Tavily is slow — and the product still ships a useful brief.
 
 ---
 
@@ -320,7 +320,7 @@ python -m app.db_seed
 4. Runtime: Python 3.12 (`backend/runtime.txt` is already set)
 5. Add all backend env vars in the Render dashboard
 
-> **Note:** The hosted API runs on Render's free tier and naps when idle. The app shows lighthearted "our server is waking up" messaging on slow loads — not an AI timeout.
+> **Note:** The hosted API runs on Render's free tier and naps when idle. The app shows lighthearted "the server is waking up" messaging on slow loads — not an AI timeout.
 
 **Database → MongoDB Atlas**
 - Free M0 tier works for development and demos
@@ -330,21 +330,21 @@ python -m app.db_seed
 
 ## Design decisions and honest reflections
 
-The case study asked what we tried that didn't work and what we'd do differently. Here it is.
+When building this project, I made several deliberate design decisions and encountered trade-offs along the way. Here is a breakdown of what I tried that didn't work and what I'd build differently.
 
-**What we tried that didn't work:**
+**What I tried that didn't work:**
 
-- **Single "do everything" prompt for call intelligence.** The first version sent one prompt to Gemini and expected the full deal brief back as JSON. It worked 7 times in 8 — not good enough for something that handles decisions worth millions. We moved to a strict JSON schema with a retry loop on parse failure and separate validation. First-pass validity is now >99%.
+- **Single "do everything" prompt for call intelligence.** The first version sent one prompt to Gemini and expected the full deal brief back as JSON. It worked 7 times in 8 — not good enough for something that handles decisions worth millions. I moved to a strict JSON schema with a retry loop on parse failure and separate validation. First-pass validity is now >99%.
 
-- **GPT-4 as the primary model.** The initial prototype was OpenAI-first. The cost profile for startup intelligence reports — which chain 4–6 LLM calls — was unsustainable for a free-tier demo. We moved to Gemini primary (better structured-output compliance, grounding API is uniquely useful for research) with HF open-source as the fallback.
+- **GPT-4 as the primary model.** The initial prototype was OpenAI-first. The cost profile for startup intelligence reports — which chain 4–6 LLM calls — was unsustainable for a free-tier demo. I moved to Gemini primary (better structured-output compliance, grounding API is uniquely useful for research) with HF open-source as the fallback.
 
-- **Server-sent events for startup intelligence progress.** We started with SSE for real-time pipeline progress. The reconnect logic on mobile Safari was fragile, and the UX improvement over 1.5s polling was marginal. We reverted to polling — boring, but reliable on every client including iOS browsers.
+- **Server-sent events for startup intelligence progress.** I started with SSE for real-time pipeline progress. The reconnect logic on mobile Safari was fragile, and the UX improvement over 1.5s polling was marginal. I reverted to polling — boring, but reliable on every client including iOS browsers.
 
-- **`filter: blur()` for hero glow effects.** The landing page hero used Tailwind blur utilities. They render as solid rectangles in Safari (known WebKit bug). We replaced with `radial-gradient` backgrounds — identical visual result, no filter cost, cross-browser.
+- **`filter: blur()` for hero glow effects.** The landing page hero used Tailwind blur utilities. They render as solid rectangles in Safari (known WebKit bug). I replaced with `radial-gradient` backgrounds — identical visual result, no filter cost, cross-browser.
 
-- **pgvector for memory recall.** We built a Postgres + pgvector branch for semantic memory search. We pulled it out for v1 — the chronological timeline answers ~80% of the real user question ("what did we decide last time?") with zero infrastructure cost. Vector recall is on the next-sprint list.
+- **pgvector for memory recall.** I built a Postgres + pgvector branch for semantic memory search. I pulled it out for v1 — the chronological timeline answers ~80% of the real user question ("what did we decide last time?") with zero infrastructure cost. Vector recall is on the next-sprint list.
 
-**What we'd build with more time:**
+**What I'd build with more time:**
 
 1. **Background worker queue.** Startup intelligence reports can run for 60–120 seconds. FastAPI background tasks work, but they hold a server process. Celery or RQ would let the HTTP tier scale independently from the AI processing tier.
 
@@ -360,11 +360,11 @@ The case study asked what we tried that didn't work and what we'd do differently
 
 ## A note on approach
 
-We built this project to address a specific, real-world challenge: the 72-hour window between a founder call and the moment the reasoning behind an investment decision becomes permanently inaccessible. That problem has a clear shape, a clear user (any investor who's ever walked into an IC meeting underprepared), and a clear success condition.
+I built this project to address a specific, real-world challenge: the 72-hour window between a founder call and the moment the reasoning behind an investment decision becomes permanently inaccessible. That problem has a clear shape, a clear user (any investor who's ever walked into an IC meeting underprepared), and a clear success condition.
 
-We optimized for the moment of real use: three-tier AI fallbacks so the product works when a provider is down, a complete demo that runs without a backend so anyone can evaluate it immediately, a mobile-first layout because investors are often on their phones between meetings.
+I optimized for the moment of real use: three-tier AI fallbacks so the product works when a provider is down, a complete demo that runs without a backend so anyone can evaluate it immediately, a mobile-first layout because investors are often on their phones between meetings.
 
-We left scope on the table deliberately. Vector recall, Slack ingestion, multi-tenant collaboration — the schema hooks are there. Building them now would have produced a product that does ten things partially. We chose to do six things properly.
+I left scope on the table deliberately. Vector recall, Slack ingestion, multi-tenant collaboration — the schema hooks are there. Building them now would have produced a product that does ten things partially. I chose to do six things properly.
 
 ---
 
