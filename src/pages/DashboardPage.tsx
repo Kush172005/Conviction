@@ -97,7 +97,7 @@ function PipelineCompanyItem({ company }: { company: Company }) {
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm font-semibold text-foreground group-hover:text-conviction-300 transition-colors">
+            <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
               {company.name}
             </span>
             {company.stage && (
@@ -133,7 +133,7 @@ function PipelineCompanyItem({ company }: { company: Company }) {
               key={f.name}
               className="inline-flex items-center gap-1 rounded-md bg-secondary/80 px-2 py-0.5 text-2xs font-medium text-foreground border border-border/40"
             >
-              <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-conviction-500/20 text-conviction-300 text-[9px] font-bold">
+              <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-muted text-muted-foreground text-[9px] font-bold">
                 {f.name[0]}
               </span>
               <span>{f.name}</span>
@@ -163,7 +163,7 @@ function PipelineCompanyItem({ company }: { company: Company }) {
           )}
         </div>
 
-        <span className="text-conviction-400 group-hover:text-conviction-300 flex items-center gap-0.5 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+        <span className="text-primary group-hover:text-primary flex items-center gap-0.5 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
           View brief <ArrowRight className="h-3 w-3" />
         </span>
       </div>
@@ -213,15 +213,15 @@ function AnimatedKPICard({
       whileHover={{ y: -3 }}
       transition={{ type: 'spring', stiffness: 400, damping: 22 }}
       onClick={() => navigate(href)}
-      className="group relative rounded-lg border border-border bg-card p-5 cursor-pointer overflow-hidden transition-all duration-200 hover:border-border/80 hover:shadow-card-hover"
+      className="group relative rounded-xl border border-border bg-card p-5 cursor-pointer overflow-hidden transition-all duration-200 hover:border-primary/25 hover:shadow-card-hover"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-conviction-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute inset-0 bg-hover/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-3">
           <Icon className="h-4 w-4 text-muted-foreground" />
           <ArrowRight className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
         </div>
-        <div ref={numRef} className="text-3xl font-semibold text-foreground tabular-nums">
+        <div ref={numRef} className="text-3xl font-semibold font-mono text-foreground tabular-nums">
           {value}
         </div>
         <div className="text-xs text-muted-foreground mt-1">{label}</div>
@@ -254,7 +254,7 @@ function NewUserDashboard({ name }: { name: string }) {
           const Icon = card.icon
           return (
             <FadeInItem key={card.label}>
-              <div className="rounded-lg border border-border bg-card p-5 opacity-40">
+              <div className="rounded-xl border border-border bg-card p-5 opacity-40">
                 <div className="flex items-center justify-between mb-3">
                   <Icon className="h-4 w-4 text-muted-foreground" />
                 </div>
@@ -268,10 +268,10 @@ function NewUserDashboard({ name }: { name: string }) {
 
       {/* Get started steps */}
       <FadeIn delay={0.2}>
-        <div className="rounded-xl border border-conviction-500/20 bg-conviction-500/5 p-6 mb-6">
+        <div className="rounded-xl border border-border bg-card p-6 mb-6">
           <div className="flex items-center gap-3 mb-5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-conviction-500/15">
-              <Sparkles className="h-4.5 w-4.5 text-conviction-400" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted">
+              <Sparkles className="h-4.5 w-4.5 text-primary" />
             </div>
             <div>
               <p className="text-sm font-semibold text-foreground">Start tracking your first deal</p>
@@ -306,15 +306,15 @@ function NewUserDashboard({ name }: { name: string }) {
             ].map((item) => (
               <div
                 key={item.step}
-                className="rounded-lg border border-border bg-card p-4 cursor-pointer hover:border-conviction-500/40 transition-colors"
+                className="rounded-lg border border-border bg-card p-4 cursor-pointer hover:border-primary/40 transition-colors"
                 onClick={() => navigate(item.href)}
               >
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-conviction-500/20 text-conviction-400 text-xs font-semibold mb-3">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-muted text-primary text-xs font-semibold mb-3">
                   {item.step}
                 </div>
                 <p className="text-sm font-medium text-foreground">{item.title}</p>
                 <p className="text-xs text-muted-foreground mt-1">{item.desc}</p>
-                <button className="mt-3 text-xs text-conviction-400 hover:text-conviction-300 flex items-center gap-1">
+                <button className="mt-3 text-xs text-primary hover:text-primary/80 flex items-center gap-1">
                   {item.cta} <ArrowRight className="h-3 w-3" />
                 </button>
               </div>
@@ -508,10 +508,10 @@ function LiveDashboard({
 
       {/* Log Call CTA */}
       <FadeIn delay={0.3}>
-        <div className="mt-6 rounded-lg border border-conviction-500/20 bg-conviction-500/5 p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div className="mt-6 rounded-lg border border-border bg-card p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <div className="flex items-center gap-3 flex-1 min-w-0">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-conviction-500/15 flex-shrink-0">
-              <TrendingUp className="h-4 w-4 text-conviction-400" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted flex-shrink-0">
+              <TrendingUp className="h-4 w-4 text-primary" />
             </div>
             <div className="min-w-0">
               <p className="text-sm font-medium text-foreground">Capture your next conversation</p>
@@ -615,7 +615,7 @@ export default function DashboardPage() {
                         <p className="text-sm font-medium text-foreground truncate">{activity.title}</p>
                         <p className="text-xs text-muted-foreground mt-0.5 truncate">{activity.description}</p>
                         {activity.companyName && (
-                          <span className="inline-flex items-center mt-1 text-2xs text-conviction-300 font-medium">
+                          <span className="inline-flex items-center mt-1 text-2xs text-primary font-medium">
                             {activity.companyName}
                           </span>
                         )}
@@ -698,10 +698,10 @@ export default function DashboardPage() {
       </div>
 
       <FadeIn delay={0.35}>
-        <div className="mt-6 rounded-lg border border-conviction-500/20 bg-conviction-500/5 p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div className="mt-6 rounded-lg border border-border bg-card p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <div className="flex items-center gap-3 flex-1 min-w-0">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-conviction-500/15 flex-shrink-0">
-              <TrendingUp className="h-4 w-4 text-conviction-400" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted flex-shrink-0">
+              <TrendingUp className="h-4 w-4 text-primary" />
             </div>
             <div className="min-w-0">
               <p className="text-sm font-medium text-foreground">Capture your next conversation</p>

@@ -337,8 +337,8 @@ export default function ProductTour() {
           >
             <div className="flex items-start justify-between gap-3 mb-2.5">
               <div className="flex items-center gap-2.5 min-w-0">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-conviction">
-                  <LogoMark className="h-4 w-4" />
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center">
+                  <LogoMark variant="tile" className="h-8 w-8" />
                 </div>
                 <div className="min-w-0">
                   <p className="text-2xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -370,7 +370,7 @@ export default function ProductTour() {
                     key={tip}
                     className="flex items-start gap-2 text-xs text-foreground/80"
                   >
-                    <Check className="h-3.5 w-3.5 text-conviction-400 shrink-0 mt-0.5" />
+                    <Check className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" />
                     {tip}
                   </li>
                 ))}
@@ -380,7 +380,7 @@ export default function ProductTour() {
             <div className="mt-3 mb-3">
               <div className="h-1 rounded-full bg-border overflow-hidden">
                 <motion.div
-                  className="h-full bg-conviction-500 rounded-full"
+                  className="h-full bg-primary rounded-full"
                   initial={false}
                   animate={{ width: `${progress}%` }}
                   transition={{ duration: 0.35, ease: "easeOut" }}

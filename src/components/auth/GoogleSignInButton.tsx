@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { useTheme } from '@/components/theme/ThemeProvider'
 import type { CredentialResponse } from '@react-oauth/google'
 
 declare global {
@@ -81,6 +82,7 @@ export default function GoogleSignInButton({
   const containerRef = useRef<HTMLDivElement>(null)
   const onSuccessRef = useRef(onSuccess)
   const onErrorRef = useRef(onError)
+  const { resolved } = useTheme()
 
   onSuccessRef.current = onSuccess
   onErrorRef.current = onError
@@ -96,7 +98,6 @@ export default function GoogleSignInButton({
         await loadGoogleScript()
         if (cancelled || !containerRef.current || !window.google?.accounts?.id) return
 
-        // Re-initialize if client ID changed (e.g. hot reload or wrong project cached)
         if (activeClientId !== clientId) {
           window.google.accounts.id.cancel()
           window.google.accounts.id.initialize({
@@ -114,18 +115,22 @@ export default function GoogleSignInButton({
           activeClientId = clientId
         }
 
-        if (containerRef.current.dataset.gsiRendered !== 'true') {
-          containerRef.current.innerHTML = ''
-          window.google.accounts.id.renderButton(containerRef.current, {
-            type: 'standard',
-            theme: 'filled_black',
-            size: 'large',
-            width: 336,
-            text: 'continue_with',
-            shape: 'rectangular',
-          })
-          containerRef.current.dataset.gsiRendered = 'true'
-        }
+        const host = containerRef.current
+        const measured = Math.floor(
+          (host.parentElement ?? host).getBoundingClientRect().width
+        )
+        host.innerHTML = ''
+        host.dataset.gsiRendered = 'false'
+        const width = Math.max(240, Math.min(400, measured || 336))
+        window.google.accounts.id.renderButton(host, {
+          type: 'standard',
+          theme: resolved === 'dark' ? 'filled_black' : 'outline',
+          size: 'large',
+          width,
+          text: 'continue_with',
+          shape: 'rectangular',
+        })
+        host.dataset.gsiRendered = 'true'
       } catch {
         onErrorRef.current?.()
       }
@@ -136,7 +141,7 @@ export default function GoogleSignInButton({
     return () => {
       cancelled = true
     }
-  }, [clientId])
+  }, [clientId, resolved])
 
   return (
     <div className="relative w-full">

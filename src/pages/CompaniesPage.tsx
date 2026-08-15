@@ -67,9 +67,9 @@ function CompanyCard({ company }: { company: Company }) {
       whileHover={{ y: -1 }}
       transition={{ duration: 0.2 }}
       onClick={() => navigate(`/companies/${company.id}`)}
-      className="group relative rounded-lg border border-border bg-card p-5 cursor-pointer overflow-hidden transition-all duration-200 hover:border-border/80 hover:shadow-card-hover"
+      className="group relative rounded-xl border border-border bg-card p-5 cursor-pointer overflow-hidden transition-all duration-200 hover:border-primary/25 hover:shadow-card-hover"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-conviction-500/4 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute inset-0 bg-hover/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       <div className="relative z-10">
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="min-w-0">
@@ -112,7 +112,7 @@ function CompanyCard({ company }: { company: Company }) {
                 key={founder.name}
                 className="flex items-center gap-1.5 rounded-full bg-secondary px-2.5 py-1"
               >
-                <div className="h-4 w-4 rounded-full bg-conviction-500/20 flex items-center justify-center text-2xs font-semibold text-conviction-300">
+                <div className="h-4 w-4 rounded-full bg-muted flex items-center justify-center text-2xs font-semibold text-muted-foreground">
                   {founder.name[0]}
                 </div>
                 <span className="text-xs font-medium text-foreground">

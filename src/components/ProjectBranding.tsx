@@ -30,9 +30,7 @@ export function ProjectPitchStrip({ className }: { className?: string }) {
 
         <div className="flex items-center justify-center gap-3">
           <div className="flex items-center gap-2 rounded-lg border border-border/60 bg-card/60 px-3.5 py-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-conviction">
-              <LogoMark className="h-4 w-4" />
-            </div>
+            <LogoMark variant="tile" className="h-7 w-7" />
             <span className="text-sm font-semibold text-foreground">Conviction</span>
           </div>
         </div>

@@ -42,8 +42,8 @@ export function DemoGateOverlay({
       animate={{ opacity: 1 }}
       className={`absolute inset-0 z-20 flex flex-col items-center justify-center gap-5 rounded-xl bg-background/80 backdrop-blur-sm p-8 text-center ${className}`}
     >
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-conviction-500/10 border border-conviction-500/20">
-        <Sparkles className="h-5 w-5 text-conviction-400" />
+      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted border border-border">
+        <Sparkles className="h-5 w-5 text-primary" />
       </div>
       <div className="max-w-xs">
         <p className="text-sm font-semibold text-foreground mb-1.5">{title}</p>
@@ -51,7 +51,7 @@ export function DemoGateOverlay({
       </div>
       <button
         onClick={goToLogin}
-        className="flex items-center gap-2 rounded-lg bg-conviction-500 hover:bg-conviction-600 text-white text-sm font-medium px-5 py-2.5 transition-colors"
+        className="flex items-center gap-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium px-5 py-2.5 transition-colors"
       >
         Set up my workspace
         <ArrowRight className="h-3.5 w-3.5" />

@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useForm } from 'react-hook-form'
-import { ArrowRight, Check, TrendingUp, Sparkles, Globe2, Cpu, Users } from 'lucide-react'
+import { ArrowRight, Check, Sparkles, Globe2, Cpu, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import LogoMark from '@/components/LogoMark'
+import ThemeToggle from '@/components/theme/ThemeToggle'
 import { cn } from '@/lib/utils'
 import { useAuthStore, useOnboardingStore } from '@/store'
 import { authApi } from '@/services/api/auth'
@@ -41,7 +43,7 @@ const THESIS_TEMPLATES: ThesisTemplate[] = [
     checkSize: '$1M-$5M',
     geos: ['US', 'Europe'],
     style: 'lead',
-    color: 'from-violet-500/20 to-purple-500/10 border-violet-500/30',
+    color: 'from-primary/15 to-primary/5 border-primary/30',
   },
   {
     id: 'ai-deeptech',
@@ -196,16 +198,19 @@ export default function OnboardingPage() {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-6 py-10 relative overflow-hidden">
-      <div className="absolute inset-0 dot-grid opacity-30 pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] rounded-full bg-conviction-500/6 blur-[120px] pointer-events-none" />
+      <div className="absolute inset-0 line-grid opacity-25 pointer-events-none" />
+      <div className="absolute inset-0 noise-overlay pointer-events-none" />
+
+      <ThemeToggle
+        compact
+        className="absolute top-5 right-5 z-20 rounded-lg border border-border/80 bg-card/80 backdrop-blur-sm hover:bg-card"
+      />
 
       <div className="relative z-10 w-full max-w-2xl">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-conviction mb-4">
-            <TrendingUp className="h-5 w-5 text-white" />
-          </div>
-          <h1 className="text-xl font-semibold text-foreground">
+        <div className="mb-8 flex flex-col items-center text-center">
+          <LogoMark variant="tile" className="h-10 w-10 mb-4" />
+          <h1 className="font-display text-2xl font-semibold text-foreground tracking-tight">
             Set up your workspace{user?.name ? `, ${user.name.split(' ')[0]}` : ''}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -223,9 +228,9 @@ export default function OnboardingPage() {
                     className={cn(
                       'h-5 w-5 rounded-full flex items-center justify-center text-2xs font-semibold transition-all',
                       i < currentStep
-                        ? 'bg-conviction-500 text-white'
+                        ? 'bg-primary text-primary-foreground'
                         : i === currentStep
-                        ? 'bg-conviction-500/20 border border-conviction-500 text-conviction-400'
+                        ? 'bg-primary/15 border border-primary text-primary'
                         : 'bg-border text-muted-foreground'
                     )}
                   >
@@ -279,8 +284,8 @@ export default function OnboardingPage() {
                           )}
                         >
                           {isSelected && (
-                            <div className="absolute top-3 right-3 flex h-5 w-5 items-center justify-center rounded-full bg-conviction-500">
-                              <Check className="h-3 w-3 text-white" />
+                            <div className="absolute top-3 right-3 flex h-5 w-5 items-center justify-center rounded-full bg-primary">
+                              <Check className="h-3 w-3 text-primary-foreground" />
                             </div>
                           )}
                           <div className="flex items-center gap-2.5 mb-2.5">
@@ -422,7 +427,7 @@ export default function OnboardingPage() {
                     </p>
                   </div>
                   <div className="flex justify-center">
-                    <div className="h-5 w-5 rounded-full border-2 border-muted-foreground/30 border-t-conviction-400 animate-spin" />
+                    <div className="h-5 w-5 rounded-full border-2 border-muted-foreground/30 border-t-primary animate-spin" />
                   </div>
                 </div>
               )}

@@ -58,16 +58,16 @@ export function getInitials(name: string): string {
 }
 
 export const SENTIMENT_COLORS = {
-  positive: 'text-emerald-400',
-  neutral: 'text-zinc-400',
-  negative: 'text-red-400',
-  mixed: 'text-amber-400',
+  positive: 'text-success',
+  neutral: 'text-muted-foreground',
+  negative: 'text-destructive',
+  mixed: 'text-warning',
 } as const
 
 export const STATUS_COLORS = {
-  active: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-  tracking: 'bg-conviction-500/10 text-conviction-300 border-conviction-500/20',
-  passed: 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20',
-  portfolio: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-  archived: 'bg-zinc-700/20 text-zinc-500 border-zinc-700/20',
+  active: 'bg-success/10 text-success border-success/20',
+  tracking: 'bg-active text-primary border-primary/20',
+  passed: 'bg-muted text-muted-foreground border-border',
+  portfolio: 'bg-info/10 text-info border-info/20',
+  archived: 'bg-muted text-muted-foreground border-border',
 } as const

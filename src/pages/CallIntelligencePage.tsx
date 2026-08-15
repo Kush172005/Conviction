@@ -324,7 +324,7 @@ export default function CallIntelligencePage() {
         <div className="flex flex-col sm:flex-row items-start sm:justify-between gap-3 mb-6">
           <div className="min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <Sparkles className="h-4 w-4 text-conviction-400 shrink-0" />
+              <Sparkles className="h-4 w-4 text-primary shrink-0" />
               <h1 className="text-xl font-semibold text-foreground truncate">Deal Intelligence</h1>
             </div>
             <p className="text-sm text-muted-foreground">
@@ -374,7 +374,7 @@ export default function CallIntelligencePage() {
             <div className="mb-4 space-y-2.5 pb-3 border-b border-border/50">
               {intel.founders.map((founder) => (
                 <div key={founder.name} className="flex items-start gap-3">
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-conviction-500/15 text-conviction-300 text-xs font-semibold">
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-foreground text-xs font-semibold">
                     {founder.name[0]}
                   </div>
                   <div>
@@ -460,7 +460,7 @@ export default function CallIntelligencePage() {
           title="Investment Thesis Fit"
           icon={Lightbulb}
           delay={0.23}
-          accent="border-conviction-500/20"
+          accent="border-border"
         >
           <p className="text-sm text-foreground leading-relaxed">{intel.thesisFit}</p>
         </IntelCard>

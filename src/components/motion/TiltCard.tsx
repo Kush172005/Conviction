@@ -7,7 +7,7 @@ interface TiltCardProps {
   intensity?: number
 }
 
-export default function TiltCard({ children, className = '', intensity = 10 }: TiltCardProps) {
+export default function TiltCard({ children, className = '', intensity = 5 }: TiltCardProps) {
   const ref = useRef<HTMLDivElement>(null)
   const mouseX = useMotionValue(0.5)
   const mouseY = useMotionValue(0.5)
@@ -46,7 +46,7 @@ export default function TiltCard({ children, className = '', intensity = 10 }: T
       style={{ rotateX, rotateY, transformPerspective: 900, transformStyle: 'preserve-3d' }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      whileHover={{ scale: 1.015, z: 6 }}
+      whileHover={{ scale: 1.008, z: 4 }}
       transition={{ scale: { type: 'spring', stiffness: 300, damping: 22 } }}
     >
       {children}

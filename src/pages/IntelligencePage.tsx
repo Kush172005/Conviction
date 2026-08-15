@@ -20,9 +20,9 @@ export default function IntelligencePage() {
 
       {/* Coming soon state */}
       <FadeIn delay={0.1}>
-        <div className="mb-8 rounded-xl border border-conviction-500/20 bg-conviction-500/5 p-8 text-center">
-          <div className="inline-flex h-14 w-14 items-center justify-center rounded-xl bg-conviction-500/15 mb-4">
-            <Sparkles className="h-7 w-7 text-conviction-400" />
+        <div className="mb-8 rounded-xl border border-border bg-card p-8 text-center">
+          <div className="inline-flex h-14 w-14 items-center justify-center rounded-xl bg-muted mb-4">
+            <Sparkles className="h-7 w-7 text-primary" />
           </div>
           <h2 className="text-lg font-semibold text-foreground mb-2">
             Portfolio Intelligence — Coming Next

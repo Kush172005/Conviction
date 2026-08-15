@@ -1,5 +1,5 @@
-import { useRef, Children } from 'react'
-import { motion, useAnimationFrame, useMotionValue } from 'framer-motion'
+import { Children } from 'react'
+import { cn } from '@/lib/utils'
 
 interface MarqueeProps {
   children: React.ReactNode
@@ -18,38 +18,37 @@ export default function Marquee({
   pauseOnHover = true,
   className = '',
 }: MarqueeProps) {
-  const innerRef = useRef<HTMLDivElement>(null)
-  const x = useMotionValue(0)
-  const currentX = useRef(0)
-  const paused = useRef(false)
-
-  useAnimationFrame((_, delta) => {
-    if (paused.current || !innerRef.current) return
-    const halfW = innerRef.current.scrollWidth / 2
-    if (halfW === 0) return
-    const step = (speed * delta) / 1000
-    currentX.current += direction === 'left' ? -step : step
-    if (currentX.current <= -halfW) currentX.current += halfW
-    if (currentX.current >= 0) currentX.current -= halfW
-    x.set(currentX.current)
-  })
-
   const childArray = Children.toArray(children)
+  const duration = Math.max(18, 1120 / Math.max(speed, 1))
 
   return (
     <div
-      className={`overflow-hidden ${className}`}
-      onMouseEnter={() => { if (pauseOnHover) paused.current = true }}
-      onMouseLeave={() => { if (pauseOnHover) paused.current = false }}
+      className={cn('relative overflow-hidden', className)}
+      style={{
+        maskImage:
+          'linear-gradient(to right, transparent, black 5%, black 95%, transparent)',
+        WebkitMaskImage:
+          'linear-gradient(to right, transparent, black 5%, black 95%, transparent)',
+      }}
     >
-      <motion.div
-        ref={innerRef}
-        className="flex will-change-transform"
-        style={{ x, gap: `${gap}px` }}
+      <div
+        className={cn(
+          'marquee-track',
+          pauseOnHover && 'marquee-pause-hover',
+          direction === 'right' && 'marquee-reverse'
+        )}
+        style={
+          {
+            '--marquee-duration': `${duration}s`,
+            '--marquee-gap': `${gap}px`,
+          } as React.CSSProperties
+        }
       >
-        {childArray}
-        {childArray}
-      </motion.div>
+        <div className="marquee-set">{childArray}</div>
+        <div className="marquee-set" aria-hidden="true">
+          {childArray}
+        </div>
+      </div>
     </div>
   )
 }

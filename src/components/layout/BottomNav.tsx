@@ -64,11 +64,11 @@ export default function BottomNav() {
                     className={cn(
                       "flex h-10 w-10 items-center justify-center rounded-full transition-all",
                       isActive
-                        ? "bg-gradient-conviction shadow-lg scale-105"
-                        : "bg-gradient-conviction shadow-md"
+                        ? "bg-primary text-primary-foreground shadow-sm scale-[1.02]"
+                        : "bg-primary/90 text-primary-foreground"
                     )}
                   >
-                    <Icon className="h-5 w-5 text-white" />
+                    <Icon className="h-5 w-5" />
                   </div>
                   <span
                     className={cn(

@@ -35,6 +35,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import LogoMark from "@/components/LogoMark";
+import ThemeToggle from "@/components/theme/ThemeToggle";
 import ScrollProgress from "@/components/motion/ScrollProgress";
 import TiltCard from "@/components/motion/TiltCard";
 import MagneticButton from "@/components/motion/MagneticButton";
@@ -58,10 +59,10 @@ const FEATURES = [
     description:
       "Hit record right after a founder call and speak freely. In under 60 seconds, your raw thoughts become a fully structured investment brief, with every signal that matters and none that doesn't.",
     tag: "Voice + Notes",
-    accent: "from-red-500/15 to-red-500/3 border-red-500/20",
-    iconBg: "bg-red-500/10 text-red-400",
-    tagColor: "bg-red-500/10 text-red-400 border-red-500/20",
-    glowColor: "shadow-[0_0_30px_hsl(0_72%_51%/0.08)]",
+    accent: "from-destructive/15 to-destructive/5 border-destructive/20",
+    iconBg: "bg-destructive/10 text-destructive",
+    tagColor: "bg-destructive/10 text-destructive border-destructive/20",
+    glowColor: "shadow-none",
   },
   {
     icon: Search,
@@ -69,10 +70,10 @@ const FEATURES = [
     description:
       "Enter any company URL. Conviction digs deep across the web and curates what matters for your thesis (founders, funding history, market position, and fit), surfaced in minutes, not hours.",
     tag: "Deep Research",
-    accent: "from-blue-500/15 to-blue-500/3 border-blue-500/20",
-    iconBg: "bg-blue-500/10 text-blue-400",
-    tagColor: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-    glowColor: "shadow-[0_0_30px_hsl(220_80%_60%/0.08)]",
+    accent: "from-info/15 to-info/5 border-info/20",
+    iconBg: "bg-info/10 text-info",
+    tagColor: "bg-info/10 text-info border-info/20",
+    glowColor: "shadow-none",
   },
   {
     icon: Target,
@@ -81,11 +82,11 @@ const FEATURES = [
       "Every company gets scored 0–100 against your fund's thesis (including sector, stage, geography, and business model alignment) with specific, written reasons behind every point.",
     tag: "Thesis Scoring",
     accent:
-      "from-conviction-500/15 to-conviction-500/3 border-conviction-500/20",
-    iconBg: "bg-conviction-500/10 text-conviction-400",
+      "from-sky-600/12 to-sky-600/3 border-sky-600/20",
+    iconBg: "bg-info/10 text-info",
     tagColor:
-      "bg-conviction-500/10 text-conviction-300 border-conviction-500/20",
-    glowColor: "shadow-[0_0_30px_hsl(248_92%_68%/0.1)]",
+      "bg-info/10 text-info border-info/20",
+    glowColor: "shadow-none",
   },
   {
     icon: Brain,
@@ -93,10 +94,10 @@ const FEATURES = [
     description:
       "A living intelligence timeline per company. See exactly how your conviction evolved from first call to term sheet. Every insight, concern, and milestone is permanently on record.",
     tag: "Memory Layer",
-    accent: "from-emerald-500/15 to-emerald-500/3 border-emerald-500/20",
-    iconBg: "bg-emerald-500/10 text-emerald-400",
-    tagColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-    glowColor: "shadow-[0_0_30px_hsl(160_84%_39%/0.08)]",
+    accent: "from-success/15 to-success/5 border-success/20",
+    iconBg: "bg-success/10 text-success",
+    tagColor: "bg-success/10 text-success border-success/20",
+    glowColor: "shadow-none",
   },
   {
     icon: FileText,
@@ -104,10 +105,10 @@ const FEATURES = [
     description:
       "From raw notes to a complete IC memo. Strengths, concerns, moat analysis, red flags, diligence questions, market sizing, and a clear recommendation are ready to share in minutes.",
     tag: "Auto Memos",
-    accent: "from-amber-500/15 to-amber-500/3 border-amber-500/20",
-    iconBg: "bg-amber-500/10 text-amber-400",
-    tagColor: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-    glowColor: "shadow-[0_0_30px_hsl(45_93%_47%/0.08)]",
+    accent: "from-warning/15 to-warning/5 border-warning/20",
+    iconBg: "bg-warning/10 text-warning",
+    tagColor: "bg-warning/10 text-warning border-warning/20",
+    glowColor: "shadow-none",
   },
   {
     icon: Zap,
@@ -115,10 +116,10 @@ const FEATURES = [
     description:
       "Every commitment you made on the call is captured and tracked. Draft follow-up emails are written for you, and overdue items surface before they become dropped balls.",
     tag: "Action Engine",
-    accent: "from-purple-500/15 to-purple-500/3 border-purple-500/20",
-    iconBg: "bg-purple-500/10 text-purple-400",
-    tagColor: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-    glowColor: "shadow-[0_0_30px_hsl(270_95%_75%/0.08)]",
+    accent: "from-muted to-transparent border-border",
+    iconBg: "bg-muted text-muted-foreground",
+    tagColor: "bg-muted text-muted-foreground border-border",
+    glowColor: "shadow-none",
   },
 ];
 
@@ -164,29 +165,29 @@ const PROBLEM_CARDS = [
     label: "Why did we pass on this?",
     context: "3 months after a strong initial call",
     icon: CircleHelp,
-    accent: "border-amber-500/25 bg-amber-500/5",
-    iconColor: "text-amber-400 bg-amber-500/15",
+    accent: "border-warning/25 bg-warning/5",
+    iconColor: "text-warning bg-warning/15",
   },
   {
     label: "What were our concerns back in March?",
     context: "Preparing for IC meeting",
     icon: AlertTriangle,
-    accent: "border-red-500/25 bg-red-500/5",
-    iconColor: "text-red-400 bg-red-500/15",
+    accent: "border-destructive/25 bg-destructive/5",
+    iconColor: "text-destructive bg-destructive/15",
   },
   {
     label: "Did we ever follow up about their GTM pivot?",
     context: "After a founder re-engages",
     icon: ClipboardList,
-    accent: "border-blue-500/25 bg-blue-500/5",
-    iconColor: "text-blue-400 bg-blue-500/15",
+    accent: "border-info/25 bg-info/5",
+    iconColor: "text-info bg-info/15",
   },
   {
     label: "I had a strong thesis here but I can't remember it",
     context: "Reviewing a company with LP",
     icon: MessageCircle,
-    accent: "border-conviction-500/25 bg-conviction-500/5",
-    iconColor: "text-conviction-300 bg-conviction-500/15",
+    accent: "border-border bg-muted/50",
+    iconColor: "text-primary bg-muted",
   },
 ] as const;
 
@@ -246,13 +247,13 @@ function SectionHeader({
       transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
     >
       <div className="inline-flex items-center gap-2 mb-3">
-        <span className="h-px w-8 bg-gradient-to-r from-transparent to-conviction-500/50" />
-        <p className="text-[11px] font-semibold text-conviction-300 uppercase tracking-[0.2em]">
+        <span className="h-px w-8 bg-gradient-to-r from-transparent to-border" />
+        <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.2em]">
           {eyebrow}
         </p>
-        <span className="h-px w-8 bg-gradient-to-l from-transparent to-conviction-500/50" />
+        <span className="h-px w-8 bg-gradient-to-l from-transparent to-border" />
       </div>
-      <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight text-balance">
+      <h2 className="font-display text-2xl md:text-3xl lg:text-[2.4rem] font-semibold tracking-tight text-balance">
         {title}
       </h2>
       {subtitle && (
@@ -302,7 +303,7 @@ function StatCounter({
       <div className="flex items-end justify-center gap-0.5">
         <span
           ref={ref}
-          className="text-5xl font-semibold tabular-nums gradient-text gradient-text-safe leading-none"
+          className="text-5xl font-display font-semibold tabular-nums text-primary leading-none"
         >
           {value}
         </span>
@@ -346,15 +347,15 @@ function HowItWorksStep({
         />
       )}
       <motion.div
-        className="flex-shrink-0 flex h-11 w-11 items-center justify-center rounded-xl border border-conviction-500/25 bg-gradient-to-br from-conviction-500/15 to-transparent shadow-[0_0_24px_hsl(248_92%_68%/0.08)]"
-        whileHover={{ scale: 1.08, borderColor: "hsl(248 92% 68% / 0.5)" }}
+        className="flex-shrink-0 flex h-11 w-11 items-center justify-center rounded-xl border border-primary/25 bg-primary/10"
+        whileHover={{ scale: 1.04, borderColor: "hsl(var(--primary) / 0.45)" }}
         transition={{ type: "spring", stiffness: 400, damping: 20 }}
       >
-        <Icon className="h-5 w-5 text-conviction-300" />
+        <Icon className="h-5 w-5 text-primary" />
       </motion.div>
       <div className="pt-1 min-w-0">
         <div className="flex items-center gap-3 mb-1.5 flex-wrap">
-          <span className="text-[10px] font-mono font-semibold text-conviction-400/80">
+          <span className="text-[10px] font-mono font-semibold text-muted-foreground">
             {step}
           </span>
           <h3 className="font-semibold text-foreground">{title}</h3>
@@ -417,14 +418,6 @@ export default function LandingPage() {
   // Scroll-based nav shadow
   const { scrollY } = useScroll();
   const navShadowOpacity = useTransform(scrollY, [0, 60], [0, 1]);
-
-  // Hero glow parallax via Framer Motion (smoother than GSAP scrub)
-  const { scrollYProgress: heroProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "30% start"],
-  });
-  const glowY = useTransform(heroProgress, [0, 1], ["0%", "-18%"]);
-  const glowScale = useTransform(heroProgress, [0, 1], [1, 1.15]);
 
   useGSAP(
     () => {
@@ -514,7 +507,7 @@ export default function LandingPage() {
           style={{
             opacity: navShadowOpacity,
             boxShadow:
-              "0 1px 0 hsl(var(--border)/0.6), 0 4px 24px hsl(0 0% 0%/0.25)",
+              "0 1px 0 hsl(var(--border)/0.6), 0 4px 24px hsl(var(--shadow-tint)/0.18)",
           }}
         />
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between relative z-10">
@@ -524,13 +517,11 @@ export default function LandingPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-conviction">
-              <LogoMark className="h-4 w-4" />
-            </div>
+            <LogoMark variant="tile" className="h-7 w-7" />
             <span className="font-semibold text-foreground tracking-tight">
               Conviction
             </span>
-            <span className="hidden sm:inline-flex items-center rounded-full border border-conviction-500/20 bg-conviction-500/8 px-2 py-0.5 text-2xs font-medium text-conviction-300 ml-1">
+            <span className="hidden sm:inline-flex items-center rounded-full border border-border bg-muted px-2 py-0.5 text-2xs font-medium text-muted-foreground ml-1">
               for VC
             </span>
           </motion.div>
@@ -541,6 +532,7 @@ export default function LandingPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
           >
+            <ThemeToggle compact />
             <Button
               variant="ghost"
               size="sm"
@@ -549,7 +541,7 @@ export default function LandingPage() {
             >
               Sign in
             </Button>
-            <MagneticButton strength={0.25}>
+            <MagneticButton strength={0.12}>
               <Button
                 variant="conviction"
                 size="sm"
@@ -565,37 +557,23 @@ export default function LandingPage() {
 
       {/* ── Hero ──────────────────────────────────────────────────── */}
       <section className="relative pt-24 pb-10 md:pt-28 md:pb-12 px-6 overflow-hidden">
-        <div className="absolute inset-0 dot-grid opacity-20 pointer-events-none" />
-        <motion.div
-          className="absolute top-0 left-1/2 -translate-x-1/2 w-[min(100%,720px)] h-[420px] rounded-full opacity-80 pointer-events-none"
-          style={{
-            y: glowY,
-            scale: glowScale,
-            background:
-              "radial-gradient(ellipse at center, hsl(248 92% 68% / 0.12) 0%, hsl(248 92% 68% / 0.04) 45%, transparent 70%)",
-          }}
-        />
-        <motion.div
-          className="absolute top-10 right-[10%] w-[240px] h-[240px] rounded-full opacity-60 pointer-events-none float-fast"
-          style={{
-            background:
-              "radial-gradient(circle, hsl(220 80% 60% / 0.08) 0%, transparent 70%)",
-          }}
-        />
+        <div className="absolute inset-0 line-grid opacity-40 pointer-events-none" />
+        <div className="absolute inset-0 noise-overlay pointer-events-none" />
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/25 to-transparent pointer-events-none" />
 
         <div className="relative z-10 max-w-4xl mx-auto text-center space-y-5">
           <div className="hero-fade-in flex flex-col items-center gap-2">
-            <div className="inline-flex items-center gap-2 rounded-full border border-conviction-500/25 bg-conviction-500/8 px-4 py-1.5 text-xs font-medium text-conviction-300">
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-4 py-1.5 text-xs font-medium text-muted-foreground">
               <Sparkles className="h-3 w-3" />
               Deal intelligence for venture capital
             </div>
             <ProjectBadge className="md:hidden" />
           </div>
 
-          <h1 className="hero-fade-in hero-fade-in-delay-1 text-balance font-semibold tracking-tight leading-[1.06]">
+          <h1 className="hero-fade-in hero-fade-in-delay-1 text-balance font-display font-semibold tracking-tight leading-[1.06]">
             <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-[4.25rem] text-foreground">
               Every founder call generates{" "}
-              <span className="text-conviction-300">
+              <span className="text-primary">
                 investment intelligence.
               </span>
             </span>
@@ -611,33 +589,31 @@ export default function LandingPage() {
           </p>
 
           <div className="hero-fade-in hero-fade-in-delay-3 flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-1">
-            <MagneticButton strength={0.4}>
+            <MagneticButton strength={0.12}>
               <Button
                 variant="conviction"
                 size="lg"
-                className="h-11 px-7 text-base shadow-lg ring-pulse"
+                className="h-11 px-7 text-base"
                 onClick={() => navigate("/login")}
               >
                 Start for free
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </MagneticButton>
-            <MagneticButton strength={0.3}>
-              <Button
-                variant="outline"
-                size="lg"
-                className="h-11 px-7 text-base"
-                onClick={handleDemoAccess}
-                disabled={demoLoading}
-              >
-                {demoLoading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Building2 className="h-4 w-4" />
-                )}
-                View live demo
-              </Button>
-            </MagneticButton>
+            <Button
+              variant="outline"
+              size="lg"
+              className="h-11 px-7 text-base"
+              onClick={handleDemoAccess}
+              disabled={demoLoading}
+            >
+              {demoLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Building2 className="h-4 w-4" />
+              )}
+              View live demo
+            </Button>
           </div>
 
           {demoError && (
@@ -651,7 +627,7 @@ export default function LandingPage() {
             {["No credit card", "Private & secure", "Built for VC teams"].map(
               (item) => (
                 <div key={item} className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
+                  <CheckCircle2 className="h-3.5 w-3.5 text-success" />
                   {item}
                 </div>
               )
@@ -683,7 +659,7 @@ export default function LandingPage() {
                   whileTap={{ scale: 0.97 }}
                   className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-all duration-200 ${
                     activeTab === id
-                      ? "border-conviction-500/40 bg-conviction-500/12 text-conviction-300"
+                      ? "border-primary/40 bg-primary/10 text-primary"
                       : "border-border text-muted-foreground hover:text-foreground hover:border-border/80"
                   }`}
                 >
@@ -693,7 +669,7 @@ export default function LandingPage() {
               ))}
             </div>
 
-            <div className="relative rounded-xl border border-border/80 overflow-hidden shadow-2xl surface-elevated ring-1 ring-conviction-500/10">
+            <div className="relative rounded-xl border border-border/80 overflow-hidden shadow-2xl surface-elevated">
               {/* Window chrome */}
               <div className="bg-surface-1 border-b border-border px-4 py-3 flex items-center gap-2">
                 <div className="flex gap-1.5">
@@ -743,7 +719,7 @@ export default function LandingPage() {
                         >
                           <div
                             className={`h-1.5 w-1.5 rounded-full ${
-                              i === 2 ? "bg-conviction-400" : "bg-transparent"
+                              i === 2 ? "bg-primary" : "bg-transparent"
                             }`}
                           />
                           {item}
@@ -754,15 +730,15 @@ export default function LandingPage() {
                       <p className="text-xs font-semibold text-foreground">
                         Post-Call Brain Dump
                       </p>
-                      <div className="rounded-md border border-red-500/20 bg-red-500/5 p-3 flex items-center gap-3">
-                        <div className="h-8 w-8 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0 recording-active">
-                          <Mic className="h-3.5 w-3.5 text-red-400" />
+                      <div className="rounded-md border border-destructive/20 bg-destructive/5 p-3 flex items-center gap-3">
+                        <div className="h-8 w-8 rounded-full bg-destructive/20 flex items-center justify-center flex-shrink-0 recording-active">
+                          <Mic className="h-3.5 w-3.5 text-destructive" />
                         </div>
                         <div>
                           <p className="text-xs font-medium text-foreground">
                             Recording in progress…
                           </p>
-                          <p className="text-2xs text-red-400 mt-0.5">
+                          <p className="text-2xs text-destructive mt-0.5">
                             ● 0:47: ShipStack founder call
                           </p>
                         </div>
@@ -775,17 +751,17 @@ export default function LandingPage() {
                           {
                             label: "Recommendation",
                             value: "Invest",
-                            color: "text-emerald-400",
+                            color: "text-success",
                           },
                           {
                             label: "Confidence",
                             value: "78%",
-                            color: "text-conviction-300",
+                            color: "text-primary",
                           },
                           {
                             label: "Thesis Fit Score",
                             value: "88/100",
-                            color: "text-blue-400",
+                            color: "text-info",
                           },
                         ].map((stat) => (
                           <div
@@ -803,8 +779,8 @@ export default function LandingPage() {
                           </div>
                         ))}
                       </div>
-                      <div className="rounded-md border border-conviction-500/20 bg-conviction-500/5 p-2.5">
-                        <p className="text-2xs text-conviction-300 leading-relaxed line-clamp-2">
+                      <div className="rounded-md border border-border bg-muted p-2.5">
+                        <p className="text-2xs text-muted-foreground leading-relaxed line-clamp-2">
                           "Strong founder-market fit. Kush has deep logistics
                           expertise, Rohan brings the GTM. Revenue growing 3x
                           YoY. Moat defensible through proprietary carrier
@@ -842,7 +818,7 @@ export default function LandingPage() {
                         >
                           <div
                             className={`h-1.5 w-1.5 rounded-full ${
-                              i === 4 ? "bg-conviction-400" : "bg-transparent"
+                              i === 4 ? "bg-primary" : "bg-transparent"
                             }`}
                           />
                           {item}
@@ -857,7 +833,7 @@ export default function LandingPage() {
                             emergentlabs.ai
                           </span>
                         </div>
-                        <div className="rounded-md bg-conviction-500/15 border border-conviction-500/30 px-2.5 h-7 flex items-center text-xs text-conviction-300 font-medium">
+                        <div className="rounded-md bg-muted border border-border px-2.5 h-7 flex items-center text-xs text-foreground font-medium">
                           Analyse
                         </div>
                       </div>
@@ -897,8 +873,8 @@ export default function LandingPage() {
                           </div>
                         ))}
                       </div>
-                      <div className="rounded-md border border-emerald-500/20 bg-emerald-500/5 p-2.5">
-                        <p className="text-2xs font-medium text-emerald-400 mb-1">
+                      <div className="rounded-md border border-success/20 bg-success/5 p-2.5">
+                        <p className="text-2xs font-medium text-success mb-1">
                           Research summary
                         </p>
                         <p className="text-2xs text-foreground/80 leading-relaxed line-clamp-2">
@@ -939,7 +915,7 @@ export default function LandingPage() {
                         >
                           <div
                             className={`h-1.5 w-1.5 rounded-full ${
-                              i === 1 ? "bg-conviction-400" : "bg-transparent"
+                              i === 1 ? "bg-primary" : "bg-transparent"
                             }`}
                           />
                           {item}
@@ -951,7 +927,7 @@ export default function LandingPage() {
                         <p className="text-xs font-semibold text-foreground">
                           ShipStack · Deal Timeline
                         </p>
-                        <span className="text-2xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-2 py-0.5">
+                        <span className="text-2xs text-success bg-success/10 border border-success/20 rounded-full px-2 py-0.5">
                           Active
                         </span>
                       </div>
@@ -962,7 +938,7 @@ export default function LandingPage() {
                             type: "Decision",
                             title: "Recommend: Invest · 82% confidence",
                             date: "Jun 5",
-                            color: "bg-conviction-400",
+                            color: "bg-primary",
                           },
                           {
                             type: "Call Note",
@@ -1075,7 +1051,7 @@ export default function LandingPage() {
                   className={`problem-fragment group rounded-xl border p-4 flex gap-3.5 cursor-default transition-all duration-200 ${item.accent}`}
                   whileHover={{
                     y: -3,
-                    boxShadow: "0 12px 40px hsl(0 0% 0% / 0.35)",
+                    boxShadow: "0 12px 40px hsl(var(--shadow-tint) / 0.18)",
                   }}
                   transition={{ type: "spring", stiffness: 400, damping: 25 }}
                 >
@@ -1098,8 +1074,8 @@ export default function LandingPage() {
           </div>
 
           <motion.div
-            className="problem-fragment mt-5 rounded-xl border border-conviction-500/20 bg-gradient-to-r from-conviction-500/8 via-transparent to-blue-500/5 p-5 md:p-6 text-center"
-            whileHover={{ borderColor: "hsl(248 92% 68% / 0.35)" }}
+            className="problem-fragment mt-5 rounded-xl border border-primary/20 bg-surface-1 p-5 md:p-6 text-center"
+            whileHover={{ borderColor: "hsl(var(--primary) / 0.4)" }}
           >
             <p className="text-sm font-semibold text-foreground">
               This isn&apos;t a transcription problem.
@@ -1134,7 +1110,7 @@ export default function LandingPage() {
             {FEATURES.map((feature) => {
               const Icon = feature.icon;
               return (
-                <TiltCard key={feature.title} intensity={8}>
+                <TiltCard key={feature.title} intensity={4}>
                   <div
                     className={`feature-card group relative rounded-xl border bg-card p-5 overflow-hidden cursor-default h-full ${feature.accent} ${feature.glowColor} transition-shadow duration-300 hover:shadow-xl`}
                   >
@@ -1208,23 +1184,18 @@ export default function LandingPage() {
           />
         </div>
 
-        <Marquee speed={28} gap={16} className="pb-1">
+        <Marquee speed={28} gap={16} className="py-2">
           {TESTIMONIALS.map((t) => (
-            <motion.div
+            <div
               key={t.author}
-              className="w-72 md:w-80 flex-shrink-0 rounded-xl border border-border/80 bg-card p-5 flex flex-col hover:border-conviction-500/30 hover:bg-card/90 transition-colors duration-200 cursor-default"
-              whileHover={{
-                y: -4,
-                boxShadow: "0 16px 48px hsl(0 0% 0% / 0.4)",
-              }}
-              transition={{ type: "spring", stiffness: 300, damping: 22 }}
+              className="w-72 md:w-80 flex-shrink-0 rounded-xl border border-border/80 bg-card p-5 flex flex-col shadow-card hover:border-border hover:-translate-y-1 hover:shadow-card-hover transition-all duration-200 cursor-default"
             >
-              <Quote className="h-5 w-5 text-conviction-400/50 mb-4 flex-shrink-0" />
+              <Quote className="h-5 w-5 text-muted-foreground/50 mb-4 flex-shrink-0" />
               <p className="text-sm text-foreground leading-relaxed flex-1 mb-6">
                 "{t.quote}"
               </p>
               <div className="flex items-center gap-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-conviction-500/15 text-conviction-300 text-xs font-semibold flex-shrink-0">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-foreground text-xs font-semibold flex-shrink-0">
                   {t.initials}
                 </div>
                 <div>
@@ -1236,7 +1207,7 @@ export default function LandingPage() {
                   </p>
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </Marquee>
       </section>
@@ -1245,26 +1216,20 @@ export default function LandingPage() {
 
       {/* ── Final CTA ─────────────────────────────────────────────── */}
       <section className="py-16 md:py-20 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 dot-grid opacity-15 pointer-events-none" />
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(100%,600px)] h-[360px] rounded-full pointer-events-none float-slow"
-          style={{
-            background:
-              "radial-gradient(ellipse at center, hsl(248 92% 68% / 0.14) 0%, hsl(248 92% 68% / 0.04) 50%, transparent 72%)",
-          }}
-        />
+        <div className="absolute inset-0 line-grid opacity-30 pointer-events-none" />
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
 
         <div className="cta-content relative z-10 max-w-3xl mx-auto text-center space-y-5">
           <motion.div
-            className="inline-flex items-center gap-2 rounded-full border border-conviction-500/20 bg-conviction-500/8 px-4 py-1.5 text-xs font-medium text-conviction-300"
-            whileHover={{ scale: 1.04, borderColor: "hsl(248 92% 68% / 0.4)" }}
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-4 py-1.5 text-xs font-medium text-muted-foreground"
+            whileHover={{ scale: 1.02, borderColor: "hsl(var(--primary) / 0.4)" }}
             transition={{ type: "spring", stiffness: 400 }}
           >
             <Shield className="h-3 w-3" />
             Private, secure, and built for professional investment teams
           </motion.div>
 
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight text-balance leading-[1.08]">
+          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight text-balance leading-[1.08]">
             Stop losing the reasoning{" "}
             <span className="gradient-text gradient-text-safe">
               behind every decision.
@@ -1277,34 +1242,30 @@ export default function LandingPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <MagneticButton strength={0.4}>
-              <div className="animated-gradient-border rounded-lg">
-                <Button
-                  variant="conviction"
-                  size="lg"
-                  className="h-12 px-8 text-base shadow-lg relative z-10"
-                  onClick={() => navigate("/login")}
-                >
-                  Get started free
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </div>
-            </MagneticButton>
-            <MagneticButton strength={0.3}>
+            <MagneticButton strength={0.12}>
               <Button
-                variant="outline"
+                variant="conviction"
                 size="lg"
                 className="h-12 px-8 text-base"
-                onClick={handleDemoAccess}
-                disabled={demoLoading}
+                onClick={() => navigate("/login")}
               >
-                {demoLoading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  "Explore the demo"
-                )}
+                Get started free
+                <ArrowRight className="h-4 w-4" />
               </Button>
             </MagneticButton>
+            <Button
+              variant="outline"
+              size="lg"
+              className="h-12 px-8 text-base"
+              onClick={handleDemoAccess}
+              disabled={demoLoading}
+            >
+              {demoLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                "Explore the demo"
+              )}
+            </Button>
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-5 text-xs text-muted-foreground">
@@ -1315,7 +1276,7 @@ export default function LandingPage() {
               "Cancel anytime",
             ].map((item) => (
               <div key={item} className="flex items-center gap-1.5">
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
+                <CheckCircle2 className="h-3.5 w-3.5 text-success" />
                 {item}
               </div>
             ))}
@@ -1327,9 +1288,7 @@ export default function LandingPage() {
       <footer className="border-t border-border/40 py-8 px-6 bg-surface-1/10">
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
-            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-conviction">
-              <LogoMark className="h-4 w-4" />
-            </div>
+            <LogoMark variant="tile" className="h-7 w-7" />
             <div className="text-left">
               <span className="text-sm font-semibold text-foreground block">
                 Conviction

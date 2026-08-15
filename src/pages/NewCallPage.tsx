@@ -209,13 +209,13 @@ function VoiceRecorder({
                 'relative flex h-24 w-24 items-center justify-center rounded-full border-2 transition-all duration-300 shadow-md',
                 isRecording
                   ? 'border-red-500 bg-red-500/15 text-red-400'
-                  : 'border-conviction-500/40 bg-conviction-500/10 text-conviction-400 hover:border-conviction-500 hover:bg-conviction-500/20'
+                  : 'border-primary/40 bg-primary/10 text-primary hover:border-primary hover:bg-primary/15'
               )}
             >
               {isRecording ? (
                 <StopCircle className="h-10 w-10 text-red-400" />
               ) : (
-                <Mic className="h-10 w-10 text-conviction-400" />
+                <Mic className="h-10 w-10 text-primary" />
               )}
             </motion.button>
           </div>
@@ -248,7 +248,7 @@ function VoiceRecorder({
         <motion.div
           initial={{ opacity: 0, scale: 0.97, y: 4 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          className="w-full max-w-md rounded-2xl border border-conviction-500/30 bg-conviction-500/5 p-5 space-y-4 shadow-lg"
+          className="w-full max-w-md rounded-2xl border border-border bg-card p-5 space-y-4 shadow-lg"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -277,7 +277,7 @@ function VoiceRecorder({
           <div className="rounded-xl border border-border/80 bg-card p-3 space-y-1.5">
             <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
               <span className="font-medium flex items-center gap-1.5">
-                <Volume2 className="h-3.5 w-3.5 text-conviction-400" />
+                <Volume2 className="h-3.5 w-3.5 text-primary" />
                 Listen to your recording
               </span>
               <span className="text-[10px] text-emerald-400 font-medium bg-emerald-500/10 px-2 py-0.5 rounded-full">
@@ -295,7 +295,7 @@ function VoiceRecorder({
                 size="lg"
                 onClick={onProcess}
                 disabled={!canSubmit || isProcessing}
-                className="w-full h-12 text-sm font-semibold shadow-glow-md flex items-center justify-center gap-2"
+                className="w-full h-12 text-sm font-semibold flex items-center justify-center gap-2"
               >
                 {isProcessing ? (
                   <>
@@ -304,7 +304,7 @@ function VoiceRecorder({
                   </>
                 ) : (
                   <>
-                    <Sparkles className="h-4 w-4 text-conviction-300 animate-pulse" />
+                    <Sparkles className="h-4 w-4 text-primary animate-pulse" />
                     Process Voice Memo &amp; Generate Deal Brief
                     <ArrowRight className="h-4 w-4" />
                   </>
@@ -429,7 +429,7 @@ function AudioFileUploader({
           </div>
         </button>
       ) : (
-        <div className="rounded-xl border border-conviction-500/30 bg-conviction-500/5 p-5 space-y-4 shadow-md">
+        <div className="rounded-xl border border-border bg-card p-5 space-y-4 shadow-md">
           <div className="flex items-start gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
               <FileAudio className="h-5 w-5" />
@@ -457,7 +457,7 @@ function AudioFileUploader({
             <div className="rounded-xl border border-border/80 bg-card p-3 space-y-1.5">
               <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
                 <span className="font-medium flex items-center gap-1.5">
-                  <Volume2 className="h-3.5 w-3.5 text-conviction-400" />
+                  <Volume2 className="h-3.5 w-3.5 text-primary" />
                   Listen to uploaded recording
                 </span>
                 <span className="text-[10px] text-emerald-400 font-medium bg-emerald-500/10 px-2 py-0.5 rounded-full">
@@ -486,7 +486,7 @@ function AudioFileUploader({
                 size="lg"
                 onClick={onProcess}
                 disabled={!canSubmit || isProcessing}
-                className="w-full h-12 text-sm font-semibold shadow-glow-md flex items-center justify-center gap-2"
+                className="w-full h-12 text-sm font-semibold flex items-center justify-center gap-2"
               >
                 {isProcessing ? (
                   <>
@@ -495,7 +495,7 @@ function AudioFileUploader({
                   </>
                 ) : (
                   <>
-                    <Sparkles className="h-4 w-4 text-conviction-300 animate-pulse" />
+                    <Sparkles className="h-4 w-4 text-primary animate-pulse" />
                     Process Recording &amp; Generate Deal Brief
                     <ArrowRight className="h-4 w-4" />
                   </>
@@ -659,10 +659,10 @@ function ProcessingOverlay({ isVoice }: { isVoice: boolean }) {
       <div className="text-center space-y-6 max-w-sm px-6">
         <div className="flex justify-center">
           <div className="relative h-16 w-16">
-            <div className="absolute inset-0 rounded-full border-2 border-conviction-500/30" />
-            <div className="absolute inset-0 rounded-full border-2 border-conviction-500 border-t-transparent animate-spin" />
+            <div className="absolute inset-0 rounded-full border-2 border-primary/30" />
+            <div className="absolute inset-0 rounded-full border-2 border-primary border-t-transparent animate-spin" />
             <div className="absolute inset-3 flex items-center justify-center">
-              <Sparkles className="h-5 w-5 text-conviction-400" />
+              <Sparkles className="h-5 w-5 text-primary" />
             </div>
           </div>
         </div>
@@ -690,7 +690,7 @@ function ProcessingOverlay({ isVoice }: { isVoice: boolean }) {
               key={i}
               className={cn(
                 'h-1 rounded-full transition-all duration-500',
-                i <= stepIndex ? 'w-6 bg-conviction-500' : 'w-2 bg-border'
+                i <= stepIndex ? 'w-6 bg-primary' : 'w-2 bg-border'
               )}
             />
           ))}
@@ -955,7 +955,7 @@ export default function NewCallPage() {
                         className={cn(
                           'flex flex-col items-center gap-2 rounded-lg border p-4 transition-all duration-150',
                           selectedMode === mode
-                            ? 'border-primary bg-primary/10 text-primary shadow-glow-sm'
+                            ? 'border-primary bg-primary/10 text-primary'
                             : 'border-border bg-card text-muted-foreground hover:text-foreground hover:border-muted-foreground'
                         )}
                       >
@@ -1078,8 +1078,8 @@ Examples:
             <FadeIn delay={0.2}>
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-lg border border-border bg-card" data-tour="tour-log-call-flow">
                 <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-conviction-500/15 flex-shrink-0">
-                    <Sparkles className="h-4 w-4 text-conviction-400" />
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted flex-shrink-0">
+                    <Sparkles className="h-4 w-4 text-primary" />
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm font-medium text-foreground">Generate your deal brief</p>

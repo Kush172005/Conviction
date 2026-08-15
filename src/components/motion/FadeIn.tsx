@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { motion, useInView } from 'framer-motion'
+import { motion, useInView, useReducedMotion } from 'framer-motion'
 
 // ── Shared easing ─────────────────────────────────────────────────────────────
 const EASE_OUT_EXPO = [0.16, 1, 0.3, 1] as const
@@ -16,15 +16,16 @@ interface FadeInProps {
 export default function FadeIn({
   children,
   delay = 0,
-  duration = 0.45,
-  y = 14,
+  duration = 0.35,
+  y = 10,
   className,
 }: FadeInProps) {
+  const reduce = useReducedMotion()
   return (
     <motion.div
-      initial={{ opacity: 0, y }}
+      initial={reduce ? false : { opacity: 0, y }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration, delay, ease: EASE_OUT_EXPO }}
+      transition={{ duration: reduce ? 0 : duration, delay: reduce ? 0 : delay, ease: EASE_OUT_EXPO }}
       className={className}
     >
       {children}

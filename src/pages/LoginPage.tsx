@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import type { CredentialResponse } from "@react-oauth/google";
 import { ArrowRight, ArrowLeft, Shield, AlertCircle } from "lucide-react";
 import LogoMark from "@/components/LogoMark";
+import ThemeToggle from "@/components/theme/ThemeToggle";
 import { ProjectBadge } from "@/components/ProjectBranding";
 import { Button } from "@/components/ui/button";
 import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
@@ -130,8 +131,8 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4 sm:px-6 py-16 sm:py-8 relative overflow-x-hidden overflow-y-auto">
-      <div className="absolute inset-0 dot-grid opacity-30 pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-conviction-500/6 blur-[120px] pointer-events-none" />
+      <div className="absolute inset-0 line-grid opacity-25 pointer-events-none" />
+      <div className="absolute inset-0 noise-overlay pointer-events-none" />
 
       <Link
         to="/"
@@ -141,6 +142,11 @@ export default function LoginPage() {
         Back to home
       </Link>
 
+      <ThemeToggle
+        compact
+        className="absolute top-5 right-5 z-20 rounded-lg border border-border/80 bg-card/80 backdrop-blur-sm hover:bg-card"
+      />
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -149,12 +155,10 @@ export default function LoginPage() {
       >
         <Link
           to="/"
-          className="block text-center mb-8 group rounded-xl p-2 -m-2 transition-colors hover:bg-card/40"
+          className="mb-8 flex flex-col items-center text-center group"
         >
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-conviction mb-4 brand-glow-anim transition-transform group-hover:scale-105">
-            <LogoMark className="h-6 w-6" />
-          </div>
-          <h1 className="text-xl font-semibold text-foreground">Conviction</h1>
+          <LogoMark variant="tile" className="h-12 w-12 mb-4 transition-transform group-hover:scale-[1.03]" />
+          <h1 className="font-display text-2xl font-semibold text-foreground tracking-tight">Conviction</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Never lose the reasoning behind a decision.
           </p>
@@ -172,7 +176,7 @@ export default function LoginPage() {
           </div>
 
           {error && (
-            <div className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2.5 text-xs text-red-400">
+            <div className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2.5 text-xs text-destructive">
               <AlertCircle className="h-3.5 w-3.5 flex-shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
@@ -182,7 +186,7 @@ export default function LoginPage() {
           {GOOGLE_CLIENT_ID ? (
             isGoogleLoading ? (
               <div className="flex flex-col items-center gap-3 py-5 rounded-lg border border-border/60 bg-secondary/20">
-                <div className="h-5 w-5 rounded-full border-2 border-conviction-500/20 border-t-conviction-400 animate-spin" />
+                <div className="h-5 w-5 rounded-full border-2 border-border border-t-primary animate-spin" />
                 <div className="text-center space-y-1.5 px-4">
                   <p className="text-sm font-medium text-foreground">Preparing your workspace…</p>
                   {loadingHint && (
@@ -205,7 +209,7 @@ export default function LoginPage() {
               />
             )
           ) : (
-            <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 px-3 py-2.5 text-xs text-amber-400">
+            <div className="rounded-lg border border-warning/25 bg-warning/10 px-3 py-2.5 text-xs text-warning">
               Google OAuth is not configured. Add{" "}
               <code className="font-mono">VITE_GOOGLE_CLIENT_ID</code> to your
               frontend <code className="font-mono">.env</code> and restart the
@@ -260,7 +264,7 @@ export default function LoginPage() {
             New here?{" "}
             <Link
               to="/"
-              className="font-medium text-conviction-300 hover:text-conviction-200 transition-colors inline-flex items-center gap-1"
+              className="font-medium text-primary hover:text-primary/80 transition-colors inline-flex items-center gap-1"
             >
               See how Conviction works
               <ArrowRight className="h-3 w-3" />

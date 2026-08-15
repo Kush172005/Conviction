@@ -25,6 +25,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import SignOutButton from "@/components/auth/SignOutButton";
+import ThemeToggle from "@/components/theme/ThemeToggle";
 
 const NAV_ITEMS = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
@@ -73,9 +74,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
                 transition={{ duration: 0.15 }}
                 className="flex items-center gap-2.5 min-w-0 flex-1"
               >
-                <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-conviction flex-shrink-0">
-                  <LogoMark className="h-4 w-4" />
-                </div>
+                <LogoMark variant="tile" className="h-7 w-7 flex-shrink-0" />
                 <span className="font-semibold text-foreground tracking-tight truncate">
                   Conviction
                 </span>
@@ -87,9 +86,9 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.15 }}
-                className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-conviction mx-auto"
+                className="mx-auto"
               >
-                <LogoMark className="h-4 w-4" />
+                <LogoMark variant="tile" className="h-7 w-7" />
               </motion.div>
             )}
           </AnimatePresence>
@@ -167,7 +166,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
                         cn(
                           "flex h-10 w-full items-center justify-center rounded-md transition-all duration-100",
                           isActive
-                            ? "bg-secondary text-foreground"
+                            ? "bg-active text-primary"
                             : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
                         )
                       }
@@ -189,7 +188,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
                   cn(
                     "flex h-9 w-full items-center gap-2.5 rounded-md px-3 text-sm transition-all duration-100",
                     isActive
-                      ? "bg-secondary text-foreground font-medium"
+                      ? "bg-active text-foreground font-medium"
                       : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
                   )
                 }
@@ -249,6 +248,9 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
                 )}
               </div>
               <SignOutButton collapsed={collapsed} />
+              <div className={cn("pt-1", collapsed && "flex justify-center")}>
+                <ThemeToggle compact />
+              </div>
             </>
           )}
         </div>

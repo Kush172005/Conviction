@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import PageHeader from '@/components/layout/PageHeader'
 import FadeIn from '@/components/motion/FadeIn'
+import ThemePreferenceControl from '@/components/theme/ThemePreferenceControl'
 import { useAuthStore } from '@/store'
 import { authApi } from '@/services/api/auth'
 import type { BackendInvestorProfile } from '@/services/api/auth'
@@ -124,7 +125,7 @@ export default function SettingsPage() {
             <div className="p-5 space-y-5">
               <div className="flex items-center gap-4">
                 <Avatar className="h-14 w-14">
-                  <AvatarFallback className="text-base bg-conviction-500/20 text-conviction-300">
+                  <AvatarFallback className="text-base bg-muted text-primary">
                     {user ? getInitials(user.name) : 'U'}
                   </AvatarFallback>
                 </Avatar>
@@ -262,14 +263,30 @@ export default function SettingsPage() {
           </div>
         </FadeIn>
 
+        {/* Appearance */}
+        <FadeIn delay={0.1}>
+          <div className="rounded-xl border border-border bg-card shadow-card">
+            <div className="px-5 py-4 border-b border-border">
+              <h2 className="text-sm font-semibold text-foreground">Appearance</h2>
+            </div>
+            <div className="p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:justify-between">
+              <div>
+                <p className="text-sm font-medium text-foreground">Color theme</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Light and dark are designed independently. System follows your OS.
+                </p>
+              </div>
+              <ThemePreferenceControl />
+            </div>
+          </div>
+        </FadeIn>
+
         {/* Product tour */}
         <FadeIn delay={0.12}>
           <div className="rounded-lg border border-border bg-card">
             <div className="px-5 py-4 border-b border-border">
               <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
-                <div className="flex h-5 w-5 items-center justify-center rounded bg-gradient-conviction">
-                  <LogoMark className="h-3 w-3" />
-                </div>
+                <LogoMark variant="tile" className="h-5 w-5" />
                 Product tour
               </h2>
             </div>

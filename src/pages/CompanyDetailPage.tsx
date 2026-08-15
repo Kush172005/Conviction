@@ -268,10 +268,10 @@ export default function CompanyDetailPage() {
       {/* Latest Decision summary */}
       {latestDecision && (
         <FadeIn delay={0.1}>
-          <div className="mb-6 rounded-lg border border-conviction-500/20 bg-conviction-500/5 p-4" data-tour="tour-company-decision">
+          <div className="mb-6 rounded-lg border border-border bg-card p-4" data-tour="tour-company-decision">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-conviction-400" />
+                <Sparkles className="h-4 w-4 text-primary" />
                 <span className="text-sm font-semibold text-foreground">Latest Decision</span>
               </div>
               <Button
@@ -296,7 +296,7 @@ export default function CompanyDetailPage() {
               </div>
               <div>
                 <p className="text-2xs text-muted-foreground mb-1">Confidence</p>
-                <p className="text-sm font-semibold text-conviction-300">
+                <p className="text-sm font-semibold text-foreground">
                   {latestDecision.confidence}%
                 </p>
               </div>
@@ -356,7 +356,7 @@ export default function CompanyDetailPage() {
                     <div className="space-y-3">
                       {displayFounders.map((founder) => (
                         <div key={founder.name} className="flex items-start gap-3">
-                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-conviction-500/15 text-conviction-300 text-xs font-semibold">
+                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-foreground text-xs font-semibold">
                             {founder.name[0]}
                           </div>
                           <div>
@@ -394,10 +394,10 @@ export default function CompanyDetailPage() {
                 <>
                   {/* No strengths/concerns here since we only have the summary */}
                   <FadeInItem className="lg:col-span-2">
-                    <div className="rounded-lg border border-conviction-500/20 bg-conviction-500/5 p-5">
+                    <div className="rounded-lg border border-border bg-muted/40 p-5">
                       <div className="flex items-center justify-between mb-3">
                         <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
-                          <Sparkles className="h-4 w-4 text-conviction-400" />
+                          <Sparkles className="h-4 w-4 text-primary" />
                           Investment Thesis Fit
                         </h3>
                         <Button
@@ -424,8 +424,8 @@ export default function CompanyDetailPage() {
               {!latestDecision && calls.length === 0 && (
                 <FadeInItem className="lg:col-span-2">
                   <div className="rounded-lg border border-dashed border-border p-8 flex flex-col items-center gap-4 text-center">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-conviction-500/10">
-                      <Sparkles className="h-5 w-5 text-conviction-400" />
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+                      <Sparkles className="h-5 w-5 text-primary" />
                     </div>
                     <div>
                       <p className="text-sm font-medium text-foreground">No intelligence yet</p>

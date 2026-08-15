@@ -45,14 +45,14 @@ const MOAT_STRENGTH_COLOR: Record<MoatStrength, string> = {
 
 function scoreColor(score: number) {
   if (score >= 70) return 'text-emerald-400'
-  if (score >= 50) return 'text-blue-400'
+  if (score >= 50) return 'text-primary'
   if (score >= 30) return 'text-amber-400'
   return 'text-red-400'
 }
 
 function scoreBg(score: number) {
   if (score >= 70) return 'bg-emerald-500'
-  if (score >= 50) return 'bg-blue-500'
+  if (score >= 50) return 'bg-primary'
   if (score >= 30) return 'bg-amber-500'
   return 'bg-red-500'
 }
@@ -167,13 +167,13 @@ function ThesisFitGauge({ score }: { score: number }) {
     <div className="flex flex-col items-center gap-2 py-4">
       <div className="relative w-36 h-36">
         <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
-          <circle cx="60" cy="60" r="50" fill="none" stroke="#27272a" strokeWidth="10" />
+          <circle cx="60" cy="60" r="50" fill="none" stroke="hsl(var(--border))" strokeWidth="10" />
           <motion.circle
             cx="60" cy="60" r="50"
             fill="none"
             strokeWidth="10"
             strokeLinecap="round"
-            stroke={score >= 70 ? '#10b981' : score >= 50 ? '#3b82f6' : score >= 30 ? '#f59e0b' : '#ef4444'}
+            stroke={score >= 70 ? 'hsl(var(--success))' : score >= 50 ? 'hsl(var(--primary))' : score >= 30 ? 'hsl(var(--warning))' : 'hsl(var(--destructive))'}
             strokeDasharray={`${2 * Math.PI * 50}`}
             initial={{ strokeDashoffset: 2 * Math.PI * 50 }}
             animate={{ strokeDashoffset: 2 * Math.PI * 50 * (1 - score / 100) }}
@@ -181,7 +181,7 @@ function ThesisFitGauge({ score }: { score: number }) {
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className={cn('text-3xl font-bold', scoreColor(score))}>{score}</span>
+          <span className={cn('text-3xl font-bold font-mono', scoreColor(score))}>{score}</span>
           <span className="text-xs text-muted-foreground">/ 100</span>
         </div>
       </div>
@@ -212,9 +212,9 @@ function MoatRadar({ moat }: { moat: SIReportDetail['moatAnalysis'] }) {
     <div className="h-56">
       <ResponsiveContainer width="100%" height="100%">
         <RadarChart data={data}>
-          <PolarGrid stroke="#27272a" />
-          <PolarAngleAxis dataKey="label" tick={{ fill: '#71717a', fontSize: 10 }} />
-          <Radar dataKey="value" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.15} strokeWidth={1.5} />
+          <PolarGrid stroke="hsl(var(--border))" />
+          <PolarAngleAxis dataKey="label" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
+          <Radar dataKey="value" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.14} strokeWidth={1.5} />
         </RadarChart>
       </ResponsiveContainer>
     </div>
@@ -231,17 +231,17 @@ function AlignmentChart({ thesisMatch }: { thesisMatch: SIReportDetail['thesisMa
     { name: 'Geography', value: Math.round((thesisMatch.geographyAlignment?.score ?? 0) * 100) },
     { name: 'Biz Model', value: Math.round((thesisMatch.businessModelAlignment?.score ?? 0) * 100) },
   ]
-  const barColor = (v: number) => v >= 75 ? '#10b981' : v >= 50 ? '#3b82f6' : v >= 25 ? '#f59e0b' : '#ef4444'
+  const barColor = (v: number) => v >= 75 ? 'hsl(var(--success))' : v >= 50 ? 'hsl(var(--primary))' : v >= 25 ? 'hsl(var(--warning))' : 'hsl(var(--destructive))'
   return (
     <div className="h-44">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} barSize={28}>
-          <XAxis dataKey="name" tick={{ fill: '#71717a', fontSize: 11 }} axisLine={false} tickLine={false} />
+          <XAxis dataKey="name" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} axisLine={false} tickLine={false} />
           <YAxis domain={[0, 100]} hide />
           <Tooltip
-            contentStyle={{ background: '#18181b', border: '1px solid #27272a', borderRadius: 8 }}
-            labelStyle={{ color: '#a1a1aa' }}
-            itemStyle={{ color: '#e4e4e7' }}
+            contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 8 }}
+            labelStyle={{ color: 'hsl(var(--muted-foreground))' }}
+            itemStyle={{ color: 'hsl(var(--foreground))' }}
             formatter={(v: number) => [`${v}%`, 'Score']}
           />
           <Bar dataKey="value" radius={[4, 4, 0, 0]}>
@@ -499,7 +499,7 @@ export default function StartupIntelligencePage() {
                 value={companyName}
                 onChange={e => setCompanyName(e.target.value)}
                 placeholder="Acme Corp"
-                className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
               />
             </div>
             <div>
@@ -510,7 +510,7 @@ export default function StartupIntelligencePage() {
                   value={websiteUrl}
                   onChange={e => setWebsiteUrl(e.target.value)}
                   placeholder="acmecorp.com"
-                  className="w-full bg-background border border-border rounded-lg pl-8 pr-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full bg-background border border-border rounded-lg pl-8 pr-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
                 />
               </div>
             </div>
@@ -522,7 +522,7 @@ export default function StartupIntelligencePage() {
                   value={linkedinUrl}
                   onChange={e => setLinkedinUrl(e.target.value)}
                   placeholder="linkedin.com/company/acme"
-                  className="w-full bg-background border border-border rounded-lg pl-8 pr-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full bg-background border border-border rounded-lg pl-8 pr-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
                 />
               </div>
             </div>
@@ -533,14 +533,14 @@ export default function StartupIntelligencePage() {
                 onChange={e => setUserContext(e.target.value)}
                 placeholder="Why you're evaluating this company…"
                 rows={2}
-                className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-1 focus:ring-ring"
               />
             </div>
             {formError && <p className="text-xs text-red-400">{formError}</p>}
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+              className="w-full py-2 bg-primary hover:bg-primary/90 disabled:opacity-50 text-primary-foreground text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
             >
               {isSubmitting ? (
                 <><RefreshCw className="w-3.5 h-3.5 animate-spin" /> Analyzing…</>
@@ -689,7 +689,7 @@ function EmptyState({ onNewReport }: { onNewReport: () => void }) {
         </p>
         <button
           onClick={onNewReport}
-          className="md:hidden mt-6 flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+          className="md:hidden mt-6 flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium rounded-lg transition-colors"
         >
           <Search className="w-4 h-4" /> New Report
         </button>

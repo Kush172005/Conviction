@@ -18,11 +18,11 @@ import type { MemoryEntry, MemoryEntryType, Company } from '@/types'
 
 const TYPE_CONFIG: Record<MemoryEntryType, { label: string; color: string; dot: string }> = {
   call_note: { label: 'Call Note', color: 'text-blue-400', dot: 'bg-blue-400' },
-  decision: { label: 'Decision', color: 'text-conviction-300', dot: 'bg-conviction-400' },
+  decision: { label: 'Decision', color: 'text-primary', dot: 'bg-primary' },
   concern: { label: 'Concern', color: 'text-amber-400', dot: 'bg-amber-400' },
   milestone: { label: 'Milestone', color: 'text-emerald-400', dot: 'bg-emerald-400' },
   follow_up: { label: 'Follow-Up', color: 'text-muted-foreground', dot: 'bg-muted-foreground' },
-  thesis_update: { label: 'Thesis Update', color: 'text-conviction-300', dot: 'bg-conviction-400' },
+  thesis_update: { label: 'Thesis Update', color: 'text-primary', dot: 'bg-primary' },
 }
 
 const SENTIMENT_DOT: Record<string, string> = {
@@ -227,7 +227,7 @@ export default function MemoryPage() {
                                     <div
                                       key={i}
                                       className={`h-1 w-1 rounded-full ${
-                                        i < entry.importance ? 'bg-conviction-400' : 'bg-border'
+                                        i < entry.importance ? 'bg-primary' : 'bg-border'
                                       }`}
                                     />
                                   ))}

@@ -10,7 +10,7 @@ interface MagneticButtonProps {
 export default function MagneticButton({
   children,
   className = '',
-  strength = 0.3,
+  strength = 0.14,
 }: MagneticButtonProps) {
   const ref = useRef<HTMLDivElement>(null)
   const x = useMotionValue(0)
