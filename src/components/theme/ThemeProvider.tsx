@@ -26,7 +26,7 @@ function readStoredTheme(): ThemePreference {
   if (typeof window === 'undefined') return 'system'
   const stored = window.localStorage.getItem(STORAGE_KEY)
   if (stored === 'light' || stored === 'dark' || stored === 'system') return stored
-  return 'system'
+  return 'light'
 }
 
 function applyThemeClass(resolved: 'light' | 'dark') {

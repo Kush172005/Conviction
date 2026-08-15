@@ -222,9 +222,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
         <div
           className={cn(
             "border-t border-border flex-shrink-0",
-            collapsed
-              ? "flex flex-col items-center gap-2 p-3"
-              : "p-3 space-y-1"
+            collapsed ? "flex flex-col items-center gap-2 p-3" : "p-3 space-y-1"
           )}
         >
           {isDemo && !collapsed && (
@@ -265,8 +263,16 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
                 )}
               </div>
               <SignOutButton collapsed={collapsed} />
-              <div className={cn(!collapsed && "pt-1", collapsed && "flex justify-center")}>
-                <ThemeToggle compact className={collapsed ? "h-10 w-10" : undefined} />
+              <div
+                className={cn(
+                  !collapsed && "pt-1",
+                  collapsed && "flex justify-center"
+                )}
+              >
+                <ThemeToggle
+                  compact
+                  className={collapsed ? "h-10 w-10" : undefined}
+                />
               </div>
             </>
           )}
