@@ -43,10 +43,7 @@ import Marquee from "@/components/motion/Marquee";
 import { useAuthStore } from "@/store";
 import { authApi, mapBackendUser } from "@/services/api/auth";
 import { getFriendlyApiError } from "@/lib/apiErrors";
-import {
-  ProjectBadge,
-  ProjectPitchStrip,
-} from "@/components/ProjectBranding";
+import { ProjectBadge, ProjectPitchStrip } from "@/components/ProjectBranding";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -81,11 +78,9 @@ const FEATURES = [
     description:
       "Every company gets scored 0–100 against your fund's thesis (including sector, stage, geography, and business model alignment) with specific, written reasons behind every point.",
     tag: "Thesis Scoring",
-    accent:
-      "from-sky-600/12 to-sky-600/3 border-sky-600/20",
+    accent: "from-sky-600/12 to-sky-600/3 border-sky-600/20",
     iconBg: "bg-info/10 text-info",
-    tagColor:
-      "bg-info/10 text-info border-info/20",
+    tagColor: "bg-info/10 text-info border-info/20",
     glowColor: "shadow-none",
   },
   {
@@ -219,6 +214,20 @@ const TESTIMONIALS = [
     author: "Associate, B2B SaaS fund",
     fund: "$500M Series B focus",
     initials: "AS",
+  },
+  {
+    quote:
+      "Before Conviction, every partner had a different version of the same deal. Now the entire team sees the same history, context, and reasoning without asking who spoke to whom six months ago.",
+    author: "Partner, Seed & Series A",
+    fund: "Multi-stage technology fund",
+    initials: "PS",
+  },
+  {
+    quote:
+      "Conviction changed how we hand deals across the team. Research, calls, notes, and investment decisions stay connected, so an associate can pick up a company and understand the full story in minutes.",
+    author: "Investment Director",
+    fund: "Global venture platform",
+    initials: "ID",
   },
 ];
 
@@ -620,9 +629,7 @@ export default function LandingPage() {
           <h1 className="text-balance font-display font-semibold tracking-tight leading-[1.06]">
             <span className="hero-title-line block text-4xl sm:text-5xl md:text-6xl lg:text-[4.25rem] text-foreground">
               Every founder call generates{" "}
-              <span className="text-primary">
-                investment intelligence.
-              </span>
+              <span className="text-primary">investment intelligence.</span>
             </span>
             <span className="hero-title-line block text-3xl sm:text-4xl md:text-5xl text-muted-foreground/75 mt-2">
               Stop losing it.
@@ -1128,8 +1135,8 @@ export default function LandingPage() {
             </p>
             <p className="text-sm text-muted-foreground mt-1.5 max-w-lg mx-auto leading-relaxed">
               Recording meetings doesn&apos;t help if you never re-watch them.
-              The insight needs to be structured and retrievable right after
-              the conversation. That&apos;s what Conviction does.
+              The insight needs to be structured and retrievable right after the
+              conversation. That&apos;s what Conviction does.
             </p>
           </motion.div>
         </div>
@@ -1229,11 +1236,11 @@ export default function LandingPage() {
           />
         </div>
 
-        <Marquee speed={28} gap={16} className="py-2">
+        <Marquee speed={42} gap={16} className="py-2">
           {TESTIMONIALS.map((t) => (
             <div
               key={t.author}
-              className="w-72 md:w-80 flex-shrink-0 rounded-xl border border-border/80 bg-card p-5 flex flex-col shadow-card hover:border-border hover:-translate-y-1 hover:shadow-card-hover transition-all duration-200 cursor-default"
+              className="w-72 md:w-80 flex-shrink-0 rounded-xl border border-border/80 bg-card p-5 flex flex-col shadow-card"
             >
               <Quote className="h-5 w-5 text-muted-foreground/50 mb-4 flex-shrink-0" />
               <p className="text-sm text-foreground leading-relaxed flex-1 mb-6">
@@ -1267,7 +1274,10 @@ export default function LandingPage() {
         <div className="cta-content relative z-10 max-w-3xl mx-auto text-center space-y-5">
           <motion.div
             className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-4 py-1.5 text-xs font-medium text-muted-foreground"
-            whileHover={{ scale: 1.02, borderColor: "hsl(var(--primary) / 0.4)" }}
+            whileHover={{
+              scale: 1.02,
+              borderColor: "hsl(var(--primary) / 0.4)",
+            }}
             transition={{ type: "spring", stiffness: 400 }}
           >
             <Shield className="h-3 w-3" />

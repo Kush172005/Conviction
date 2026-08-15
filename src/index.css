@@ -425,16 +425,6 @@
     animation: none;
   }
 
-  .marquee-root {
-    overflow-x: auto;
-    -webkit-mask-image: none;
-    mask-image: none;
-  }
-
-  .marquee-set + .marquee-set {
-    display: none;
-  }
-
   ::view-transition-old(root),
   ::view-transition-new(root) {
     animation: none !important;

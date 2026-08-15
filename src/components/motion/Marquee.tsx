@@ -19,49 +19,37 @@ export default function Marquee({
   speed = 40,
   direction = 'left',
   gap = 20,
-  pauseOnHover = true,
+  pauseOnHover = false,
   className = '',
 }: MarqueeProps) {
   const wrapRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
   const childArray = Children.toArray(children)
-  const duration = Math.max(22, Math.min(35, 840 / Math.max(speed, 1)))
 
   useGSAP(
     () => {
       const track = trackRef.current
-      const wrap = wrapRef.current
-      if (!track || !wrap) return
+      const firstSet = track?.querySelector('.marquee-set') as HTMLElement | null
+      if (!track || !firstSet) return
 
-      const mm = gsap.matchMedia()
+      let xPos = 0
+      const pxPerSecond = Math.max(speed, 24)
 
-      mm.add('(prefers-reduced-motion: reduce)', () => {
-        gsap.set(track, { xPercent: 0, x: 0 })
-      })
+      const tick = () => {
+        const distance = firstSet.offsetWidth
+        if (distance === 0) return
+        const delta = (pxPerSecond / 60) * gsap.ticker.deltaRatio(60)
+        xPos += direction === 'left' ? -delta : delta
+        xPos = gsap.utils.wrap(-distance, 0, xPos)
+        gsap.set(track, { x: xPos })
+      }
 
-      mm.add('(prefers-reduced-motion: no-preference)', () => {
-        gsap.set(track, { xPercent: 0 })
-        const tween = gsap.to(track, {
-          xPercent: -50,
-          duration,
-          ease: 'none',
-          repeat: -1,
-        })
-        if (direction === 'right') tween.timeScale(-1)
-
-        if (!pauseOnHover) return
-
-        const pause = () => tween.pause()
-        const play = () => tween.play()
-        wrap.addEventListener('mouseenter', pause)
-        wrap.addEventListener('mouseleave', play)
-        return () => {
-          wrap.removeEventListener('mouseenter', pause)
-          wrap.removeEventListener('mouseleave', play)
-        }
-      })
+      gsap.ticker.add(tick)
+      return () => {
+        gsap.ticker.remove(tick)
+      }
     },
-    { scope: wrapRef, dependencies: [duration, direction, pauseOnHover] }
+    { scope: wrapRef, dependencies: [speed, direction, childArray.length] }
   )
 
   return (
