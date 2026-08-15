@@ -422,12 +422,62 @@ export default function LandingPage() {
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
+
+      mm.add("(prefers-reduced-motion: reduce)", () => {
+        gsap.set(
+          [
+            ".hero-badge",
+            ".hero-title-line",
+            ".hero-sub",
+            ".hero-cta",
+            ".hero-trust",
+            ".hero-preview",
+            ".stats-section",
+            ".problem-fragment",
+            ".feature-card",
+            ".cta-content",
+            ".product-preview-frame",
+          ],
+          { autoAlpha: 1, y: 0, clearProps: "transform" }
+        );
+      });
+
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        // Stats counter section
+        const hero = gsap.timeline({
+          defaults: { ease: "power3.out", duration: 0.7 },
+        });
+        gsap.set(
+          [
+            ".hero-badge",
+            ".hero-title-line",
+            ".hero-sub",
+            ".hero-cta",
+            ".hero-trust",
+            ".hero-preview",
+          ],
+          { autoAlpha: 0, y: 22 }
+        );
+        hero
+          .to(".hero-badge", { autoAlpha: 1, y: 0 }, 0)
+          .to(".hero-title-line", { autoAlpha: 1, y: 0, stagger: 0.08 }, 0.08)
+          .to(".hero-sub", { autoAlpha: 1, y: 0 }, 0.22)
+          .to(".hero-cta", { autoAlpha: 1, y: 0 }, 0.3)
+          .to(".hero-trust", { autoAlpha: 1, y: 0 }, 0.38)
+          .to(".hero-preview", { autoAlpha: 1, y: 0, duration: 0.85 }, 0.44);
+
+        gsap.to(".product-preview-frame", {
+          y: -8,
+          duration: 6,
+          ease: "sine.inOut",
+          yoyo: true,
+          repeat: -1,
+          delay: 1.2,
+        });
+
         gsap.from(".stats-section", {
           autoAlpha: 0,
-          y: 24,
-          duration: 0.7,
+          y: 36,
+          duration: 0.8,
           ease: "power2.out",
           scrollTrigger: {
             trigger: ".stats-section",
@@ -436,17 +486,16 @@ export default function LandingPage() {
           },
         });
 
-        // Problem fragments
         ScrollTrigger.batch(".problem-fragment", {
           onEnter: (els) =>
             gsap.fromTo(
               els,
-              { autoAlpha: 0, y: 20 },
+              { autoAlpha: 0, y: 36 },
               {
                 autoAlpha: 1,
                 y: 0,
-                stagger: 0.09,
-                duration: 0.55,
+                stagger: 0.1,
+                duration: 0.7,
                 ease: "power2.out",
               }
             ),
@@ -454,17 +503,16 @@ export default function LandingPage() {
           once: true,
         });
 
-        // Feature cards — keep for non-TiltCard fallback
         ScrollTrigger.batch(".feature-card", {
           onEnter: (els) =>
             gsap.fromTo(
               els,
-              { autoAlpha: 0, y: 28 },
+              { autoAlpha: 0, y: 40 },
               {
                 autoAlpha: 1,
                 y: 0,
-                stagger: 0.07,
-                duration: 0.5,
+                stagger: 0.08,
+                duration: 0.65,
                 ease: "power2.out",
               }
             ),
@@ -472,11 +520,10 @@ export default function LandingPage() {
           once: true,
         });
 
-        // CTA section
         gsap.from(".cta-content", {
           autoAlpha: 0,
-          y: 28,
-          duration: 0.7,
+          y: 36,
+          duration: 0.8,
           ease: "power2.out",
           scrollTrigger: {
             trigger: ".cta-content",
@@ -562,7 +609,7 @@ export default function LandingPage() {
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/25 to-transparent pointer-events-none" />
 
         <div className="relative z-10 max-w-4xl mx-auto text-center space-y-5">
-          <div className="hero-fade-in flex flex-col items-center gap-2">
+          <div className="hero-badge flex flex-col items-center gap-2">
             <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-4 py-1.5 text-xs font-medium text-muted-foreground">
               <Sparkles className="h-3 w-3" />
               Deal intelligence for venture capital
@@ -570,25 +617,25 @@ export default function LandingPage() {
             <ProjectBadge className="md:hidden" />
           </div>
 
-          <h1 className="hero-fade-in hero-fade-in-delay-1 text-balance font-display font-semibold tracking-tight leading-[1.06]">
-            <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-[4.25rem] text-foreground">
+          <h1 className="text-balance font-display font-semibold tracking-tight leading-[1.06]">
+            <span className="hero-title-line block text-4xl sm:text-5xl md:text-6xl lg:text-[4.25rem] text-foreground">
               Every founder call generates{" "}
               <span className="text-primary">
                 investment intelligence.
               </span>
             </span>
-            <span className="block text-3xl sm:text-4xl md:text-5xl text-muted-foreground/75 mt-2">
+            <span className="hero-title-line block text-3xl sm:text-4xl md:text-5xl text-muted-foreground/75 mt-2">
               Stop losing it.
             </span>
           </h1>
 
-          <p className="hero-fade-in hero-fade-in-delay-2 max-w-xl mx-auto text-base md:text-lg text-muted-foreground leading-relaxed">
+          <p className="hero-sub max-w-xl mx-auto text-base md:text-lg text-muted-foreground leading-relaxed">
             Capture post-call reasoning, research any startup, score thesis fit,
             and build a permanent deal memory, so your team never asks
             &ldquo;why did we pass?&rdquo; again.
           </p>
 
-          <div className="hero-fade-in hero-fade-in-delay-3 flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-1">
+          <div className="hero-cta flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-1">
             <MagneticButton strength={0.12}>
               <Button
                 variant="conviction"
@@ -617,13 +664,13 @@ export default function LandingPage() {
           </div>
 
           {demoError && (
-            <div className="hero-fade-in max-w-md mx-auto flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2.5 text-left text-xs text-amber-200/90">
+            <div className="hero-sub max-w-md mx-auto flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2.5 text-left text-xs text-amber-200/90">
               <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
               <span>{demoError}</span>
             </div>
           )}
 
-          <div className="hero-fade-in hero-fade-in-delay-4 flex items-center justify-center gap-4 text-xs text-muted-foreground flex-wrap">
+          <div className="hero-trust flex items-center justify-center gap-4 text-xs text-muted-foreground flex-wrap">
             {["No credit card", "Private & secure", "Built for VC teams"].map(
               (item) => (
                 <div key={item} className="flex items-center gap-1.5">
@@ -639,7 +686,7 @@ export default function LandingPage() {
       {/* ── Product preview ───────────────────────────────────────── */}
       <section className="relative px-6 pb-10 md:pb-14">
         <div className="max-w-4xl mx-auto">
-          <div className="hero-fade-in hero-fade-in-delay-5 relative w-full">
+          <div className="hero-preview relative w-full">
             <div className="flex justify-center gap-1 mb-3">
               {(
                 [
@@ -669,7 +716,7 @@ export default function LandingPage() {
               ))}
             </div>
 
-            <div className="relative rounded-xl border border-border/80 overflow-hidden shadow-2xl surface-elevated">
+            <div className="product-preview-frame relative rounded-xl border border-border/80 overflow-hidden shadow-2xl surface-elevated">
               {/* Window chrome */}
               <div className="bg-surface-1 border-b border-border px-4 py-3 flex items-center gap-2">
                 <div className="flex gap-1.5">
@@ -1031,7 +1078,6 @@ export default function LandingPage() {
       <section className="py-14 md:py-16 px-6 relative">
         <div className="max-w-5xl mx-auto">
           <SectionHeader
-            className="problem-fragment"
             eyebrow="The Problem"
             title={
               <>
@@ -1093,7 +1139,6 @@ export default function LandingPage() {
       <section className="py-14 md:py-16 px-6 bg-surface-1/30 border-y border-border/40">
         <div className="max-w-6xl mx-auto">
           <SectionHeader
-            className="feature-card"
             eyebrow="Platform"
             title={
               <>

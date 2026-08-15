@@ -1,6 +1,11 @@
 import { Moon, Sun } from 'lucide-react'
-import { useTheme } from '@/components/theme/ThemeProvider'
+import { useTheme, type ThemeOrigin } from '@/components/theme/ThemeProvider'
 import { cn } from '@/lib/utils'
+
+function originFromEvent(event: React.MouseEvent<HTMLElement>): ThemeOrigin {
+  const rect = event.currentTarget.getBoundingClientRect()
+  return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }
+}
 
 export default function ThemeToggle({
   className,
@@ -15,7 +20,7 @@ export default function ThemeToggle({
   return (
     <button
       type="button"
-      onClick={toggleResolved}
+      onClick={(event) => toggleResolved(originFromEvent(event))}
       className={cn(
         'inline-flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-hover transition-colors',
         compact ? 'h-8 w-8' : 'h-9 w-9',

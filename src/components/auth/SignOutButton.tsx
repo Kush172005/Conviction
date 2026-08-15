@@ -48,7 +48,7 @@ export default function SignOutButton({ collapsed, compact, className }: SignOut
             type="button"
             onClick={handleSignOut}
             className={cn(
-              'flex h-10 w-full items-center justify-center rounded-md text-muted-foreground hover:bg-red-500/10 hover:text-red-400 transition-colors',
+              'flex h-10 w-10 items-center justify-center rounded-md text-muted-foreground hover:bg-red-500/10 hover:text-red-400 transition-colors',
               className
             )}
             aria-label={label}

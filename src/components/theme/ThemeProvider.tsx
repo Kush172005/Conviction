@@ -1,6 +1,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { flushSync } from 'react-dom'
 
 export type ThemePreference = 'light' | 'dark' | 'system'
+export type ThemeOrigin = { x: number; y: number }
 
 const STORAGE_KEY = 'conviction-theme'
 const DARK_COLOR = '#0E141C'
@@ -9,8 +11,8 @@ const LIGHT_COLOR = '#F1F3F6'
 type ThemeContextValue = {
   theme: ThemePreference
   resolved: 'light' | 'dark'
-  setTheme: (theme: ThemePreference) => void
-  toggleResolved: () => void
+  setTheme: (theme: ThemePreference, origin?: ThemeOrigin) => void
+  toggleResolved: (origin?: ThemeOrigin) => void
 }
 
 const ThemeContext = createContext<ThemeContextValue | null>(null)
@@ -39,11 +41,47 @@ function applyThemeClass(resolved: 'light' | 'dark') {
   if (fav) fav.href = resolved === 'dark' ? '/favicon.svg' : '/favicon-light.svg'
 }
 
+function resolvePreference(preference: ThemePreference, system: 'light' | 'dark') {
+  return preference === 'system' ? system : preference
+}
+
+function setTransitionOrigin(origin?: ThemeOrigin) {
+  const x = origin?.x ?? window.innerWidth / 2
+  const y = origin?.y ?? window.innerHeight / 2
+  const radius = Math.hypot(
+    Math.max(x, window.innerWidth - x),
+    Math.max(y, window.innerHeight - y)
+  )
+  const root = document.documentElement
+  root.style.setProperty('--vt-x', `${x}px`)
+  root.style.setProperty('--vt-y', `${y}px`)
+  root.style.setProperty('--vt-r', `${Math.ceil(radius)}px`)
+}
+
+function canUseViewTransition() {
+  return (
+    typeof document !== 'undefined' &&
+    typeof document.startViewTransition === 'function' &&
+    !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  )
+}
+
+function runThemeChange(apply: () => void, origin?: ThemeOrigin) {
+  if (!canUseViewTransition()) {
+    apply()
+    return
+  }
+  setTransitionOrigin(origin)
+  document.startViewTransition(() => {
+    flushSync(apply)
+  })
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<ThemePreference>(() => readStoredTheme())
   const [system, setSystem] = useState<'light' | 'dark'>(getSystemTheme)
 
-  const resolved = theme === 'system' ? system : theme
+  const resolved = resolvePreference(theme, system)
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-color-scheme: dark)')
@@ -56,14 +94,27 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     applyThemeClass(resolved)
   }, [resolved])
 
-  const setTheme = useCallback((next: ThemePreference) => {
-    setThemeState(next)
-    window.localStorage.setItem(STORAGE_KEY, next)
-  }, [])
+  const setTheme = useCallback((next: ThemePreference, origin?: ThemeOrigin) => {
+    const nextResolved = resolvePreference(next, getSystemTheme())
+    const apply = () => {
+      setThemeState(next)
+      window.localStorage.setItem(STORAGE_KEY, next)
+      applyThemeClass(nextResolved)
+    }
+    if (nextResolved === resolved && next === theme) {
+      apply()
+      return
+    }
+    if (nextResolved === resolved) {
+      apply()
+      return
+    }
+    runThemeChange(apply, origin)
+  }, [resolved, theme])
 
-  const toggleResolved = useCallback(() => {
+  const toggleResolved = useCallback((origin?: ThemeOrigin) => {
     const next = resolved === 'dark' ? 'light' : 'dark'
-    setTheme(next)
+    setTheme(next, origin)
   }, [resolved, setTheme])
 
   const value = useMemo(

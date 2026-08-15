@@ -58,7 +58,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
   return (
     <TooltipProvider delayDuration={0}>
       <motion.aside
-        animate={isMobile ? { width: 260 } : { width: collapsed ? 72 : 220 }}
+        animate={isMobile ? { width: 260 } : { width: collapsed ? 80 : 220 }}
         transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
         className="relative flex h-full flex-col border-r border-border bg-surface-1 flex-shrink-0"
       >
@@ -106,7 +106,12 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
         </div>
 
         {/* New Call CTA */}
-        <div className={cn("px-3 pt-3 pb-1 flex-shrink-0")}>
+        <div
+          className={cn(
+            "flex-shrink-0",
+            collapsed ? "flex justify-center px-2 pt-3 pb-1" : "px-3 pt-3 pb-1"
+          )}
+        >
           {!collapsed ? (
             <Button
               variant="conviction"
@@ -124,7 +129,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
                 <Button
                   variant="conviction"
                   size="icon-sm"
-                  className="w-full"
+                  className="h-10 w-10"
                   data-tour="tour-log-call"
                   onClick={() => handleNavClick("/calls/new")}
                 >
@@ -137,7 +142,14 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 overflow-y-auto overflow-x-hidden thin-scrollbar px-2 py-2 space-y-0.5">
+        <nav
+          className={cn(
+            "flex-1 overflow-y-auto overflow-x-hidden thin-scrollbar",
+            collapsed
+              ? "flex flex-col items-center gap-2 py-3 px-2"
+              : "px-2 py-2 space-y-0.5"
+          )}
+        >
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             const tourId =
@@ -164,7 +176,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
                       onClick={() => onMobileClose?.()}
                       className={({ isActive }) =>
                         cn(
-                          "flex h-10 w-full items-center justify-center rounded-md transition-all duration-100",
+                          "flex h-10 w-10 items-center justify-center rounded-md transition-all duration-100",
                           isActive
                             ? "bg-active text-primary"
                             : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
@@ -208,7 +220,12 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
 
         {/* User */}
         <div
-          className={cn("border-t border-border p-3 flex-shrink-0 space-y-1")}
+          className={cn(
+            "border-t border-border flex-shrink-0",
+            collapsed
+              ? "flex flex-col items-center gap-2 p-3"
+              : "p-3 space-y-1"
+          )}
         >
           {isDemo && !collapsed && (
             <div className="px-2 pb-1">
@@ -222,7 +239,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
               <div
                 className={cn(
                   "flex items-center gap-2.5 rounded-md px-2 py-1.5 cursor-pointer hover:bg-secondary/60 transition-colors",
-                  collapsed && "justify-center px-0"
+                  collapsed && "h-10 w-10 justify-center px-0"
                 )}
                 onClick={() => handleNavClick("/settings")}
               >
@@ -248,18 +265,18 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
                 )}
               </div>
               <SignOutButton collapsed={collapsed} />
-              <div className={cn("pt-1", collapsed && "flex justify-center")}>
-                <ThemeToggle compact />
+              <div className={cn(!collapsed && "pt-1", collapsed && "flex justify-center")}>
+                <ThemeToggle compact className={collapsed ? "h-10 w-10" : undefined} />
               </div>
             </>
           )}
         </div>
 
-        {/* Collapse toggle — desktop only */}
+        {/* Collapse toggle — desktop only; aligned to header so it never covers Log Call */}
         {!isMobile && (
           <button
             onClick={toggleSidebar}
-            className="absolute top-[52px] -right-3 z-20 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-sm hover:text-foreground transition-colors"
+            className="absolute top-4 -right-3 z-20 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-sm hover:text-foreground transition-colors"
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             {collapsed ? (

@@ -68,7 +68,11 @@ export default function AppShell({ children }: AppShellProps) {
         </div>
 
         {/* Main content — extra bottom padding on mobile for bottom nav */}
-        <main className="flex-1 min-h-0 min-w-0 overflow-y-auto overscroll-y-contain [-webkit-overflow-scrolling:touch]">
+        <main className="relative flex-1 min-h-0 min-w-0 overflow-y-auto overscroll-y-contain [-webkit-overflow-scrolling:touch]">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 line-grid opacity-[0.10] dark:opacity-[0.14]"
+          />
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
@@ -77,7 +81,7 @@ export default function AppShell({ children }: AppShellProps) {
               animate="animate"
               exit={reduceMotion ? undefined : 'exit'}
               transition={{ duration: reduceMotion ? 0 : 0.18, ease: [0.4, 0, 0.2, 1] }}
-              className="min-h-0 h-full pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0"
+              className="relative z-10 min-h-0 h-full pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0"
             >
               {children}
             </motion.div>

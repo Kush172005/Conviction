@@ -19,7 +19,13 @@ export default function ThemePreferenceControl() {
           <button
             key={value}
             type="button"
-            onClick={() => setTheme(value)}
+            onClick={(event) => {
+              const rect = event.currentTarget.getBoundingClientRect()
+              setTheme(value, {
+                x: rect.left + rect.width / 2,
+                y: rect.top + rect.height / 2,
+              })
+            }}
             className={cn(
               'inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors',
               selected
