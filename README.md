@@ -220,6 +220,22 @@ Conviction/
 
 ---
 
+## Agent context (Cursor)
+
+Agents must not reload the whole frontend into the prompt. Context is **layered**:
+
+| Layer | File | When it loads |
+|-------|------|----------------|
+| Always-on map | [`AGENTS.md`](./AGENTS.md) | Every session |
+| Constitution | [`.cursor/rules/conviction.mdc`](./.cursor/rules/conviction.mdc) | Always apply |
+| Design | [`.cursor/docs/design.md`](./.cursor/docs/design.md) | UI / CSS edits |
+| Libraries (GSAP, ScrollTrigger, Framer) | [`.cursor/docs/libraries.md`](./.cursor/docs/libraries.md) | Animation work |
+| Architecture | [`.cursor/docs/architecture.md`](./.cursor/docs/architecture.md) | Routes / stores / API boundary |
+
+Skills under `.cursor/skills/` are progressive disclosure (design system, motion, start-work protocol). Official GSAP plugin skills stay enabled in `.cursor/settings.json`.
+
+---
+
 ## Local setup
 
 ### Frontend only (demo mode — no backend needed)

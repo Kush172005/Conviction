@@ -8,7 +8,6 @@ from app.dependencies import get_current_user, get_db
 from app.models.startup_intelligence import (
     InvestorProfileSnapshot,
     ProgressStage,
-    StartupIntelligenceReport,
 )
 from app.repositories import InvestorProfileRepository
 from app.repositories.startup_intelligence_repository import (
@@ -41,21 +40,21 @@ def _make_default_stages() -> List[dict]:
 
 
 def _doc_to_list_item(doc: dict) -> ReportListItem:
-    thesis = doc.get("thesis_match") or {}
-    ic = doc.get("ic_memo") or {}
+    """Derived from _doc_to_detail so the two views of a report can't silently drift apart."""
+    detail = _doc_to_detail(doc)
     return ReportListItem(
-        id=doc["id"],
-        company_name=doc.get("company_name", ""),
-        website_url=doc.get("website_url", ""),
-        status=doc.get("status", "queued"),
-        progress_percent=doc.get("progress_percent", 0),
-        current_stage=doc.get("current_stage", "Queued"),
-        thesis_fit_score=thesis.get("thesis_fit_score"),
-        recommendation=ic.get("recommendation"),
-        overall_confidence=doc.get("overall_confidence", 0.0),
-        cache_used=doc.get("cache_used", False),
-        created_at=doc.get("created_at", datetime.utcnow()),
-        completed_at=doc.get("completed_at"),
+        id=detail.id,
+        company_name=detail.company_name,
+        website_url=detail.website_url,
+        status=detail.status,
+        progress_percent=detail.progress_percent,
+        current_stage=detail.current_stage,
+        thesis_fit_score=detail.thesis_match.thesis_fit_score if detail.thesis_match else None,
+        recommendation=detail.ic_memo.recommendation if detail.ic_memo else None,
+        overall_confidence=detail.overall_confidence,
+        cache_used=detail.cache_used,
+        created_at=detail.created_at,
+        completed_at=detail.completed_at,
     )
 
 

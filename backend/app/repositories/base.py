@@ -1,10 +1,7 @@
 from datetime import datetime
-from typing import Any, Dict, List, Optional, TypeVar, Generic
+from typing import List, Optional
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from bson import ObjectId
-
-
-T = TypeVar("T")
 
 
 def serialize_doc(doc: dict) -> dict:

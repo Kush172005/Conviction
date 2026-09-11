@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 from .base import BaseRepository
 
@@ -9,11 +10,7 @@ class UserRepository(BaseRepository):
     async def find_by_google_id(self, google_id: str) -> Optional[dict]:
         return await self.find_one({"google_id": google_id})
 
-    async def find_by_email(self, email: str) -> Optional[dict]:
-        return await self.find_one({"email": email})
-
     async def upsert_google_user(self, google_id: str, email: str, name: str, avatar_url: Optional[str] = None) -> dict:
-        from datetime import datetime
         existing = await self.find_by_google_id(google_id)
         if existing:
             updates = {"updated_at": datetime.utcnow()}

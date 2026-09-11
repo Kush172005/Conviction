@@ -1,5 +1,7 @@
+from datetime import datetime
 from typing import List, Optional
-from .base import BaseRepository
+from bson import ObjectId
+from .base import BaseRepository, serialize_doc
 
 
 class CompanyRepository(BaseRepository):
@@ -13,17 +15,13 @@ class CompanyRepository(BaseRepository):
         return await self.find_many(query, sort=[("updated_at", -1)], limit=limit)
 
     async def find_by_id_for_user(self, company_id: str, user_id: str) -> Optional[dict]:
-        from bson import ObjectId
         try:
             doc = await self.collection.find_one({"_id": ObjectId(company_id), "user_id": user_id})
-            from .base import serialize_doc
             return serialize_doc(doc) if doc else None
         except Exception:
             return None
 
     async def increment_call_count(self, company_id: str) -> None:
-        from datetime import datetime
-        from bson import ObjectId
         await self.collection.update_one(
             {"_id": ObjectId(company_id)},
             {

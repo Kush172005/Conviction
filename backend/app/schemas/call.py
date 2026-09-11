@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional
 from pydantic import BaseModel
 from app.models.call import CallInputMode, CallStatus
 from app.schemas.follow_up import FollowUpResponse
+from app.schemas.startup_intelligence import ProviderLogEntry
 
 
 class CallCreate(BaseModel):
@@ -14,15 +15,10 @@ class CallCreate(BaseModel):
     occurred_at: Optional[datetime] = None
 
 
-class CallResponse(BaseModel):
+class CallResponse(CallCreate):
     id: str
     user_id: str
-    company_id: str
-    title: str
-    input_mode: CallInputMode
     status: CallStatus
-    raw_notes: Optional[str] = None
-    transcript_text: Optional[str] = None
     audio_url: Optional[str] = None
     duration_seconds: Optional[int] = None
     processing_error: Optional[str] = None
@@ -68,4 +64,4 @@ class CallIntelligenceResponse(BaseModel):
     follow_ups: List[FollowUpResponse] = []
 
     # ── Provider activity ──────────────────────────────────────────────────────
-    provider_log: List[Dict[str, Any]] = []
+    provider_log: List[ProviderLogEntry] = []

@@ -25,7 +25,7 @@ app = FastAPI(
     description="Deal Continuity Copilot for Venture Capital",
     version="0.1.0",
     lifespan=lifespan,
-    docs_url="/docs" if settings.debug else "/docs",
+    docs_url="/docs",
     redoc_url="/redoc",
 )
 

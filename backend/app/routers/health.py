@@ -9,7 +9,6 @@ router = APIRouter(tags=["health"])
 async def health_check():
     return {"status": "ok", "service": "conviction-api"}
 
-
 @router.get("/ready")
 async def readiness_check(db: AsyncIOMotorDatabase = Depends(get_db)):
     try:

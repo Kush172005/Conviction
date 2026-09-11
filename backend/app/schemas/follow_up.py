@@ -21,16 +21,11 @@ class FollowUpUpdate(BaseModel):
     notes: Optional[str] = None
 
 
-class FollowUpResponse(BaseModel):
+class FollowUpResponse(FollowUpCreate):
     id: str
     user_id: str
-    company_id: str
-    call_id: Optional[str] = None
-    action: str
-    due_date: Optional[datetime] = None
     status: FollowUpStatus
     priority: FollowUpPriority
-    notes: Optional[str] = None
     completed_at: Optional[datetime] = None
     created_at: datetime
     updated_at: datetime

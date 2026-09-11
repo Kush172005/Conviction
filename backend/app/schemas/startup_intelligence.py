@@ -1,6 +1,18 @@
 from datetime import datetime
 from typing import List, Optional
-from pydantic import BaseModel, HttpUrl, field_validator
+from pydantic import BaseModel, field_validator
+
+from app.models.startup_intelligence import (
+    AlignmentScore,
+    DiligenceQuestion,
+    EvidenceConfidence,
+    ICMemo,
+    MoatAnalysis,
+    MoatSignal,
+    ProgressStage,
+    RedFlag,
+    ReportSection,
+)
 
 
 class StartReportRequest(BaseModel):
@@ -19,39 +31,34 @@ class StartReportRequest(BaseModel):
         return v
 
 
-class ProgressStageResponse(BaseModel):
-    name: str
-    status: str
-    started_at: Optional[datetime] = None
-    completed_at: Optional[datetime] = None
-    error: Optional[str] = None
+class ProgressStageResponse(ProgressStage):
+    pass
 
 
-class AlignmentScoreResponse(BaseModel):
-    score: float
-    label: str
-    reasons: List[str] = []
+class AlignmentScoreResponse(AlignmentScore):
+    pass
 
 
 class ThesisMatchResponse(BaseModel):
     thesis_fit_score: int
-    sector_alignment: Optional[AlignmentScoreResponse] = None
-    stage_alignment: Optional[AlignmentScoreResponse] = None
-    geography_alignment: Optional[AlignmentScoreResponse] = None
-    business_model_alignment: Optional[AlignmentScoreResponse] = None
+    sector_alignment: AlignmentScoreResponse
+    stage_alignment: AlignmentScoreResponse
+    geography_alignment: AlignmentScoreResponse
+    business_model_alignment: AlignmentScoreResponse
     key_fit_reasons: List[str] = []
     key_misfit_reasons: List[str] = []
     confidence: float = 0.0
 
 
-class MoatSignalResponse(BaseModel):
-    dimension: str
-    strength: str
-    evidence: str
-    confidence: float
+class MoatSignalResponse(MoatSignal):
+    pass
 
 
-class MoatAnalysisResponse(BaseModel):
+class MoatAnalysisResponse(MoatAnalysis):
+    # Explicit overrides (not a bare subclass): MoatAnalysis's nested fields are
+    # typed MoatSignal internally. Redeclaring them here keeps the wire response
+    # pointing at MoatSignalResponse (the exposed schema) instead of leaking the
+    # internal-only MoatSignal type into the OpenAPI contract.
     network_effects: MoatSignalResponse
     data_moat: MoatSignalResponse
     distribution: MoatSignalResponse
@@ -60,48 +67,22 @@ class MoatAnalysisResponse(BaseModel):
     technical_depth: MoatSignalResponse
     regulatory: MoatSignalResponse
     partnerships: MoatSignalResponse
-    overall_moat_score: int
-    moat_summary: str
 
 
-class RedFlagResponse(BaseModel):
-    severity: str
-    category: str
-    explanation: str
-    supporting_evidence: str
-    confidence: float
+class RedFlagResponse(RedFlag):
+    pass
 
 
-class DiligenceQuestionResponse(BaseModel):
-    question: str
-    category: str
-    priority: str
-    why_important: str
+class DiligenceQuestionResponse(DiligenceQuestion):
+    pass
 
 
-class ICMemoResponse(BaseModel):
-    headline: str
-    recommendation: str
-    recommendation_rationale: str
-    thesis_fit_summary: str
-    key_strengths: List[str]
-    key_risks: List[str]
-    suggested_next_step: str
-    diligence_plan: str
-    full_memo_text: str
+class ICMemoResponse(ICMemo):
+    pass
 
 
-class ReportSectionResponse(BaseModel):
-    executive_summary: str = ""
-    company_overview: str = ""
-    founder_assessment: str = ""
-    market_analysis: str = ""
-    competitor_landscape: str = ""
-    business_model: str = ""
-    funding_and_investors: str = ""
-    growth_and_hiring: str = ""
-    news_and_sentiment: str = ""
-    opportunities: str = ""
+class ReportSectionResponse(ReportSection):
+    pass
 
 
 class SourceResponse(BaseModel):
@@ -114,16 +95,8 @@ class SourceResponse(BaseModel):
     fetched_at: Optional[datetime] = None
 
 
-class EvidenceConfidenceResponse(BaseModel):
-    company_overview: float = 0.0
-    founders: float = 0.0
-    market: float = 0.0
-    business_model: float = 0.0
-    competitors: float = 0.0
-    funding: float = 0.0
-    growth: float = 0.0
-    moat: float = 0.0
-    overall: float = 0.0
+class EvidenceConfidenceResponse(EvidenceConfidence):
+    pass
 
 
 class ReportListItem(BaseModel):

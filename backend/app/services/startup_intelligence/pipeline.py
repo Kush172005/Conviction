@@ -9,13 +9,11 @@ from typing import Any, Dict, List, Optional
 from app.config import settings
 from app.models.startup_intelligence import (
     CACHE_TTL_DAYS,
-    CompanyResearchCache,
     EvidenceConfidence,
     EvidenceLayer,
     InvestorProfileSnapshot,
     ProgressStage,
     ResearchSource,
-    StartupIntelligenceReport,
 )
 from app.repositories.startup_intelligence_repository import (
     StartupCacheRepository,

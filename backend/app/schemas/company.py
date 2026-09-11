@@ -31,19 +31,10 @@ class CompanyUpdate(BaseModel):
     total_funding: Optional[str] = None
 
 
-class CompanyResponse(BaseModel):
+class CompanyResponse(CompanyCreate):
     id: str
     user_id: str
-    name: str
-    website: Optional[str] = None
-    industry: Optional[str] = None
-    description: Optional[str] = None
-    founders: List[Founder] = []
     status: CompanyStatus
-    stage: Optional[Stage] = None
-    location: Optional[str] = None
-    employee_count: Optional[str] = None
-    total_funding: Optional[str] = None
     enrichment_status: EnrichmentStatus
     call_count: int
     latest_recommendation: Optional[str] = None

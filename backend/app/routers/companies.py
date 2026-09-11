@@ -5,7 +5,6 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from app.dependencies import get_db, get_current_user
 from app.repositories import CompanyRepository, InvestorProfileRepository, DecisionRepository
 from app.schemas.company import CompanyCreate, CompanyUpdate, CompanyResponse
-from app.services.intelligence_service import generate_placeholder_intelligence
 
 router = APIRouter(prefix="/companies", tags=["companies"])
 

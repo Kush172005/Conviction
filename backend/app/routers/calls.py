@@ -37,9 +37,7 @@ logger = logging.getLogger("call_intelligence")
 router = APIRouter(prefix="/calls", tags=["calls"])
 
 
-# ────────────────────────────────────────────────────────────────────────────────
 # Helpers
-# ────────────────────────────────────────────────────────────────────────────────
 
 async def _get_call_owned(call_id: str, user_id: str, call_repo: CallRepository) -> dict:
     call = await call_repo.find_by_id(call_id)
@@ -264,9 +262,7 @@ async def _build_intelligence_response(
     )
 
 
-# ────────────────────────────────────────────────────────────────────────────────
 # Routes
-# ────────────────────────────────────────────────────────────────────────────────
 
 @router.get("", response_model=List[CallResponse])
 async def list_calls(

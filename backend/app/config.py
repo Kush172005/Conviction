@@ -68,7 +68,7 @@ class Settings(BaseSettings):
     def cors_origin_list(self) -> List[str]:
         cleaned = self.cors_origins.strip().strip("[]")
         return [
-            origin.strip().strip('"').strip("'")
+            _strip_env_quotes(origin.strip())
             for origin in cleaned.split(",")
             if origin.strip()
         ]

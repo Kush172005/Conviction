@@ -6,8 +6,6 @@ import {
   ExternalLink,
   PhoneCall,
   ChevronRight,
-  CheckCircle2,
-  AlertTriangle,
   Clock,
   Sparkles,
   Loader2,
@@ -18,7 +16,6 @@ import {
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import PageHeader from '@/components/layout/PageHeader'
 import FadeIn, { FadeInStagger, FadeInItem } from '@/components/motion/FadeIn'
 import {
   MOCK_COMPANIES,
@@ -27,7 +24,7 @@ import {
   MOCK_DECISIONS,
   MOCK_FOLLOW_UPS,
 } from '@/mocks/data'
-import { cn, formatDate, formatRelativeTime, STATUS_COLORS } from '@/lib/utils'
+import { cn, formatDate, STATUS_COLORS } from '@/lib/utils'
 import { useAuthStore } from '@/store'
 import { companiesApi } from '@/services/api/companies'
 import { callsApi } from '@/services/api/calls'

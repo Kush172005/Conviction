@@ -24,12 +24,6 @@ class ResearchSource(BaseModel):
 
 # ─── Evidence layer ───────────────────────────────────────────────────────────
 
-class EvidenceItem(BaseModel):
-    value: str
-    confidence: float  # 0-1
-    sources: List[str] = []  # source URLs that support this claim
-
-
 class FounderProfile(BaseModel):
     name: str
     role: str
@@ -98,24 +92,6 @@ class EvidenceConfidence(BaseModel):
     growth: float = 0.0
     moat: float = 0.0
     overall: float = 0.0
-
-
-# ─── Company cache ────────────────────────────────────────────────────────────
-
-class CompanyResearchCache(BaseModel):
-    id: Optional[str] = None
-    normalized_domain: str
-    website_url: str
-    company_name: str
-    cache_status: str = "fresh"  # fresh, stale, refreshing, failed
-    last_researched_at: datetime = Field(default_factory=datetime.utcnow)
-    expires_at: Optional[datetime] = None
-    source_hash: str = ""
-    sources: List[ResearchSource] = []
-    evidence_layer: EvidenceLayer = Field(default_factory=EvidenceLayer)
-    evidence_confidence: EvidenceConfidence = Field(default_factory=EvidenceConfidence)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
 
 
 # ─── Report models ────────────────────────────────────────────────────────────
@@ -208,42 +184,6 @@ class InvestorProfileSnapshot(BaseModel):
     geographies: List[str] = []
     typical_check_size: str = ""
     investment_style: str = ""
-
-
-class StartupIntelligenceReport(BaseModel):
-    id: Optional[str] = None
-    user_id: str
-    company_name: str
-    website_url: str
-    linkedin_url: Optional[str] = None
-    user_context: Optional[str] = None
-    investor_profile_snapshot: InvestorProfileSnapshot = Field(default_factory=InvestorProfileSnapshot)
-
-    status: str = "queued"  # queued, researching, analyzing, completed, failed
-    progress_percent: int = 0
-    current_stage: str = "Queued"
-    stages: List[ProgressStage] = []
-    error_message: Optional[str] = None
-
-    cache_key: Optional[str] = None
-    cache_used: bool = False
-    cache_age_hours: Optional[float] = None
-    refresh_reason: Optional[str] = None
-
-    thesis_match: Optional[ThesisMatch] = None
-    moat_analysis: Optional[MoatAnalysis] = None
-    red_flags: List[RedFlag] = []
-    ic_memo: Optional[ICMemo] = None
-    report: Optional[ReportSection] = None
-    diligence_questions: List[DiligenceQuestion] = []
-
-    sources: List[ResearchSource] = []
-    overall_confidence: float = 0.0
-    evidence_confidence: Optional[EvidenceConfidence] = None
-
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
-    completed_at: Optional[datetime] = None
 
 
 CACHE_TTL_DAYS = 14
