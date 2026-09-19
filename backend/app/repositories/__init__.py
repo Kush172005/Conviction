@@ -6,6 +6,7 @@ from .follow_up_repository import FollowUpRepository
 from .memory_repository import MemoryRepository
 from .investor_profile_repository import InvestorProfileRepository
 from .startup_intelligence_repository import StartupReportRepository, StartupCacheRepository
+from .rag_chunk_repository import RagChunkRepository
 
 __all__ = [
     "UserRepository",
@@ -17,4 +18,5 @@ __all__ = [
     "InvestorProfileRepository",
     "StartupReportRepository",
     "StartupCacheRepository",
+    "RagChunkRepository",
 ]

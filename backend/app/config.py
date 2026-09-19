@@ -39,7 +39,9 @@ class Settings(BaseSettings):
 
     # Open-source LLM via Hugging Face (company data extraction)
     huggingface_api_key: str = ""
-    huggingface_model: str = "Qwen/Qwen2.5-7B-Instruct"
+    # Qwen2.5-7B-Instruct was retired from the HF Inference Router (returns
+    # "model_not_supported"); 72B-Instruct is the still-live model in the same family.
+    huggingface_model: str = "Qwen/Qwen2.5-72B-Instruct"
     huggingface_max_tokens: int = 4096
 
     # Google Search grounding for Gemini — enables live web research (founders, funding, news)

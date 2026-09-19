@@ -4,7 +4,7 @@ Orchestrates LLM extraction of structured deal intelligence from post-call notes
 
 Provider priority:
   1. Gemini (gemini-2.5-flash-lite) — reliable JSON synthesis
-  2. Hugging Face (Qwen2.5-7B-Instruct) — open-source fallback
+  2. Hugging Face (Qwen2.5-72B-Instruct) — open-source fallback
   3. Deterministic heuristics — never fails, always returns a usable result
 """
 import logging

@@ -14,7 +14,7 @@ import logging
 from datetime import datetime, timedelta
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, UploadFile
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from app.config import settings
@@ -30,6 +30,7 @@ from app.repositories import (
 from app.schemas.call import CallCreate, CallIntelligenceResponse, CallResponse
 from app.schemas.follow_up import FollowUpResponse
 from app.services.call_intelligence import generate_call_intelligence
+from app.services.rag import index_call
 from app.services.stt import transcribe_audio
 from app.services.startup_intelligence.provider_log import ProviderLog
 
@@ -311,6 +312,7 @@ async def upload_voice_call(
     title: Optional[str] = Form(default=None),
     input_mode: str = Form(default="voice"),
     audio: UploadFile = File(...),
+    background_tasks: BackgroundTasks = None,
     current_user: dict = Depends(get_current_user),
     db: AsyncIOMotorDatabase = Depends(get_db),
 ):
@@ -391,6 +393,8 @@ async def upload_voice_call(
     # ── 4. Return assembled response ───────────────────────────────────────────
     follow_ups = await FollowUpRepository(db).find_by_company(company_id, current_user["id"])
     call_doc_fresh = await call_repo.find_by_id(call_id) or call_doc
+    if background_tasks is not None:
+        background_tasks.add_task(index_call, db, call=call_doc_fresh, decision=decision)
 
     return await _build_intelligence_response(
         call=call_doc_fresh,
@@ -414,6 +418,7 @@ async def get_call(
 @router.post("/{call_id}/process", response_model=CallIntelligenceResponse)
 async def process_call(
     call_id: str,
+    background_tasks: BackgroundTasks,
     current_user: dict = Depends(get_current_user),
     db: AsyncIOMotorDatabase = Depends(get_db),
 ):
@@ -457,6 +462,7 @@ async def process_call(
 
     follow_ups = await FollowUpRepository(db).find_by_company(call["company_id"], current_user["id"])
     call_fresh = await call_repo.find_by_id(call_id) or call
+    background_tasks.add_task(index_call, db, call=call_fresh, decision=decision)
 
     return await _build_intelligence_response(
         call=call_fresh,

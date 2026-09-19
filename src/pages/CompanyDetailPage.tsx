@@ -30,6 +30,7 @@ import { companiesApi } from '@/services/api/companies'
 import { callsApi } from '@/services/api/calls'
 import { memoryApi } from '@/services/api/memory'
 import { followUpsApi } from '@/services/api/followUps'
+import CompanyChatPanel from '@/components/chat/CompanyChatPanel'
 import { getFriendlyApiError } from '@/lib/apiErrors'
 import type { Company, Call, MemoryEntry, FollowUp } from '@/types'
 import type { LatestDecision } from '@/services/api/companies'
@@ -327,6 +328,7 @@ export default function CompanyDetailPage() {
             <TabsTrigger value="followups">
               Follow-Ups {followUps.length > 0 && `(${followUps.length})`}
             </TabsTrigger>
+            <TabsTrigger value="chat">Chat</TabsTrigger>
           </TabsList>
           </div>
         </FadeIn>
@@ -602,6 +604,11 @@ export default function CompanyDetailPage() {
               ))
             )}
           </div>
+        </TabsContent>
+
+        {/* ── Chat ──────────────────────────────────────────────────────── */}
+        <TabsContent value="chat">
+          {companyId && <CompanyChatPanel companyId={companyId} isDemo={isDemo} />}
         </TabsContent>
       </Tabs>
     </div>

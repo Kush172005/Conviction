@@ -7,7 +7,7 @@ logging.getLogger("startup_intelligence.providers").setLevel(logging.INFO)
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.db import get_client, close_client
-from app.routers import health, auth, users, investor_profiles, companies, calls, memory, dashboard, follow_ups
+from app.routers import health, auth, users, investor_profiles, companies, calls, memory, dashboard, follow_ups, chat
 from app.routers import startup_intelligence as si_router
 
 
@@ -49,3 +49,4 @@ app.include_router(memory.router)
 app.include_router(dashboard.router)
 app.include_router(follow_ups.router)
 app.include_router(si_router.router)
+app.include_router(chat.router)
